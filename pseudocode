@@ -1,0 +1,84 @@
+Facebook for books. 
+Set up books into screen sized chunks to scroll through
+
+-Pull text in from file
+-Break into chunks and save in database
+-Database holds info on whether a chunk has been scrolled past
+-On load, pull the first chunk that has not been scrolled past.
+-add a database of themed memes to sprinkle in between book chunks at a random set interval
+-filter for dyslexia 
+-filter in affirmation memes, or rewards
+-statistics page showing how many chunks, words, pages, books have been read
+-queue books to be read after current is finished
+-science facts mode
+
+
+‐-------------------------------------------------------------------
+
+Gui:
+Login screen
+    username / password / submit / create user
+Create user screen
+Main screen
+    settings button / logout button / statistics screen
+    chunks scroll across screen
+        box around chunk / chunk type title
+Settings screen
+    check boxes for different settings / save updates button
+        load book chunks
+        number of chunks to load into memory
+        load memes into queue
+        frequency of memes
+        dyslexia filter
+        
+Load / Edit books and feed screen
+Statistics screen
+
+JND class
+    Pull entire json nosql database class
+
+Accessing data class
+
+Load books class
+    Load pdf
+    Load docx
+    Load txt
+
+Queue class
+    Build queue function
+    Build memory function
+    Access memory function
+    
+    
+Database
+    users
+        userID
+        username
+        password
+        numChunksRead
+        numBooksRead
+        numWordsRead
+        numPagesRead
+        currentQueueID
+    books
+        bookID
+        bookTitle
+    booksReadByUser
+        userID
+        bookID
+    bookChunks
+        chunkID
+        bookID
+        chunkNum
+        chunkContent
+    memes
+        memeID
+        memeContent
+    queue
+        queueID
+        userID
+        queueNum
+        chunkID / memeID
+    inMemory
+        memID
+        memContent
