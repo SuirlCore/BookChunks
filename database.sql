@@ -23,14 +23,35 @@ CREATE TABLE IF NOT EXISTS users(
     realLastName char(255) NOT NULL,
     email char(255) NOT NULL,
     PRIMARY KEY (userID)
+    -- user settings
 );
 
--- users settings
-
 -- what books the user has saved in the database
-CREATE TABLE IF NOT EXISTS collections(
-
-)
+CREATE TABLE IF NOT EXISTS books(
+    bookID int,
+    userID int,
+    bookName char,
+    isInFeed bool,
+    PRIMARY KEY (bookID)
+);
 
 -- the individual book chunks
+CREATE TABLE IF NOT EXISTS bookChunks(
+    chunkID int,
+    bookID int,
+    chunkNum int,
+    chunkContent char,
+    hasBeenSeen bool,
+    PRIMARY KEY (chunkID)
+);
 
+
+-- the collected feed for each user
+CREATE TABLE IF NOT EXISTS userFeed(
+    feedID int,
+    numInFeed int,
+    chunkID int,
+    userID int,
+    PRIMARY KEY (feedID, numInFeed)
+
+);
