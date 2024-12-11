@@ -22,36 +22,61 @@ CREATE TABLE IF NOT EXISTS users(
     realFirstName char(255) NOT NULL,
     realLastName char(255) NOT NULL,
     email char(255) NOT NULL,
-    PRIMARY KEY (userID)
     -- user settings
+    PRIMARY KEY (userID)
 );
 
 -- what books the user has saved in the database
 CREATE TABLE IF NOT EXISTS books(
-    bookID int,
-    userID int,
-    bookName char,
-    isInFeed bool,
+    bookID int NOT NULL AUTO_INCREMENT,
+    userID int NOT NULL,
+    bookName char(255) NOT NULL,
+    isInFeed bool NOT NULL,
     PRIMARY KEY (bookID)
 );
 
 -- the individual book chunks
 CREATE TABLE IF NOT EXISTS bookChunks(
-    chunkID int,
-    bookID int,
-    chunkNum int,
-    chunkContent char,
-    hasBeenSeen bool,
+    chunkID int NOT NULL AUTO_INCREMENT,
+    bookID int NOT NULL,
+    chunkNum int NOT NULL,
+    chunkContent char(255) NOT NULL,
+    hasBeenSeen bool NOT NULL,
     PRIMARY KEY (chunkID)
 );
 
-
--- the collected feed for each user
-CREATE TABLE IF NOT EXISTS userFeed(
-    feedID int,
-    numInFeed int,
-    chunkID int,
-    userID int,
-    PRIMARY KEY (feedID, numInFeed)
-
+-- different feeds that the user can choose from
+CREATE TABLE IF NOT EXISTS feeds(
+    feedID int NOT NULL AUTO_INCREMENT,
+    userID int NOT NULL,
+    feedName char(255) NOT NULL,
+    feedDescription char(255),
+    PRIMARY KEY (feedID)
 );
+
+-- the collected chunks for each feed for each user
+CREATE TABLE IF NOT EXISTS userFeed(
+    feedID int NOT NULL,
+    numInFeed int NOT NULL,
+    chunkID int NOT NULL,
+    userID int NOT NULL,
+    PRIMARY KEY (feedID, numInFeed)
+);
+
+
+-- ------------------------------------------------------------------------------------------
+-- Foreign Keys------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
+
+
+ALTER TABLE books
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE bookchunks
+ADD FOREIGN KEY (bookID) REFERENCES books(bookID);
+
+ALTER TABLE feeds
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE userFeed
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
