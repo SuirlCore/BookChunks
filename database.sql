@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS userFeed(
 ALTER TABLE books
 ADD FOREIGN KEY (userID) REFERENCES users(userID);
 
-ALTER TABLE bookchunks
+ALTER TABLE bookChunks
 ADD FOREIGN KEY (bookID) REFERENCES books(bookID);
 
 ALTER TABLE feeds
