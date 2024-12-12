@@ -1,3 +1,4 @@
+
 <?php 
     session_start();
 	include 'pdo.php';
@@ -19,12 +20,12 @@
         $result = mysqli_query($pdo, $sql);
 
         //if no username found then send the user to addUser.php
-        if(mysqli_num_rows($result) = 0){
+        if(mysqli_num_rows($result) == 0){
             header(header: 'location: addUser.php');
         }
 
         //if the password matches
-        if($result = $_POST['password']){
+        if($result == $_POST['password']){
             //send the user off to scrollview.php
             header('location: scrollview.php');
         }else{
