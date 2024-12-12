@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS books(
     bookID int NOT NULL AUTO_INCREMENT,
     userID int NOT NULL,
     bookName char(255) NOT NULL,
-    isInFeed bool NOT NULL,
+    isInFeed tinyint(1) NOT NULL,
     PRIMARY KEY (bookID)
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS bookChunks(
     bookID int NOT NULL,
     chunkNum int NOT NULL,
     chunkContent char(255) NOT NULL,
-    hasBeenSeen bool NOT NULL,
+    hasBeenSeen tinyint(1) NOT NULL,
     PRIMARY KEY (chunkID)
 );
 
