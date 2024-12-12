@@ -2,6 +2,7 @@
     session_start();
 	include 'pdo.php';
 
+    $userName = $POST['newUser'];
     $nFlag = 0;
     $pFlag = 0;
     $fnFlag = 0;
@@ -14,41 +15,56 @@
         $result = mysqli_query($pdo, $sql);
         
         if (mysqli_num_rows($result) > 0) {
-            $nFlag = "1";
+            $nFlag = 1;
         }else{
             echo "This username is taken, please choose another one.";
         }
+
+        $userName = $_POST['newUser'];
+        unset($_POST['newUser']);
     }else{
         echo"Please enter a user name. <br>";
     }
 
     if (isset($_POST["newPassword"])) {
-        $pFlag = "1";
+        $pFlag = 1;
+
+        $password = $_POST['newPassword'];
+        unset($_POST['newPassword']);
     }else{
         echo "Please enter a password. <br>";
     }
     
     if (isset($_POST['fName'])) {
-        $fnFlag = "1";
+        $fnFlag = 1;
+
+        $fName = $_POST['fName'];
+        unset($_POST['fName']);
     }else{
         echo"Please enter a first name. <br>";
     }
     
     if (isset($_POST['lName'])) {
-        $lnFlag = "1";
+        $lnFlag = 1;
+
+        $lName = $_POST['lName'];
+        unset($_POST['lName']);
     }else{
         echo"Please enter a last name. <br>";
     }
 
     if (isset($_POST['email'])) {
-        $eFlag = "1";
+        $eFlag = 1;
+
+        $email = $_POST['email'];
+        unset($_POST['email']);
     }else{
         echo"Please enter an email. <br>";
     }
 
     //if all of the fields are set and unique then add a new record to the database
     if (($nFlag + $pFlag + $fnFlag + $lnFlag + $eFlag) == 5){
-        $sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $_POST['newUser']. ", '". $_POST["newPassword"]. "', '". $_POST['fName']. "', '". $_POST['lName']. "', '". $_POST['email']. "');";
+        $sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $userName. ", '". $password. "', '". $fName. "', '". $lName. "', '". $email. "');";
         mysqli_query($pdo, $sql);
     }
 
