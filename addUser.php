@@ -2,7 +2,6 @@
     session_start();
 	include 'pdo.php';
 
-    $userName = $POST['newUser'];
     $nFlag = 0;
     $pFlag = 0;
     $fnFlag = 0;
@@ -10,17 +9,15 @@
     $eFlag = 0;
 
     if (isset($_POST['newUser'])) {
-        //check to see if the username is already in use
-        $sql = "SELECT userName FROM users WHERE userName = '". $userName. "';";
-        $result = mysqli_query($pdo, $sql);
-        
-        if (mysqli_num_rows($result) > 0) {
-            $nFlag = 1;
-        }else{
-            echo "This username is taken, please choose another one.";
-        }
-
         $userName = $_POST['newUser'];
+
+        //check to see if the username is already in use
+        //$sql = "SELECT userName FROM users WHERE userName = '". $userName. "';";
+        //$run = mysqli_query($pdo, $sql);
+        
+        //echo strval($run);
+        $nFlag = 1;
+        $newUser = $_POST['newUser'];
         unset($_POST['newUser']);
     }else{
         echo"Please enter a user name. <br>";
@@ -28,7 +25,7 @@
 
     if (isset($_POST["newPassword"])) {
         $pFlag = 1;
-
+        echo "pFlag = 1<br>";
         $password = $_POST['newPassword'];
         unset($_POST['newPassword']);
     }else{
@@ -37,7 +34,7 @@
     
     if (isset($_POST['fName'])) {
         $fnFlag = 1;
-
+        echo "flFlag = 1<br>";
         $fName = $_POST['fName'];
         unset($_POST['fName']);
     }else{
@@ -46,7 +43,7 @@
     
     if (isset($_POST['lName'])) {
         $lnFlag = 1;
-
+        echo "lnFlag = 1<br>";
         $lName = $_POST['lName'];
         unset($_POST['lName']);
     }else{
@@ -55,18 +52,21 @@
 
     if (isset($_POST['email'])) {
         $eFlag = 1;
-
+        echo "eflag = 1<br>";
         $email = $_POST['email'];
         unset($_POST['email']);
     }else{
         echo"Please enter an email. <br>";
     }
 
+    $flagTotal = $nFlag + $pFlag + $fnFlag + $lnFlag + $eFlag;
+    echo "flagTotal = ". strval($flagTotal);
+
     //if all of the fields are set and unique then add a new record to the database
-    if (($nFlag + $pFlag + $fnFlag + $lnFlag + $eFlag) == 5){
-        $sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $userName. ", '". $password. "', '". $fName. "', '". $lName. "', '". $email. "');";
-        mysqli_query($pdo, $sql);
-    }
+    //if ($flagTotal == 5){
+        //$sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $newUser. ", '". $password. "', '". $fName. "', '". $lName. "', '". $email. "');";
+        //mysqli_query($pdo, $sql);
+    //}
 
 ?>
 

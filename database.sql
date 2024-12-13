@@ -80,3 +80,30 @@ ADD FOREIGN KEY (userID) REFERENCES users(userID);
 
 ALTER TABLE userFeed
 ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+-- ------------------------------------------------------------------------------------------
+-- Add Values--------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
+
+
+INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ("public", "blank", "public", "user", "email@website.com");
+
+
+-- ------------------------------------------------------------------------------------------
+-- Stored Procedures-------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------
+
+
+-- procedure to check the database to see if a username already exists
+-- returns either true or false
+-- CALL checkUserName(stringIn, @result);
+DELIMITER //
+CREATE PROCEDURE checkUserName ( IN stringIn char(255) OUT @result char (8))
+BEGIN
+    IF (SELECT userName FROM users WHERE userName = stringIn) IS NULL THEN
+		SET result = "False";
+	ELSE
+        SET result = "True";
+    END IF;
+END //
+DELIMITER ;
