@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    include 'bleachcontaminate.php';
 	include 'pdo.php';
 
     $nFlag = 0;
@@ -10,13 +11,19 @@
 
     if (isset($_POST['newUser'])) {
         $userName = $_POST['newUser'];
-
-        //check to see if the username is already in use
-        //$sql = "SELECT userName FROM users WHERE userName = '". $userName. "';";
-        //$run = mysqli_query($pdo, $sql);
         
-        //echo strval($run);
-        $nFlag = 1;
+        $sql = "CALL checkUserName('". $userName . "', @result);";
+        $run = mysqli_query($pdo, $sql);
+
+        echo "run = ". $run. "<br>";
+
+        if ($run == "False"){
+            $nFlag = 1;
+            echo "nFlag = 1<br>";
+        }else{
+            echo "This username is already taken. Please choose another.";
+        }
+
         $newUser = $_POST['newUser'];
         unset($_POST['newUser']);
     }else{
@@ -60,13 +67,14 @@
     }
 
     $flagTotal = $nFlag + $pFlag + $fnFlag + $lnFlag + $eFlag;
-    echo "flagTotal = ". strval($flagTotal);
+    echo "flagTotal = ". strval($flagTotal). "<br>";
 
     //if all of the fields are set and unique then add a new record to the database
-    //if ($flagTotal == 5){
-        //$sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $newUser. ", '". $password. "', '". $fName. "', '". $lName. "', '". $email. "');";
-        //mysqli_query($pdo, $sql);
-    //}
+    if ($flagTotal == 5){
+        $sql = "INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ('". $newUser. "', '". $password. "', '". $fName. "', '". $lName. "', '". $email. "');";
+        echo $sql. "<br>";
+        mysqli_query($pdo, $sql);
+    }
 
 ?>
 

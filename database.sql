@@ -98,12 +98,16 @@ INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ("
 -- returns either true or false
 -- CALL checkUserName(stringIn, @result);
 DELIMITER //
-CREATE PROCEDURE checkUserName ( IN stringIn char(255) OUT @result char (8))
+CREATE PROCEDURE checkUserName ( IN stringIn char(255), OUT result char(8))
 BEGIN
+    DECLARE result char(8);
     IF (SELECT userName FROM users WHERE userName = stringIn) IS NULL THEN
 		SET result = "False";
 	ELSE
         SET result = "True";
     END IF;
+
+    SELECT result;
+
 END //
 DELIMITER ;
