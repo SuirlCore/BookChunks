@@ -42,7 +42,8 @@ function contaminate($strIn){
     $strIn = str_irreplace("!#rper", ")", $strIn);
     $strIn = str_irreplace("!#scol", ";", $strIn);
 
-    return $strIn
+    return $strIn;
 }
+
 ?>
 
