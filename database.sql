@@ -63,6 +63,12 @@ CREATE TABLE IF NOT EXISTS userFeed(
     PRIMARY KEY (feedID, numInFeed)
 );
 
+-- this table is wonky. holds results to send back to PHP based on status of stored procedures
+CREATE TABLE IF NOT EXISTS proceduralResults(
+    resultID int NOT NULL AUTO_INCREMENT,
+    resultName char(255) NOT NULL,
+    PRIMARY KEY (resultID)
+);
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
@@ -88,6 +94,9 @@ ADD FOREIGN KEY (userID) REFERENCES users(userID);
 
 INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ("public", "blank", "public", "user", "email@website.com");
 
+INSERT INTO proceduralResults (resultName) VALUES ("True");
+INSERT INTO proceduralResults (resultName) VALUES ("False");
+
 
 -- ------------------------------------------------------------------------------------------
 -- Stored Procedures-------------------------------------------------------------------------
@@ -102,12 +111,32 @@ CREATE PROCEDURE checkUserName ( IN stringIn char(255), OUT result char(8))
 BEGIN
     DECLARE result char(8);
     IF (SELECT userName FROM users WHERE userName = stringIn) IS NULL THEN
-		SET result = "False";
+        
+        SET result = "False";
 	ELSE
         SET result = "True";
     END IF;
 
     SELECT result;
 
+END //
+DELIMITER ;
+
+-- another possible option for checkUserName()
+DELIMITER // 
+CREATE PROCEDURE checkUserName2( IN stringIn char(255), OUT result char(8))
+BEGIN
+
+    DROP TEMPORARY TABLE IF EXISTS resultTable;
+
+    IF (SELECT userName FROM users WHERE userName = stringIn) IS NULL THEN
+        CREATE TEMPORARY TABLE resultTable
+            SELECT resultName FROM proceduralResults WHERE resultName = "False";
+    ELSE
+        CREATE TEMPORARY TABLE resultTable
+            SELECT resultName FROM proceduralResults WHERE resultName = "True";
+    END IF;
+
+    SELECT * FROM resultTable;
 END //
 DELIMITER ;
