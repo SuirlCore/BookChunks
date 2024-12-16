@@ -85,5 +85,3 @@ ADD FOREIGN KEY (owner) REFERENCES users(userID);
 -- Add Values--------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
-
-INSERT INTO users (userName, pass, realFirstName, realLastName, email) VALUES ("public", "blank", "public", "user", "email@website.com");
