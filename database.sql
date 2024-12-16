@@ -26,15 +26,6 @@ CREATE TABLE IF NOT EXISTS users(
     PRIMARY KEY (userID)
 );
 
--- what books the user has saved in the database
-CREATE TABLE IF NOT EXISTS books(
-    bookID int NOT NULL AUTO_INCREMENT,
-    userID int NOT NULL,
-    bookName char(255) NOT NULL,
-    isInFeed tinyint(1) NOT NULL,
-    PRIMARY KEY (bookID)
-);
-
 -- the individual book chunks
 CREATE TABLE IF NOT EXISTS bookChunks(
     chunkID int NOT NULL AUTO_INCREMENT,
@@ -63,23 +54,32 @@ CREATE TABLE IF NOT EXISTS userFeed(
     PRIMARY KEY (feedID, numInFeed)
 );
 
+-- full texts uploaded to the database by the user, not parsed into chunks yet
+CREATE TABLE fullTexts (
+    textID INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    text LONGTEXT NOT NULL,
+    owner int NOT NULL
+);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
 
-ALTER TABLE books
-ADD FOREIGN KEY (userID) REFERENCES users(userID);
-
 ALTER TABLE bookChunks
-ADD FOREIGN KEY (bookID) REFERENCES books(bookID);
+ADD FOREIGN KEY (bookID) REFERENCES fullTexts(textID);
 
 ALTER TABLE feeds
 ADD FOREIGN KEY (userID) REFERENCES users(userID);
 
 ALTER TABLE userFeed
 ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE fullTexts
+ADD FOREIGN KEY (owner) REFERENCES users(userID);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Add Values--------------------------------------------------------------------------------
