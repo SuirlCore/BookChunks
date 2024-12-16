@@ -1,3 +1,9 @@
 <?php
-$pdo = mysqli_connect("localhost", "root", "letmeinnow", "bookChunk");
+
+// Connection to the database
+$servername = "localhost";
+$username = "root";
+$password = "letmeinnow";
+$dbname = "bookChunk";
+
 ?>
