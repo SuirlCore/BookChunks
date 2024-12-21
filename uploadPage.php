@@ -14,14 +14,13 @@ echo "Welcome, " . $_SESSION['username'] . "!";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload PDF</title>
+    <title>Upload Text File</title>
 </head>
 <body>
-    <h1>Upload a PDF File</h1>
-    <form action="upload.php" method="POST" enctype="multipart/form-data">
-        <label for="pdfFile">Choose a PDF file:</label>
-        <input type="file" name="pdfFile" id="pdfFile" accept=".pdf" required><br><br>
-        <input type="submit" value="Upload PDF">
+    <h2>Upload a Text File</h2>
+    <form action="upload_and_process.php" method="POST" enctype="multipart/form-data">
+        <input type="file" name="text_file" accept=".txt" required><br><br>
+        <input type="submit" value="Upload and Process">
     </form>
 </body>
 </html>

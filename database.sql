@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS bookChunks(
     chunkID int NOT NULL AUTO_INCREMENT,
     bookID int NOT NULL,
     chunkNum int NOT NULL,
-    chunkContent char(255) NOT NULL,
+    chunkContent longtext NOT NULL,
     hasBeenSeen tinyint(1) NOT NULL,
     PRIMARY KEY (chunkID)
 );
