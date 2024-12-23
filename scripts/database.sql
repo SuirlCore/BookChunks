@@ -54,12 +54,12 @@ CREATE TABLE IF NOT EXISTS userFeed(
     PRIMARY KEY (feedID, numInFeed)
 );
 
--- full texts uploaded to the database by the user, not parsed into chunks yet
-CREATE TABLE fullTexts (
-    textID INT AUTO_INCREMENT PRIMARY KEY,
+-- full texts that have been uploaded, names and owners
+CREATE TABLE IF NOT EXISTS fullTexts(
+    textID INT AUTO_INCREMENT,
     filename VARCHAR(255) NOT NULL,
-    text LONGTEXT NOT NULL,
-    owner int NOT NULL
+    owner int NOT NULL,
+    PRIMARY KEY (textID)
 );
 
 

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_start();
             $_SESSION['user_id'] = $row['userID'];
             $_SESSION['username'] = $username;
-            header("Location: welcome.php"); // Redirect to a welcome page after successful login
+            header("Location: ../welcome.php"); // Redirect to a welcome page after successful login
         } else {
             echo "Incorrect password.";
         }

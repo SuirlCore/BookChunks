@@ -18,7 +18,7 @@ echo "Welcome, " . $_SESSION['username'] . "!";
 </head>
 <body>
     <h2>Upload a Text File</h2>
-    <form action="upload_and_process.php" method="POST" enctype="multipart/form-data">
+    <form action="scripts/upload.php" method="POST" enctype="multipart/form-data">
         <input type="file" name="text_file" accept=".txt" required><br><br>
         <input type="submit" value="Upload and Process">
     </form>
