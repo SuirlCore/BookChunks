@@ -25,7 +25,9 @@ function parseTextToSections($text) {
         $section = implode(' ', array_slice($sentences, $i, 3));
         $sections[] = $section;
     }
-    
+
+    echo "Total sections: " . count($sections) . "<br>";
+
     return $sections;
 }
 echo 'test 3<br>';
@@ -40,6 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     echo 'test 4<br>';
     // Read the content of the file
     $text = file_get_contents($file['tmp_name']);
+
+    // Detect file encoding
+    $encoding = mb_detect_encoding($text, "UTF-8, ISO-8859-1, ISO-8859-15", true);
+
+    // Convert to UTF-8 if necessary
+    if ($encoding !== 'UTF-8') {
+        $text = mb_convert_encoding($text, 'UTF-8', $encoding);
+    }
 
     // Parse the text into sections of 3 sentences
     $sections = parseTextToSections($text);
