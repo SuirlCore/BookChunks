@@ -16,7 +16,7 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Feeds</title>
-    <link rel="stylesheet" href="css/updateFeed.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -36,8 +36,14 @@ echo "Welcome, " . $_SESSION['username'] . "!";
             <h2>Available Books</h2>
             <div id="bookList"></div>
         </div>
-        <button id="addToFeedBtn">Add Selected Books to Feed</button>
+        <div>
+            <h2>Current Feed</h2>
+            <ul id="feedList" class="sortable"></ul>
+        </div>
+        <div>
+            <button id="updateFeedBtn">Update Feed</button>
+        </div>
     </div>
-    <script src="scripts/updateFeed.js"></script>
+    <script src="scripts.js"></script>
 </body>
 </html>

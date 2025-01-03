@@ -1,51 +1,118 @@
 document.addEventListener("DOMContentLoaded", () => {
     const feedSelect = document.getElementById("feedSelect");
     const bookList = document.getElementById("bookList");
-    const addToFeedBtn = document.getElementById("addToFeedBtn");
+    const feedList = document.getElementById("feedList");
     const newFeedBtn = document.getElementById("newFeedBtn");
     const newFeedForm = document.getElementById("newFeedForm");
     const newFeedName = document.getElementById("newFeedName");
     const newFeedDescription = document.getElementById("newFeedDescription");
     const createFeedBtn = document.getElementById("createFeedBtn");
+    const updateFeedBtn = document.getElementById("updateFeedBtn");
 
-    // Fetch feeds and books
-    fetch("updateFeedGet.php?data=feeds")
-        .then(response => response.json())
-        .then(data => {
-            if (data.feeds.length === 0) {
-                newFeedForm.style.display = "block";
-                feedSelect.style.display = "none";
-                addToFeedBtn.style.display = "none";
-            } else {
-                data.feeds.forEach(feed => {
-                    const option = document.createElement("option");
-                    option.value = feed.feedID;
-                    option.textContent = feed.feedName;
-                    feedSelect.appendChild(option);
-                });
-            }
-        });
-
-    fetch("updateFeddGet.php?data=books")
-        .then(response => response.json())
-        .then(data => {
-            data.books.forEach(book => {
-                const div = document.createElement("div");
-                div.classList.add("book-item");
-                div.innerHTML = `
-                    <input type="checkbox" id="book-${book.bookID}" value="${book.bookID}">
-                    <label for="book-${book.bookID}">${book.filename}</label>
-                `;
-                bookList.appendChild(div);
+    function fetchFeedsAndBooks() {
+        fetch("updateFeedGet.php?data=feeds")
+            .then(response => response.json())
+            .then(data => {
+                feedSelect.innerHTML = ""; // Clear existing options
+                if (data.feeds.length === 0) {
+                    newFeedForm.style.display = "block";
+                } else {
+                    data.feeds.forEach(feed => {
+                        const option = document.createElement("option");
+                        option.value = feed.feedID;
+                        option.textContent = feed.feedName;
+                        feedSelect.appendChild(option);
+                    });
+                    loadFeed(feedSelect.value);
+                }
             });
-        });
 
-    // Show new feed form
-    newFeedBtn.addEventListener("click", () => {
-        newFeedForm.style.display = "block";
+        fetch("updateFeedGet.php?data=books")
+            .then(response => response.json())
+            .then(data => {
+                bookList.innerHTML = ""; // Clear existing books
+                data.books.forEach(book => {
+                    const div = document.createElement("div");
+                    div.classList.add("book-item");
+                    div.innerHTML = `
+                        <button data-book-id="${book.bookID}" class="addBookBtn">Add</button>
+                        ${book.filename}
+                    `;
+                    bookList.appendChild(div);
+                });
+
+                document.querySelectorAll(".addBookBtn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const bookID = button.getAttribute("data-book-id");
+                        const bookName = button.nextSibling.textContent.trim();
+                        addBookToFeed(bookID, bookName);
+                    });
+                });
+            });
+    }
+
+    function loadFeed(feedID) {
+        fetch(`updateFeedFetch.php?feedID=${feedID}`)
+            .then(response => response.json())
+            .then(data => {
+                feedList.innerHTML = ""; // Clear existing feed items
+                data.feed.forEach(book => {
+                    const li = document.createElement("li");
+                    li.dataset.bookId = book.bookID;
+                    li.textContent = book.filename;
+                    li.innerHTML += `
+                        <button class="removeBookBtn">Remove</button>
+                    `;
+                    feedList.appendChild(li);
+                });
+
+                // Add remove functionality
+                document.querySelectorAll(".removeBookBtn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const li = button.parentElement;
+                        feedList.removeChild(li);
+                    });
+                });
+
+                makeFeedSortable();
+            });
+    }
+
+    function addBookToFeed(bookID, bookName) {
+        const li = document.createElement("li");
+        li.dataset.bookId = bookID;
+        li.textContent = bookName;
+        li.innerHTML += `
+            <button class="removeBookBtn">Remove</button>
+        `;
+        feedList.appendChild(li);
+
+        // Add remove functionality
+        li.querySelector(".removeBookBtn").addEventListener("click", () => {
+            feedList.removeChild(li);
+        });
+    }
+
+    function makeFeedSortable() {
+        const sortable = new Sortable(feedList, {
+            animation: 150,
+        });
+    }
+
+    updateFeedBtn.addEventListener("click", () => {
+        const feedID = feedSelect.value;
+        const books = Array.from(feedList.children).map(li => li.dataset.bookId);
+
+        fetch("updateFeedUpdate.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ feedID, books }),
+        })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(err => console.error(err));
     });
 
-    // Create new feed
     createFeedBtn.addEventListener("click", () => {
         const name = newFeedName.value.trim();
         const description = newFeedDescription.value.trim();
@@ -58,32 +125,16 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch("updateFeedCreate.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ feedName: name, feedDescription: description })
+            body: JSON.stringify({ feedName: name, feedDescription: description }),
         })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            if (data.success) {
-                window.location.reload(); // Reload the page to refresh feeds
-            }
-        })
-        .catch(err => console.error(err));
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    fetchFeedsAndBooks();
+                }
+            });
     });
 
-    // Add books to feed
-    addToFeedBtn.addEventListener("click", () => {
-        const selectedFeed = feedSelect.value;
-        const selectedBooks = Array.from(
-            document.querySelectorAll("#bookList input:checked")
-        ).map(input => input.value);
-
-        fetch("updateFeedUpdate.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ feedID: selectedFeed, bookIDs: selectedBooks })
-        })
-        .then(response => response.json())
-        .then(data => alert(data.message))
-        .catch(err => console.error(err));
-    });
+    fetchFeedsAndBooks();
 });

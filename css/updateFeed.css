@@ -44,3 +44,20 @@ button {
     margin: 10px 0;
     padding: 8px;
 }
+
+.sortable {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sortable li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    cursor: grab;
+}
+
+.book-item {
+    margin: 5px 0;
+}
