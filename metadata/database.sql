@@ -62,6 +62,13 @@ CREATE TABLE IF NOT EXISTS fullTexts(
     PRIMARY KEY (textID)
 );
 
+CREATE TABLE IF NOT EXISTS booksInFeed (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    feedID INT NOT NULL,
+    bookID INT NOT NULL,
+    position INT NOT NULL,
+);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
@@ -80,6 +87,11 @@ ADD FOREIGN KEY (userID) REFERENCES users(userID);
 ALTER TABLE fullTexts
 ADD FOREIGN KEY (owner) REFERENCES users(userID);
 
+ALTER TABLE booksInFeed
+ADD FOREIGN KEY (feedID) REFERENCES feeds(feedID);
+
+ALTER TABLE booksInFeed
+ADD FOREIGN KEY (bookID) REFERENCES fullTexts(textID);
 
 -- ------------------------------------------------------------------------------------------
 -- Add Values--------------------------------------------------------------------------------
