@@ -10,13 +10,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateFeedBtn = document.getElementById("updateFeedBtn");
 
     function fetchFeedsAndBooks() {
-        fetch("updateFeedGet.php?data=feeds")
+        // Fetch feeds
+        fetch("updateFeedFetch.php?data=feeds")
             .then(response => response.json())
             .then(data => {
                 feedSelect.innerHTML = ""; // Clear existing options
                 if (data.feeds.length === 0) {
                     newFeedForm.style.display = "block";
                 } else {
+                    newFeedForm.style.display = "none";
                     data.feeds.forEach(feed => {
                         const option = document.createElement("option");
                         option.value = feed.feedID;
@@ -27,7 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-        fetch("updateFeedGet.php?data=books")
+        // Fetch available books
+        fetch("updateFeedFetch.php?data=books")
             .then(response => response.json())
             .then(data => {
                 bookList.innerHTML = ""; // Clear existing books
@@ -56,26 +59,28 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(data => {
                 feedList.innerHTML = ""; // Clear existing feed items
-                data.feed.forEach(book => {
-                    const li = document.createElement("li");
-                    li.dataset.bookId = book.bookID;
-                    li.textContent = book.filename;
-                    li.innerHTML += `
-                        <button class="removeBookBtn">Remove</button>
-                    `;
-                    feedList.appendChild(li);
-                });
-
-                // Add remove functionality
-                document.querySelectorAll(".removeBookBtn").forEach(button => {
-                    button.addEventListener("click", () => {
-                        const li = button.parentElement;
-                        feedList.removeChild(li);
+                if (data.feedBooks) {
+                    data.feedBooks.forEach(book => {
+                        const li = document.createElement("li");
+                        li.dataset.bookId = book.bookID;
+                        li.textContent = book.filename;
+                        li.innerHTML += `
+                            <button class="removeBookBtn">Remove</button>
+                        `;
+                        feedList.appendChild(li);
                     });
-                });
 
-                makeFeedSortable();
-            });
+                    document.querySelectorAll(".removeBookBtn").forEach(button => {
+                        button.addEventListener("click", () => {
+                            const li = button.parentElement;
+                            feedList.removeChild(li);
+                        });
+                    });
+
+                    makeFeedSortable();
+                }
+            })
+            .catch(err => console.error("Error loading feed:", err));
     }
 
     function addBookToFeed(bookID, bookName) {
@@ -87,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         feedList.appendChild(li);
 
-        // Add remove functionality
         li.querySelector(".removeBookBtn").addEventListener("click", () => {
             feedList.removeChild(li);
         });
@@ -101,7 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateFeedBtn.addEventListener("click", () => {
         const feedID = feedSelect.value;
-        const books = Array.from(feedList.children).map(li => li.dataset.bookId);
+        const books = Array.from(feedList.children).map((li, index) => ({
+            bookID: li.dataset.bookId,
+            position: index,
+        }));
 
         fetch("updateFeedUpdate.php", {
             method: "POST",
@@ -110,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then(response => response.json())
             .then(data => alert(data.message))
-            .catch(err => console.error(err));
+            .catch(err => console.error("Error updating feed:", err));
     });
 
     createFeedBtn.addEventListener("click", () => {
@@ -134,6 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     fetchFeedsAndBooks();
                 }
             });
+    });
+
+    newFeedBtn.addEventListener("click", () => {
+        newFeedForm.style.display = "block";
+    });
+
+    feedSelect.addEventListener("change", () => {
+        loadFeed(feedSelect.value);
     });
 
     fetchFeedsAndBooks();
