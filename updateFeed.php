@@ -45,5 +45,6 @@ echo "Welcome, " . $_SESSION['username'] . "!";
         </div>
     </div>
     <script src="scripts/updateFeed.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 </body>
 </html>

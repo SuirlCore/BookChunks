@@ -1,10 +1,10 @@
 <?php
 require 'pdo.php';
 
-// Start session to get the logged-in user's ID
 session_start();
 $userID = $_SESSION['user_id'] ?? null;
 
+// Validate the user ID
 if (!$userID) {
     echo json_encode(['error' => 'User not authenticated']);
     exit;
@@ -13,29 +13,31 @@ if (!$userID) {
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit;
 }
 
-$dataType = $_GET['data'] ?? '';
+$dataType = $_GET['data'] ?? ''; // Get the 'data' parameter
 
+// Handle requests based on 'data' parameter
 if ($dataType === 'feeds') {
-    // Fetch all feeds for the logged-in user
+    // Fetch feeds for the user
     $stmt = $conn->prepare("SELECT feedID, feedName FROM feeds WHERE userID = ?");
     $stmt->bind_param("i", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
     $feeds = $result->fetch_all(MYSQLI_ASSOC);
-
     echo json_encode(['feeds' => $feeds]);
+
 } elseif ($dataType === 'books') {
-    // Fetch all books for the logged-in user
+    // Fetch books for the user
     $stmt = $conn->prepare("SELECT textID AS bookID, filename FROM fullTexts WHERE owner = ?");
     $stmt->bind_param("i", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
     $books = $result->fetch_all(MYSQLI_ASSOC);
-
     echo json_encode(['books' => $books]);
+
 } elseif (isset($_GET['feedID'])) {
     // Fetch books for a specific feed
     $feedID = $_GET['feedID'];
@@ -51,9 +53,10 @@ if ($dataType === 'feeds') {
     $stmt->execute();
     $result = $stmt->get_result();
     $booksInFeed = $result->fetch_all(MYSQLI_ASSOC);
-
     echo json_encode(['feedBooks' => $booksInFeed]);
+
 } else {
+    // Invalid request
     echo json_encode(['error' => 'Invalid request']);
 }
 ?>
