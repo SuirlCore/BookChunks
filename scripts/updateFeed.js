@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(data => {
                 feedSelect.innerHTML = ""; // Clear existing options
-                if (data.feeds.length === 0) {
+                if (!data.feeds || data.feeds.length === 0) {
+                    console.warn("No feeds found for this user.");
                     newFeedForm.style.display = "block";
                 } else {
                     newFeedForm.style.display = "none";
@@ -27,13 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                     loadFeed(feedSelect.value);
                 }
-            });
+            })
+            .catch(err => console.error("Error fetching feeds:", err));
 
         // Fetch available books
         fetch("updateFeedFetch.php?data=books")
             .then(response => response.json())
             .then(data => {
                 bookList.innerHTML = ""; // Clear existing books
+                if (!data.books || data.books.length === 0) {
+                    console.warn("No books found for this user.");
+                    bookList.innerHTML = "<p>No books available.</p>";
+                    return;
+                }
                 data.books.forEach(book => {
                     const div = document.createElement("div");
                     div.classList.add("book-item");
@@ -51,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         addBookToFeed(bookID, bookName);
                     });
                 });
-            });
+            })
+            .catch(err => console.error("Error fetching books:", err));
     }
 
     function loadFeed(feedID) {
@@ -59,26 +67,29 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(data => {
                 feedList.innerHTML = ""; // Clear existing feed items
-                if (data.feedBooks) {
-                    data.feedBooks.forEach(book => {
-                        const li = document.createElement("li");
-                        li.dataset.bookId = book.bookID;
-                        li.textContent = book.filename;
-                        li.innerHTML += `
-                            <button class="removeBookBtn">Remove</button>
-                        `;
-                        feedList.appendChild(li);
-                    });
-
-                    document.querySelectorAll(".removeBookBtn").forEach(button => {
-                        button.addEventListener("click", () => {
-                            const li = button.parentElement;
-                            feedList.removeChild(li);
-                        });
-                    });
-
-                    makeFeedSortable();
+                if (!data.feedBooks || data.feedBooks.length === 0) {
+                    console.warn("No books found in the selected feed.");
+                    feedList.innerHTML = "<p>No books in this feed.</p>";
+                    return;
                 }
+                data.feedBooks.forEach(book => {
+                    const li = document.createElement("li");
+                    li.dataset.bookId = book.bookID;
+                    li.textContent = book.filename;
+                    li.innerHTML += `
+                        <button class="removeBookBtn">Remove</button>
+                    `;
+                    feedList.appendChild(li);
+                });
+
+                document.querySelectorAll(".removeBookBtn").forEach(button => {
+                    button.addEventListener("click", () => {
+                        const li = button.parentElement;
+                        feedList.removeChild(li);
+                    });
+                });
+
+                makeFeedSortable();
             })
             .catch(err => console.error("Error loading feed:", err));
     }
@@ -98,6 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function makeFeedSortable() {
+        if (typeof Sortable === "undefined") {
+            console.error("Sortable.js is not loaded.");
+            return;
+        }
+
         const sortable = new Sortable(feedList, {
             animation: 150,
         });
