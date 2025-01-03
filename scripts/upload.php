@@ -1,29 +1,34 @@
 <?php
 session_start();
 $userID = $_SESSION['user_id'];
-echo $userID;
-echo '<br>';
+if (!$userID) {
+    die("User not logged in.");
+}
 
 include 'pdo.php';
+
 // Function to upload a section into the database
 function uploadSectionToDB($dbConn, $textID, $sectionNumber, $sectionText) {
     $stmt = $dbConn->prepare("INSERT INTO bookChunks (bookID, chunkNum, chunkContent, hasBeenSeen) VALUES (?, ?, ?, 0)");
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $dbConn->error);
+    }
     $stmt->bind_param("iis", $textID, $sectionNumber, $sectionText);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        throw new Exception("Execute failed: " . $stmt->error);
+    }
     $stmt->close();
 }
+
 // Function to parse the text into sections of 3 sentences
 function parseTextToSections($text) {
-    // Split text by sentence-ending punctuation (.!?)
     $sentences = preg_split('/(?<=[.!?])\s+/', $text);
     $sections = [];
-    
-    // Group sentences into sections of 3 sentences
+
     for ($i = 0; $i < count($sentences); $i += 3) {
         $section = implode(' ', array_slice($sentences, $i, 3));
         $sections[] = $section;
     }
-
     return $sections;
 }
 
@@ -58,29 +63,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     }
 
     // Insert the uploaded file into the texts table and get the textID
-    $fileName = $file['name'];  // Get the file name
+    $fileName = $file['name'];
     $stmt = $dbConn->prepare("INSERT INTO fullTexts (filename, owner) VALUES (?, ?)");
-    $stmt->execute([$fileName, $userID]);
-    $textID = $dbConn->insert_id;;  // Get the generated textID for the uploaded file
+    if (!$stmt) {
+        die("Prepare failed: " . $dbConn->error);
+    }
+    $stmt->bind_param("si", $fileName, $userID);
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
+    }
+    $textID = $stmt->insert_id;
     $stmt->close();
-    echo $textID;
-
-
 
     // Upload each section to the database, numbered sequentially, and linked to textID
     $sectionNumber = 1;
+    $success = true;
+
     foreach ($sections as $section) {
-        echo 'sectionNumber = '. $sectionNumber. '<br>';
-        uploadSectionToDB($dbConn, $textID, $sectionNumber, $section);
-        echo "Uploaded section $sectionNumber: " . substr($section, 0, 50) . "...<br>";  // Preview of the first 50 characters
+        try {
+            uploadSectionToDB($dbConn, $textID, $sectionNumber, $section);
+        } catch (Exception $e) {
+            echo "Failed to upload section $sectionNumber: " . $e->getMessage() . "<br>";
+            $success = false;
+            break;
+        }
         $sectionNumber++;
     }
 
     // Close the database connection
     $dbConn->close();
+
+    if ($success) {
+        // Redirect to uploadPage.php if successful
+        header("Location: uploadPage.php?success=1");
+        exit;
+    } else {
+        echo "An error occurred while uploading the text. Please try again.";
+    }
 } else {
     echo "No file uploaded.";
 }
-
-header("Location: ../uploadPage.php"); // Redirect to uploadPage.php after a successfull upload
 ?>
