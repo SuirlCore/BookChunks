@@ -23,7 +23,8 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     
     <a href="uploadPage.php">Upload a text file</a>
     <br>
-
+    <a href="updateFeed.php">add a book to your feed</a>
+    <br>
 
 </body>
 </html>

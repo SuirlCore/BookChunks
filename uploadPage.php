@@ -23,11 +23,18 @@ echo "Welcome, " . $_SESSION['username'] . "!";
         <input type="submit" value="Upload and Process">
     </form>
     <p>
-        If you are having problems uploading a whole file, the problem may be the encoding for the text
-        file being uploaded. This program only recognises UTF-8 files but we are working on fixing this
-        in the future.<br>
+        As of now we only recognise .txt files with a UTF-8 encoding.
+        You can use the following website to convert a pdf or most other types of files to a text file.<br>
 
-        Try going to <a href="www.freeformatter.com">www.freeformatter.com</a> to ensure that your text file is in the proper format.
+        <a href = "https://cloudconvert.com/pdf-to-txt"> https://cloudconvert.com/pdf-to-txt</a><br>
+    </p>
+    
+    <p>
+        If you are having problems uploading a whole file, the problem may be the encoding for the text
+        file being uploaded.<br>
+
+        Try going to <a href="www.freeformatter.com">www.freeformatter.com</a> to ensure that your text 
+        file is in the proper format.<br>
     </p>
 </body>
 </html>
