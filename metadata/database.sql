@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS booksInFeed (
     id INT AUTO_INCREMENT PRIMARY KEY,
     feedID INT NOT NULL,
     bookID INT NOT NULL,
-    position INT NOT NULL,
+    position INT NOT NULL
 );
 
 
