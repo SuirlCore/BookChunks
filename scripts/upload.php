@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
 
     if ($success) {
         // Redirect to uploadPage.php if successful
-        header("Location: uploadPage.php?success=1");
+        header("Location: ../uploadPage.php?success=1");
         exit;
     } else {
         echo "An error occurred while uploading the text. Please try again.";
