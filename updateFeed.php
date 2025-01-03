@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 echo "Welcome, " . $_SESSION['username'] . "!";
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,9 +21,16 @@ echo "Welcome, " . $_SESSION['username'] . "!";
 <body>
     <div class="container">
         <h1>Manage Your Feeds</h1>
-        <div>
+        <div id="feedSection">
             <label for="feedSelect">Choose Feed:</label>
             <select id="feedSelect"></select>
+            <button id="newFeedBtn">Create New Feed</button>
+        </div>
+        <div id="newFeedForm" style="display: none;">
+            <h2>Create a New Feed</h2>
+            <input type="text" id="newFeedName" placeholder="Feed Name" required>
+            <textarea id="newFeedDescription" placeholder="Feed Description"></textarea>
+            <button id="createFeedBtn">Create Feed</button>
         </div>
         <div>
             <h2>Available Books</h2>

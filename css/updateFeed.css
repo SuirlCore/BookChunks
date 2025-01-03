@@ -31,3 +31,16 @@ button {
     align-items: center;
     gap: 5px;
 }
+
+#newFeedForm {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#newFeedForm input, #newFeedForm textarea, #newFeedForm button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+}
