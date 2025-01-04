@@ -1,63 +1,24 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
 }
 
 .container {
-    max-width: 600px;
-    margin: auto;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-h1, h2 {
-    text-align: center;
+form, div {
+    margin-bottom: 20px;
 }
 
-button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-}
-
-#bookList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 10px 0;
-}
-
-.book-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-#newFeedForm {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-#newFeedForm input, #newFeedForm textarea, #newFeedForm button {
-    width: 100%;
-    margin: 10px 0;
-    padding: 8px;
-}
-
-.sortable {
+ul {
     list-style-type: none;
     padding: 0;
 }
 
-.sortable li {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f1f1f1;
+li {
+    padding: 5px;
     border: 1px solid #ccc;
-    cursor: grab;
-}
-
-.book-item {
-    margin: 5px 0;
+    margin-bottom: 5px;
+    cursor: pointer;
 }
