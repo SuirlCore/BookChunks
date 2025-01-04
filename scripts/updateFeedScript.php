@@ -1,6 +1,6 @@
 <?php
 session_start();
-$userID = $_SESSION['userID']; // Assume user is logged in and ID is stored in session
+$userID = $_SESSION['user_id']; // Assume user is logged in and ID is stored in session
 
 include 'pdo.php';
 

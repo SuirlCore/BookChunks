@@ -25,6 +25,8 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     <br>
     <a href="updateFeed.php">add a book to your feed</a>
     <br>
+    <a href="scrollView.php">Scroll a feed</a>
+    <br>
 
 </body>
 </html>

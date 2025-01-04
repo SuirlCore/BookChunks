@@ -69,6 +69,13 @@ CREATE TABLE IF NOT EXISTS booksInFeed (
     position INT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS userFeedProgress (
+    progressID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT NOT NULL,
+    feedID INT NOT NULL,
+    lastSeenChunkID INT NOT NULL
+);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
@@ -92,6 +99,16 @@ ADD FOREIGN KEY (feedID) REFERENCES feeds(feedID);
 
 ALTER TABLE booksInFeed
 ADD FOREIGN KEY (bookID) REFERENCES fullTexts(textID);
+
+ALTER TABLE userFeedProgress
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE userFeedProgress
+ADD FOREIGN KEY (feedID) REFERENCES feeds(feedID);
+
+ALTER TABLE userFeedProgress
+ADD FOREIGN KEY (lastSeenChunkID) REFERENCES bookChunks(chunkID);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Add Values--------------------------------------------------------------------------------
