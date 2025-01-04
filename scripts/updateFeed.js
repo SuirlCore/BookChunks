@@ -8,9 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchInitialData() {
         const response = await fetch("updateFeedScript.php?action=init");
         const data = await response.json();
+        console.log("Fetched initial data:", data); // Log data for debugging
         populateFeeds(data.feeds);
         populateBooks(data.books);
     }
+    
 
     function populateFeeds(feeds) {
         if (feeds.length === 0) {
@@ -27,16 +29,21 @@ document.addEventListener("DOMContentLoaded", () => {
     createFeedForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(createFeedForm);
+        const feedName = formData.get("feedName");
+        const feedDescription = formData.get("feedDescription");
+        console.log("Creating feed with name:", feedName, "and description:", feedDescription);
+    
         const response = await fetch("updateFeedScript.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 action: "createFeed",
-                feedName: formData.get("feedName"),
-                feedDescription: formData.get("feedDescription"),
+                feedName: feedName,
+                feedDescription: feedDescription,
             }),
         });
         const result = await response.json();
+        console.log(result);
         alert(result.message);
         fetchInitialData();
     });
@@ -57,4 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     fetchInitialData();
+
+    async function fetchInitialData() {
+    const response = await fetch("updateFeedScript.php?action=init");
+    const data = await response.json();
+    console.log("Fetched initial data:", data); // Log data for debugging
+    populateFeeds(data.feeds);
+    populateBooks(data.books);
+}
+
 });

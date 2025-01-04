@@ -34,16 +34,38 @@ if ($_GET['action'] === 'init') {
 
 // Create a new feed
 if ($_POST['action'] === 'createFeed') {
+    error_log("Received request to create feed");
+
     $data = json_decode(file_get_contents("php://input"), true);
     $feedName = $data['feedName'];
     $feedDescription = $data['feedDescription'] ?? "";
 
+    if (empty($feedName)) {
+        error_log("Feed name is empty");
+        echo json_encode(['message' => 'Feed name is required']);
+        exit;
+    }
+
     $createFeedQuery = "INSERT INTO feeds (userID, feedName, feedDescription) VALUES (?, ?, ?)";
     $stmt = $mysqli->prepare($createFeedQuery);
-    $stmt->bind_param("iss", $userID, $feedName, $feedDescription);
-    $stmt->execute();
 
-    echo json_encode(['message' => 'Feed created successfully!', 'feedID' => $stmt->insert_id]);
+    if (!$stmt) {
+        error_log("Prepare failed: " . $mysqli->error);
+        echo json_encode(['message' => 'Failed to prepare statement']);
+        exit;
+    }
+
+    $stmt->bind_param("iss", $userID, $feedName, $feedDescription);
+
+    if ($stmt->execute()) {
+        error_log("Feed created successfully with ID: " . $stmt->insert_id);
+        echo json_encode(['message' => 'Feed created successfully!', 'feedID' => $stmt->insert_id]);
+    } else {
+        error_log("Error creating feed: " . $stmt->error);
+        echo json_encode(['message' => 'Error creating feed']);
+    }
+
+    $stmt->close();
     exit;
 }
 
