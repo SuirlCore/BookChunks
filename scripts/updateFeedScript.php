@@ -1,20 +1,17 @@
 <?php
 session_start();
-$userID = $_SESSION['user_id']; // Assume user is logged in and ID is stored in session
+$userID = $_SESSION['user_id'];
 
 include 'pdo.php';
 
-// Database connection
 $mysqli = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
 }
 
 // Fetch initial data
 if ($_GET['action'] === 'init') {
-    // Fetch user's feeds
     $feedsQuery = "SELECT feedID, feedName FROM feeds WHERE userID = ?";
     $stmt = $mysqli->prepare($feedsQuery);
     $stmt->bind_param("i", $userID);
@@ -22,7 +19,6 @@ if ($_GET['action'] === 'init') {
     $feedsResult = $stmt->get_result();
     $feeds = $feedsResult->fetch_all(MYSQLI_ASSOC);
 
-    // Fetch user's books
     $booksQuery = "SELECT textID, filename FROM fullTexts WHERE owner = ?";
     $stmt = $mysqli->prepare($booksQuery);
     $stmt->bind_param("i", $userID);
@@ -36,23 +32,35 @@ if ($_GET['action'] === 'init') {
     exit;
 }
 
+// Create a new feed
+if ($_POST['action'] === 'createFeed') {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $feedName = $data['feedName'];
+    $feedDescription = $data['feedDescription'] ?? "";
+
+    $createFeedQuery = "INSERT INTO feeds (userID, feedName, feedDescription) VALUES (?, ?, ?)";
+    $stmt = $mysqli->prepare($createFeedQuery);
+    $stmt->bind_param("iss", $userID, $feedName, $feedDescription);
+    $stmt->execute();
+
+    echo json_encode(['message' => 'Feed created successfully!', 'feedID' => $stmt->insert_id]);
+    exit;
+}
+
 // Update feed
 if ($_GET['action'] === 'updateFeed') {
     $data = json_decode(file_get_contents("php://input"), true);
     $feedID = $data['feedID'];
     $bookOrder = $data['bookOrder'];
 
-    // Begin transaction
     $mysqli->begin_transaction();
 
     try {
-        // Clear existing feed books
         $deleteBooksQuery = "DELETE FROM booksInFeed WHERE feedID = ?";
         $stmt = $mysqli->prepare($deleteBooksQuery);
         $stmt->bind_param("i", $feedID);
         $stmt->execute();
 
-        // Insert new book order
         $insertBooksQuery = "INSERT INTO booksInFeed (feedID, bookID, position) VALUES (?, ?, ?)";
         $stmt = $mysqli->prepare($insertBooksQuery);
 
@@ -61,7 +69,6 @@ if ($_GET['action'] === 'updateFeed') {
             $stmt->execute();
         }
 
-        // Update userFeed table
         $deleteUserFeedQuery = "DELETE FROM userFeed WHERE feedID = ?";
         $stmt = $mysqli->prepare($deleteUserFeedQuery);
         $stmt->bind_param("i", $feedID);
