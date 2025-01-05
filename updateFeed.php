@@ -2,7 +2,7 @@
 session_start();
 
 // Mock user authentication
-$userID = $_SESSION['user_id'];
+$userID = $_SESSION['user_id'] ?? null;
 
 // Database connection
 include 'pdo.php';
@@ -151,7 +151,7 @@ $stmt->close();
                 formData.append('action', 'delete');
                 formData.append('feed_id', feedID);
 
-                fetch('updateFeed.php', {
+                fetch('scripts/updateFeedBackend.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -160,7 +160,7 @@ $stmt->close();
                     if (data.status === 'confirm') {
                         if (confirm(data.message)) {
                             formData.append('confirm_delete', '1');
-                            fetch('updateFeed.php', {
+                            fetch('updateFeedBackend.php', {
                                 method: 'POST',
                                 body: formData
                             }).then(response => response.json()).then(innerData => {
