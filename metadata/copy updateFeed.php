@@ -1,10 +1,7 @@
+//working copy of updateFeed that allows adding and deleting feeds
+
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html"); // Redirect to login page if not logged in
-    exit();
-}
 
 // User authentication
 $userID = $_SESSION['user_id'] ?? null;
@@ -197,10 +194,6 @@ $stmt->close();
             <?php endforeach; ?>
         </div>
     </div>
-
-    <p>
-        <a href='welcome.php'>Go back to the main page.</a>
-    </p>
 
     <script>
         document.getElementById('create-feed-form').addEventListener('submit', function(event) {

@@ -41,6 +41,10 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         Try going to <a href="www.freeformatter.com">www.freeformatter.com</a> to ensure that your text 
         file is in the proper format.<br>
     </p>
+
+    <p>
+        <a href='welcome.php'>Go back to the main page.</a>
+    </p>
 </body>
 </html>
 

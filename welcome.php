@@ -23,7 +23,9 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     
     <a href="uploadPage.php">Upload a text file</a>
     <br>
-    <a href="updateFeed.php">add a book to your feed</a>
+    <a href="updateFeed.php">manage your feeds</a>
+    <br>
+    <a href="updateBooks.php">add or remove books from a feed</a>
     <br>
     <a href="scrollView.php">Scroll a feed</a>
     <br>
