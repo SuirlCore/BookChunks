@@ -85,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("iii", $feedID, $textID, $nextPosition);
                 $response['success'] = $stmt->execute();
                 $stmt->close();
-                addChunksToFeed($feedID, $bookID, $userID);
             }
         }
     } elseif ($action === 'remove') {
@@ -94,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("ii", $feedID, $bookID);
             $response['success'] = $stmt->execute();
             $stmt->close();
-            removeChunksFromFeed($feedID, $bookID);
         }
     }
 
@@ -128,44 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
         header('Content-Type: application/json');
         echo json_encode($books);
         exit;
-    }
-}
-
-function addChunksToFeed($feedID, $bookID) {
-    global $conn;
-
-    // Find the highest numInFeed in the userFeed table for this feedID
-    $maxNumInFeedQuery = "SELECT COALESCE(MAX(numInFeed), 0) + 1 AS nextNum FROM userFeed WHERE feedID = ?";
-    if ($stmt = $conn->prepare($maxNumInFeedQuery)) {
-        $stmt->bind_param("i", $feedID);
-        $stmt->execute();
-        $stmt->bind_result($nextNum);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Now, insert the chunk IDs into userFeed with the nextNum
-        $insertQuery = "INSERT INTO userFeed (feedID, numInFeed, chunkID, userID) 
-                        SELECT ?, ?, chunkID, (SELECT userID FROM feeds WHERE feedID = ?)
-                        FROM bookChunks
-                        WHERE bookID = ?";
-
-        if ($stmt = $conn->prepare($insertQuery)) {
-            $stmt->bind_param("iiii", $feedID, $nextNum, $feedID, $bookID);
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
-}
-
-function removeChunksFromFeed($feedID, $bookID) {
-    global $conn;
-
-    // Prepare and execute query to delete all corresponding chunks from userFeed
-    $deleteQuery = "DELETE FROM userFeed WHERE feedID = ? AND chunkID IN (SELECT chunkID FROM bookChunks WHERE bookID = ?)";
-    if ($stmt = $conn->prepare($deleteQuery)) {
-        $stmt->bind_param("ii", $feedID, $bookID);
-        $stmt->execute();
-        $stmt->close();
     }
 }
 
