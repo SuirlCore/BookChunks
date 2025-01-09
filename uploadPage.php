@@ -38,7 +38,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         If you are having problems uploading a whole file, the problem may be the encoding for the text
         file being uploaded.<br>
 
-        Try going to <a href="www.freeformatter.com">www.freeformatter.com</a> to ensure that your text 
+        Try going to <a href="https://www.freeformatter.com/convert-file-encoding.html">www.freeformatter.com</a> to ensure that your text 
         file is in the proper format.<br>
     </p>
 
