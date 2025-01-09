@@ -55,29 +55,83 @@ $stmt->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .chunk-container {
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .navigation {
+            margin: 0;
+            padding: 0;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            height: 100vh; 
+            overflow: hidden; 
         }
-        .navigation button {
-            padding: 10px 20px;
+
+        .chunk-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fff;
             font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .navigation {
+            display: flex; 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 60px; 
+            background: #007bff; 
+        }
+
+        .navigation button {
+            flex: 1; 
+            color: #fff;
+            font-size: 18px; 
+            font-weight: bold; 
+            border: none;
+            background: #007bff; 
             cursor: pointer;
+            transition: background 0.2s ease-in-out; 
         }
-        .feed-selector {
-            margin-bottom: 20px;
+
+        .navigation button:hover {
+            background: #0056b3; 
         }
+
+        .navigation button:disabled { 
+            background: #d6d6d6; 
+            color: #aaa; 
+            cursor: not-allowed; 
+        }
+
     </style>
     <script>
         let chunks = <?php echo json_encode($chunks); ?>;
         let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+
+        // Added logic to enable/disable buttons
+        function loadChunk(index) {
+            if (index < 0 || index >= chunks.length) return;
+
+            document.getElementById('chunkContent').innerText = chunks[index].chunkContent;
+            currentIndex = index;
+
+            // Update button states (Added)
+            document.getElementById('prevButton').disabled = index === 0; /* Added */
+            document.getElementById('nextButton').disabled = index === chunks.length - 1; /* Added */
+
+            // Update last seen chunk ID in the database
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'updateProgress',
+                    userID: <?php echo $userID; ?>,
+                    feedID: <?php echo $feedID; ?>,
+                    lastSeenChunkID: chunks[index].chunkID
+                })
+            });
+        }
 
         function loadChunk(index) {
             if (index < 0 || index >= chunks.length) return;
@@ -139,9 +193,10 @@ $stmt->close();
     </div>
 
     <div class="chunk-container" id="chunkContent">Loading...</div>
+    
     <div class="navigation">
-        <button onclick="prevChunk()">Previous</button>
-        <button onclick="nextChunk()">Next</button>
+        <button id="prevButton" onclick="prevChunk()">Previous</button>
+        <button id="nextButton" onclick="nextChunk()">Next</button>
     </div>
 </body>
 </html>
@@ -151,10 +206,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
-        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
+        // Ensure the database connection is available
+        global $conn;
+
+        // Prepare the SQL query to insert or update
+        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) 
+                VALUES (?, ?, ?) 
+                ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
+                
         $stmt = $conn->prepare($sql);
+        
+        // Bind parameters: userID, feedID, lastSeenChunkID
         $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
+        
+        // Execute the query
         $stmt->execute();
+        
+        // Close the statement
         $stmt->close();
     }
 }

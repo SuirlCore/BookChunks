@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users(
     realFirstName char(255) NOT NULL,
     realLastName char(255) NOT NULL,
     email char(255) NOT NULL,
-    -- user settings
+    numChunksSeen int,
     PRIMARY KEY (userID)
 );
 
@@ -63,17 +63,18 @@ CREATE TABLE IF NOT EXISTS fullTexts(
 );
 
 CREATE TABLE IF NOT EXISTS booksInFeed (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT,
     feedID INT NOT NULL,
     bookID INT NOT NULL,
-    position INT NOT NULL
+    position INT NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS userFeedProgress (
-    progressID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT NOT NULL,
     feedID INT NOT NULL,
-    lastSeenChunkID INT NOT NULL
+    lastSeenChunkID INT NOT NULL,
+    PRIMARY KEY (userID, feedID)
 );
 
 
