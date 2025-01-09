@@ -29,6 +29,6 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     <br>
     <a href="scrollView.php">Scroll a feed</a>
     <br>
-
+    <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
 </body>
 </html>
