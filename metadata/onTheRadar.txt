@@ -1,0 +1,25 @@
+items to be fixed:
+
+users
+-double check password when creating user
+-change password
+-forgot password email
+
+uploading files
+-text files over 2mb in size not uploading
+-ability to upload pdf files
+
+feed management
+-ensure lastSeenChunkID integrity when changing items in feeds
+
+scrollview
+-ability to change colors and font size
+-update how many chunks the user has seen for future functionality
+-have the site auto load here
+
+additional pages
+-status page: available to admins, shows users currently using site
+-dev notes page: available to all users. shows onTheRadar.txt, and allows the user to input comments on what they like and dont like
+-add friends page?: add friends so you can track their progress against your own
+-settings page
+-about page
