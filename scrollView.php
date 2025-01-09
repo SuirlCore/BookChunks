@@ -1,7 +1,5 @@
 <?php
-// scrollView.php
-
-// Database connection
+// database connection
 include 'pdo.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -9,41 +7,43 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Start session
+// Start session and retrieve user ID
 session_start();
-
-// Assume the user is logged in, and we have their userID
+if (!isset($_SESSION['user_id'])) {
+    die("User not logged in.");
+}
 $userID = $_SESSION['user_id'];
 
-// Fetch user's feeds
+// Fetch all feeds for the user
 $sql = "SELECT feedID, feedName FROM feeds WHERE userID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
-$feeds = $stmt->get_result();
+$result = $stmt->get_result();
+$feeds = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 
-// Handle feed selection
-$selectedFeedID = $_POST['feedID'] ?? null;
-if ($selectedFeedID) {
-    // Get last seen chunk for the selected feed
-    $sql = "SELECT lastSeenChunkID FROM userFeedProgress WHERE userID = ? AND feedID = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $userID, $selectedFeedID);
-    $stmt->execute();
-    $progressResult = $stmt->get_result();
-    $lastSeenChunkID = $progressResult->fetch_assoc()['lastSeenChunkID'] ?? 1;
+// Default feed ID
+$feedID = isset($_GET['feedID']) ? (int)$_GET['feedID'] : ($feeds[0]['feedID'] ?? 0);
 
-    // Fetch chunks for the selected feed
-    $sql = "SELECT bookChunks.chunkID, bookChunks.chunkContent
-            FROM userFeed
-            JOIN bookChunks ON userFeed.chunkID = bookChunks.chunkID
-            WHERE userFeed.feedID = ?
-            ORDER BY userFeed.numInFeed ASC";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $selectedFeedID);
-    $stmt->execute();
-    $chunks = $stmt->get_result();
-}
+// Fetch last seen chunk
+$sql = "SELECT lastSeenChunkID FROM userFeedProgress WHERE userID = ? AND feedID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $userID, $feedID);
+$stmt->execute();
+$result = $stmt->get_result();
+$lastSeen = $result->fetch_assoc();
+$lastSeenChunkID = $lastSeen ? $lastSeen['lastSeenChunkID'] : null;
+$stmt->close();
+
+// Fetch all chunk IDs for the feed
+$sql = "SELECT uf.chunkID, bc.chunkContent FROM userFeed uf JOIN bookChunks bc ON uf.chunkID = bc.chunkID WHERE uf.feedID = ? AND uf.userID = ? ORDER BY uf.numInFeed";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $feedID, $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$chunks = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -51,74 +51,113 @@ if ($selectedFeedID) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scroll View</title>
+    <title>Chunk Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        #feedSelector {
             margin: 20px;
         }
-        #content {
-            height: 80vh;
-            overflow-y: auto;
-            padding: 20px;
+        .chunk-container {
             border: 1px solid #ccc;
-            margin: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        .chunk {
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        .navigation button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .feed-selector {
             margin-bottom: 20px;
         }
     </style>
+    <script>
+        let chunks = <?php echo json_encode($chunks); ?>;
+        let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+
+        function loadChunk(index) {
+            if (index < 0 || index >= chunks.length) return;
+
+            document.getElementById('chunkContent').innerText = chunks[index].chunkContent;
+            currentIndex = index;
+
+            // Update last seen chunk ID in the database
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'updateProgress',
+                    userID: <?php echo $userID; ?>,
+                    feedID: <?php echo $feedID; ?>,
+                    lastSeenChunkID: chunks[index].chunkID
+                })
+            });
+        }
+
+        function prevChunk() {
+            loadChunk(currentIndex - 1);
+        }
+
+        function nextChunk() {
+            loadChunk(currentIndex + 1);
+        }
+
+        async function updateChunksForFeed(feedID) {
+            const response = await fetch(`?feedID=${feedID}`);
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(await response.text(), 'text/html');
+            const newChunks = JSON.parse(htmlDoc.querySelector('script').innerText.match(/let chunks = (.*?);/)[1]);
+
+            chunks = newChunks;
+            currentIndex = 0;
+            loadChunk(currentIndex);
+        }
+
+        window.onload = () => {
+            loadChunk(currentIndex);
+        };
+    </script>
 </head>
 <body>
-    <form id="feedSelector" method="POST">
-        <label for="feedID">Choose a feed:</label>
-        <select name="feedID" id="feedID" onchange="this.form.submit()">
-            <option value="">-- Select a feed --</option>
-            <?php while ($feed = $feeds->fetch_assoc()): ?>
-                <option value="<?= $feed['feedID'] ?>" <?= ($feed['feedID'] == $selectedFeedID) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($feed['feedName']) ?>
-                </option>
-            <?php endwhile; ?>
-        </select>
-    </form>
-
-    <div id="content">
-        <?php if (isset($chunks)): ?>
-            <?php while ($chunk = $chunks->fetch_assoc()): ?>
-                <div class="chunk" data-chunk-id="<?= $chunk['chunkID'] ?>">
-                    <?= nl2br(htmlspecialchars($chunk['chunkContent'])) ?>
-                </div>
-            <?php endwhile; ?>
-        <?php endif; ?>
+    <div class="feed-selector">
+        <form method="GET" action="">
+            <label for="feedID">Select Feed:</label>
+            <select name="feedID" id="feedID" onchange="updateChunksForFeed(this.value)">
+                <?php foreach ($feeds as $feed): ?>
+                    <option value="<?php echo $feed['feedID']; ?>" <?php echo $feed['feedID'] == $feedID ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($feed['feedName']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </form>
     </div>
 
-    <script>
-        const contentDiv = document.getElementById('content');
-        const feedID = <?= json_encode($selectedFeedID) ?>;
-
-        contentDiv.addEventListener('scroll', () => {
-            const chunks = document.querySelectorAll('.chunk');
-            let lastVisibleChunkID = null;
-
-            chunks.forEach(chunk => {
-                const rect = chunk.getBoundingClientRect();
-                if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                    lastVisibleChunkID = chunk.dataset.chunkId;
-                }
-            });
-
-            if (lastVisibleChunkID) {
-                fetch('updateProgress.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ feedID, chunkID: lastVisibleChunkID })
-                });
-            }
-        });
-    </script>
+    <div class="chunk-container" id="chunkContent">Loading...</div>
+    <div class="navigation">
+        <button onclick="prevChunk()">Previous</button>
+        <button onclick="nextChunk()">Next</button>
+    </div>
 </body>
 </html>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
+        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+$conn->close();
+?>
