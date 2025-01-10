@@ -6,7 +6,31 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-echo "Welcome, " . $_SESSION['username'] . "!";
+// Connect to the database
+include 'scripts/pdo.php';
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch userLevel from the database
+$user_id = $_SESSION['user_id'];
+$sql = "SELECT userLevel FROM users WHERE userID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+$userLevel = $user['userLevel'] ?? 0;
+
+$stmt->close();
+$conn->close();
+
+echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
 ?>
 
 <!DOCTYPE html>
@@ -23,12 +47,17 @@ echo "Welcome, " . $_SESSION['username'] . "!";
     
     <a href="uploadPage.php">Upload a text file</a>
     <br>
-    <a href="updateFeed.php">manage your feeds</a>
+    <a href="updateFeed.php">Manage your feeds</a>
     <br>
-    <a href="updateBooks.php">add or remove books from a feed</a>
+    <a href="updateBooks.php">Add or remove books from a feed</a>
     <br>
     <a href="scrollView.php">Scroll a feed</a>
     <br>
+    <br>
+    <?php if ($userLevel == 1): ?>
+        <a href="systemData.php">System Usage</a>
+        <br>
+    <?php endif; ?>
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
 </body>
 </html>

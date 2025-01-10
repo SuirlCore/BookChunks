@@ -18,15 +18,14 @@ USE bookChunk;
 CREATE TABLE IF NOT EXISTS users(
     userID int NOT NULL AUTO_INCREMENT,
     userName char(255) NOT NULL,
+    userLevel int DEFAULT 0,
     pass char(255) NOT NULL,
     realFirstName char(255) NOT NULL,
     realLastName char(255) NOT NULL,
     email char(255) NOT NULL,
-    numChunksSeen int,
+    numChunksSeen int DEFAULT 0,
     PRIMARY KEY (userID)
 );
-
-ALTER TABLE users MODIFY COLUMN numChunksSeen INT DEFAULT 0;
 
 -- the individual book chunks
 CREATE TABLE IF NOT EXISTS bookChunks(

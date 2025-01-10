@@ -162,17 +162,6 @@ $stmt->close();
             loadChunk(currentIndex + 1);
         }
 
-        async function updateChunksForFeed(feedID) {
-            const response = await fetch(`?feedID=${feedID}`);
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(await response.text(), 'text/html');
-            const newChunks = JSON.parse(htmlDoc.querySelector('script').innerText.match(/let chunks = (.*?);/)[1]);
-
-            chunks = newChunks;
-            currentIndex = 0;
-            loadChunk(currentIndex);
-        }
-
         window.onload = () => {
             loadChunk(currentIndex);
         };
@@ -182,7 +171,7 @@ $stmt->close();
     <div class="feed-selector">
         <form method="GET" action="">
             <label for="feedID">Select Feed:</label>
-            <select name="feedID" id="feedID" onchange="updateChunksForFeed(this.value)">
+            <select name="feedID" id="feedID" onchange="this.form.submit()">
                 <?php foreach ($feeds as $feed): ?>
                     <option value="<?php echo $feed['feedID']; ?>" <?php echo $feed['feedID'] == $feedID ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($feed['feedName']); ?>
