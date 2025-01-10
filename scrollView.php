@@ -168,6 +168,9 @@ $stmt->close();
     </script>
 </head>
 <body>
+    <p>
+        <a href='welcome.php'>Go back to the main page.</a>
+    </p>
     <div class="feed-selector">
         <form method="GET" action="">
             <label for="feedID">Select Feed:</label>

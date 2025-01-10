@@ -53,6 +53,8 @@ echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
     <br>
     <a href="scrollView.php">Scroll a feed</a>
     <br>
+    <a href="devNotes.php">Website upgrading notes</a>
+    <br>
     <br>
     <?php if ($userLevel == 1): ?>
         <a href="systemData.php">System Usage</a>
