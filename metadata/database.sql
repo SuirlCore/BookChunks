@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS users(
     PRIMARY KEY (userID)
 );
 
+ALTER TABLE users MODIFY COLUMN numChunksSeen INT DEFAULT 0;
+
 -- the individual book chunks
 CREATE TABLE IF NOT EXISTS bookChunks(
     chunkID int NOT NULL AUTO_INCREMENT,
@@ -74,6 +76,7 @@ CREATE TABLE IF NOT EXISTS userFeedProgress (
     userID INT NOT NULL,
     feedID INT NOT NULL,
     lastSeenChunkID INT NOT NULL,
+    dateTimeLastSeen DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (userID, feedID)
 );
 

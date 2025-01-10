@@ -224,6 +224,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Close the statement
         $stmt->close();
+
+        // Increment numChunksSeen in users table
+        $sql = "UPDATE users SET numChunksSeen = IFNULL(numChunksSeen, 0) + 1 WHERE userID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $data['userID']);
+        $stmt->execute();
+        $stmt->close();
     }
 }
 
