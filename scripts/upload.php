@@ -1,8 +1,9 @@
 <?php
 session_start();
-$userID = $_SESSION['user_id'];
-if (!$userID) {
-    die("User not logged in.");
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.html"); // Redirect to login page if not logged in
+    exit();
 }
 
 include 'pdo.php';

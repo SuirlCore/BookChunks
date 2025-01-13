@@ -10,7 +10,8 @@ if ($conn->connect_error) {
 // Start session and retrieve user ID
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    die("User not logged in.");
+    header("Location: login.html"); // Redirect to login page if not logged in
+    exit();
 }
 $userID = $_SESSION['user_id'];
 
