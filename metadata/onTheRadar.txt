@@ -14,11 +14,10 @@ feed management
 
 scrollview
 -ability to change colors and font size
--update how many chunks the user has seen for future functionality
 -have the site auto load here
+-ability to scroll to different chunks(chapters?)
 
 additional pages
--status page: available to admins, shows users currently using site
 -dev notes page: available to all users. shows onTheRadar.txt, and allows the user to input comments on what they like and dont like
 -add friends page?: add friends so you can track their progress against your own
 -settings page
