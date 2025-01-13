@@ -53,6 +53,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chunk Viewer</title>
+    <link rel="stylesheet" href="css/navigation.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -169,6 +170,7 @@ $stmt->close();
     </script>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <p>
         <a href='welcome.php'>Go back to the main page.</a>
     </p>
