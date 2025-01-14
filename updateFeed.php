@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $userID = $_SESSION['user_id'] ?? null;
 
 // Database connection
-include 'pdo.php';
+include 'scripts/pdo.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
