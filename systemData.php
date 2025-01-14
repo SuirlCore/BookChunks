@@ -40,6 +40,7 @@ $query = "
 ";
 
 $result = $conn->query($query);
+
 ?>
 
 <!DOCTYPE html>
@@ -78,10 +79,10 @@ $result = $conn->query($query);
         }
     </style>
     <script>
-        // Reload the page every 5 seconds
+        // Reload the page every 10 seconds
         setTimeout(() => {
             window.location.reload();
-        }, 5000);
+        }, 10000);
     </script>
 </head>
 <body>

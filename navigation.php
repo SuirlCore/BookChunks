@@ -1,29 +1,29 @@
 <!-- navigation.php -->
  <?php
- session_start();
+ if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Connect to the database
-include 'scripts/pdo.php';
+include_once 'scripts/pdo.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!isset($navigationDbConn)) {
+    $navigationDbConn = new mysqli($servername, $username, $password, $dbname);
+    if ($navigationDbConn->connect_error) {
+        die("Connection failed: " . $navigationDbConn->connect_error);
+    }
 }
 
-// Fetch userLevel from the database
+// Fetch userLevel from the database using $navigationDbConn
 $user_id = $_SESSION['user_id'];
 $sql = "SELECT userLevel FROM users WHERE userID = ?";
-$stmt = $conn->prepare($sql);
+$stmt = $navigationDbConn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
+$navResult = $stmt->get_result();
+$user = $navResult->fetch_assoc();
 $userLevel = $user['userLevel'] ?? 0;
-
 $stmt->close();
-$conn->close();
+
 ?>
 <link rel="stylesheet" href="css/navigation.css">
 
@@ -37,8 +37,9 @@ $conn->close();
         <a href="uploadPage.php">Upload a Book</a>
         <a href="updateFeed.php">Feed Management</a>
         <a href="updateBooks.php">Book Management</a>
+        <a href="scrollFeed.php">Scroll Feed</a>
         <a href="devNotes.php">Development Notes</a>
-        <a href="logout.php">Log Out</a>
+        <a href="scripts/logout.php">Log Out</a>
         <?php if ($userLevel == 1): ?>
             <a href="systemData.php">System Usage</a>
         <?php endif; ?>

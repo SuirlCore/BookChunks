@@ -30,7 +30,6 @@ $userLevel = $user['userLevel'] ?? 0;
 $stmt->close();
 $conn->close();
 
-echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
 ?>
 
 <!DOCTYPE html>

@@ -70,6 +70,7 @@ if (file_exists($filePath)) {
     </script>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <h1>Dev Notes</h1>
     <p>
         Items that are being worked on, or on the radar that need to be worked on.
@@ -78,8 +79,5 @@ if (file_exists($filePath)) {
         <?= nl2br(htmlspecialchars($fileContents)) ?>
     </div>
     <button class="refresh-button" onclick="refreshPage()">Refresh</button>
-    <p>
-        <a href='welcome.php'>Go back to the main page.</a>
-    </p>
 </body>
 </html>
