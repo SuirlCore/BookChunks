@@ -41,6 +41,7 @@ echo "Welcome, " . htmlspecialchars($_SESSION['username']) . "!";
     <title>Welcome</title>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <h2>Welcome</h2>
     Temp Welcome page
     <br>

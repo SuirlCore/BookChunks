@@ -25,7 +25,7 @@ $userLevel = $user['userLevel'] ?? 0;
 $stmt->close();
 $conn->close();
 ?>
-
+<link rel="stylesheet" href="css/navigation.css">
 
 <div class="nav-container">
     <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>

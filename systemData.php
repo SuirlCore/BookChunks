@@ -85,6 +85,7 @@ $result = $conn->query($query);
     </script>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <h1>User Feed Progress</h1>
     <?php if ($result && $result->num_rows > 0): ?>
     <table>

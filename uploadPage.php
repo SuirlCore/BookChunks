@@ -22,6 +22,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
     <title>Upload Text File</title>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <h2>Upload a Text File</h2>
     <form action="scripts/upload.php" method="POST" enctype="multipart/form-data">
         <input type="file" name="text_file" accept=".txt" required><br><br>

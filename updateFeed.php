@@ -175,6 +175,7 @@ $stmt->close();
     </style>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <h1>Manage Feeds</h1>
 
     <div class="create-feed">
