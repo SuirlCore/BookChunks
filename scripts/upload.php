@@ -6,6 +6,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$userID = $_SESSION['user_id'];
+
 include 'pdo.php';
 
 // Function to upload a section into the database
