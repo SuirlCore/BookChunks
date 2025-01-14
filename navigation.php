@@ -29,17 +29,19 @@ $conn->close();
 
 <div class="nav-container">
     <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
+    <div class="user-info">
+        Logged in as: <span class="user-name"><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?></span>
+    </div>
     <div class="nav-menu" id="navMenu">
         <a href="welcome.php">Welcome Page</a>
         <a href="uploadPage.php">Upload a Book</a>
         <a href="updateFeed.php">Feed Management</a>
         <a href="updateBooks.php">Book Management</a>
         <a href="devNotes.php">Development Notes</a>
-        <a href="">Log Out</a>
+        <a href="logout.php">Log Out</a>
         <?php if ($userLevel == 1): ?>
             <a href="systemData.php">System Usage</a>
         <?php endif; ?>
-
     </div>
 </div>
 <script>
@@ -57,3 +59,4 @@ $conn->close();
         }
     });
 </script>
+

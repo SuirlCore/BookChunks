@@ -1,11 +1,14 @@
-/* styles.css */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
 .nav-container {
-    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
 }
 
 .menu-button {
@@ -15,10 +18,21 @@ body {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .menu-button:hover {
     background-color: #0056b3;
+}
+
+.user-info {
+    margin-left: auto; /* Pushes the user-info section to the far right */
+    font-size: 16px;
+    color: #333;
+}
+
+.user-name {
+    font-weight: bold;
 }
 
 .nav-menu {
