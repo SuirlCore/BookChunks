@@ -1,0 +1,14 @@
+ 
+#!/bin/bash
+
+# Define the source repository directory and the target directory
+SOURCE_DIR=$(git rev-parse --show-toplevel)
+TARGET_DIR="/var/www/html/"
+
+# Create the target directory if it doesn't exist
+mkdir -p "$TARGET_DIR"
+
+# Copy all files and directories from the repository to the target directory
+rsync -av --delete "$SOURCE_DIR/" "$TARGET_DIR/"
+
+echo "Repository files have been copied to $TARGET_DIR"

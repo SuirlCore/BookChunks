@@ -42,7 +42,7 @@ $conn->close();
 <body>
     <?php include 'navigation.php'; ?>
     <h2>Welcome</h2>
-    Welcome page
+    Welcome Page
     <br>
     
     <a href="uploadPage.php">Upload a text file</a>
