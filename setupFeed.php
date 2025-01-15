@@ -30,12 +30,8 @@
 
         // Automatically load the first option on page load
         window.onload = function() {
-            const firstOption = document.getElementById("action-select").value;
-            document.getElementById("bottom-frame").src = firstOption;
+            navigateToPage();
         };
-
-        // Update iframe on dropdown change
-        document.getElementById("action-select").addEventListener("change", navigateToPage);
     </script>
 </head>
 <body>
@@ -48,7 +44,7 @@
                 <option value="updateFeed.php">Create or Delete a Feed</option>
                 <option value="updateBooks.php">Add or Remove Books from Feeds</option>
             </select>
-            <!-- Removed the "Go" button since it's no longer needed -->
+            <button type="submit">Go</button>
         </form>
     </div>
     <iframe id="bottom-frame"></iframe>
