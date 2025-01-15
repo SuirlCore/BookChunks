@@ -27,6 +27,9 @@
             const iframe = document.getElementById("bottom-frame");
             iframe.src = selection;
         }
+
+        // Automatically navigate on dropdown change
+        document.getElementById("action-select").addEventListener("change", navigateToPage);
     </script>
 </head>
 <body>
