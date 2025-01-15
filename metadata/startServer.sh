@@ -9,3 +9,5 @@ qdbus org.kde.konsole /konsole/MainWindow_1 org.kde.konsole.MainWindow.splitView
 
 # Send the second command to the right pane (new session)
 qdbus org.kde.konsole /Sessions/2 sendText "sudo tail -f /var/log/mysql/mariadb.log\n"
+
+
