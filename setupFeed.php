@@ -31,6 +31,7 @@
 </head>
 <body>
     <div id="top-frame">
+        <?php include 'navigation.php'; ?>
         <form onsubmit="navigateToPage(); return false;">
             <label for="action-select">Choose an action:</label>
             <select id="action-select">
