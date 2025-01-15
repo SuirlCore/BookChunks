@@ -3,23 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to Speech with ResponsiveVoice.js</title>
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=VxGi48AE"></script>
+  <title>Text to Speech with Multiple Voices</title>
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
 </head>
 <body>
   <h1>ResponsiveVoice Text to Speech</h1>
   <textarea id="textInput" rows="5" cols="50" placeholder="Type text here..."></textarea><br>
+
+  <!-- Dropdown to select a voice -->
+  <label for="voiceSelect">Choose a voice:</label>
+  <select id="voiceSelect">
+    <option value="UK English Male">UK English Male</option>
+    <option value="UK English Female">UK English Female</option>
+    <option value="US English Male">US English Male</option>
+    <option value="US English Female">US English Female</option>
+    <option value="Australian Female">Australian Female</option>
+    <option value="Indian English Female">Indian English Female</option>
+    <!-- Add more options as needed -->
+  </select><br>
+
   <button id="speakButton">Speak</button>
 
   <script>
     document.getElementById('speakButton').addEventListener('click', () => {
       const textInput = document.getElementById('textInput').value;
+      const selectedVoice = document.getElementById('voiceSelect').value;
 
       if (responsiveVoice.voiceSupport()) {
-        responsiveVoice.speak(textInput, "UK English Male", {
-          pitch: 1, // Adjust pitch: 0 (low) to 2 (high)
-          rate: 1,  // Adjust speed: 0.1 (slow) to 2 (fast)
-          volume: 1 // Adjust volume: 0 (mute) to 1 (full)
+        responsiveVoice.speak(textInput, selectedVoice, {
+          pitch: 1,
+          rate: 1,
+          volume: 1
         });
       } else {
         alert('ResponsiveVoice is not supported on this browser.');
