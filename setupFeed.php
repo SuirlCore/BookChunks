@@ -27,6 +27,11 @@
             const iframe = document.getElementById("bottom-frame");
             iframe.src = selection;
         }
+
+        // Automatically load the first option on page load
+        window.onload = function() {
+            navigateToPage();
+        };
     </script>
 </head>
 <body>
