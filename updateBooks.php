@@ -1,6 +1,6 @@
 <?php
 // Database connection
-include 'pdo.php';
+include 'scripts/pdo.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
