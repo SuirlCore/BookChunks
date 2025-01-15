@@ -6,10 +6,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if (isset($_GET['success']) && $_GET['success'] == 1) {
-    echo "<div style='color: green; font-size: 16px; margin: 10px 0; padding: 10px; border: 1px solid green; background-color: #e8f7e8;'>Upload was successful!</div>";
-}
-
 // User authentication
 $userID = $_SESSION['user_id'] ?? null;
 
