@@ -29,6 +29,37 @@ ini_set('error_log', 'php_errors.log');
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
 
+    $action = $_POST['action'] ?? '';
+    $feedID = $_POST['feedID'] ?? null;
+    $textID = $_POST['textID'] ?? null;
+    $bookID = $_POST['bookID'] ?? null;
+    $response = ['success' => false];
+
+    if ($action === 'add') {
+        $positionQuery = "SELECT COALESCE(MAX(position), 0) + 1 AS nextPosition FROM booksInFeed WHERE feedID = ?";
+        if ($stmt = $conn->prepare($positionQuery)) {
+            $stmt->bind_param("i", $feedID);
+            $stmt->execute();
+            $stmt->bind_result($nextPosition);
+            $stmt->fetch();
+            $stmt->close();
+
+            $addQuery = "INSERT INTO booksInFeed (feedID, bookID, position) VALUES (?, ?, ?)";
+            if ($stmt = $conn->prepare($addQuery)) {
+                $stmt->bind_param("iii", $feedID, $textID, $nextPosition);
+                $response['success'] = $stmt->execute();
+                $stmt->close();
+            }
+        }
+    } elseif ($action === 'remove') {
+        $removeQuery = "DELETE FROM booksInFeed WHERE feedID = ? AND bookID = ?";
+        if ($stmt = $conn->prepare($removeQuery)) {
+            $stmt->bind_param("ii", $feedID, $bookID);
+            $response['success'] = $stmt->execute();
+            $stmt->close();
+        }
+    }
+
     if ($_POST['action'] === 'create') {
         // Handle feed creation
         $feedName = trim($_POST['feed_name'] ?? '');
@@ -128,6 +159,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
         exit;
     }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
 }
 
 // Fetch feeds for the current user
@@ -141,6 +176,24 @@ $result = $stmt->get_result();
 $feeds = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+// Fetch books owned by the user
+$booksQuery = "SELECT * FROM fullTexts WHERE owner = ?";
+$stmt = $conn->prepare($booksQuery);
+
+if ($stmt) {
+    $stmt->bind_param("i", $userID);
+    if ($stmt->execute()) {
+        $books = $stmt->get_result();
+    } else {
+        error_log("Error executing books query: " . $stmt->error);
+        $books = false; // Mark as failed
+    }
+    $stmt->close();
+} else {
+    error_log("Error preparing books query: " . $conn->error);
+    $books = false; // Mark as failed
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -152,6 +205,10 @@ $stmt->close();
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
         }
         .feed-list, .create-feed {
             margin-top: 20px;
@@ -173,6 +230,32 @@ $stmt->close();
         form input, form button {
             padding: 10px;
             margin-right: 10px;
+        }
+        form, #books-in-feed, #all-books {
+            margin: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+        .move-btn, .add-btn, .remove-btn {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .move-btn:hover, .add-btn:hover, .remove-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -208,6 +291,131 @@ $stmt->close();
             <?php endforeach; ?>
         </div>
     </div>
+
+    <h1>Manage Books in Feeds</h1>
+    <form id="feed-selector">
+        <label for="feeds">Select a Feed:</label>
+        <select id="feeds" name="feedID">
+            <?php while ($feed = $feeds->fetch_assoc()): ?>
+                <option value="<?= $feed['feedID'] ?>">
+                    <?= htmlspecialchars($feed['feedName']) ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+    </form>
+
+    <div id="books-in-feed"></div>
+
+    <div id="all-books">
+        <h2>All Books</h2>
+        <ul>
+            <?php while ($book = $books->fetch_assoc()): ?>
+                <li data-book-id="<?= $book['textID'] ?>">
+                    <?= htmlspecialchars($book['filename']) ?>
+                    <button class="add-btn" onclick="addBookToFeed(<?= $book['textID'] ?>)">Add</button>
+                </li>
+            <?php endwhile; ?>
+        </ul>
+    </div>
+
+    <div>
+        <button id="synchronize-btn" style="background-color: #28a745; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer;">
+            Synchronize Feed
+        </button>
+    </div>
+
+    <script>
+    document.getElementById("synchronize-btn").addEventListener("click", async function () {
+        const feedID = document.getElementById("feeds").value;
+
+        if (!feedID) {
+            alert("Please select a feed.");
+            return;
+        }
+
+        if (!confirm("This will synchronize the feed and overwrite existing data. Proceed?")) {
+            return;
+        }
+
+        const response = await fetch("scripts/synchronizeFeed.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ feedID }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Feed synchronized successfully!");
+        } else {
+            alert("Synchronization failed: " + (result.message || "Unknown error."));
+        }
+    });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const feedSelector = document.getElementById("feeds");
+            const booksInFeedDiv = document.getElementById("books-in-feed");
+
+            feedSelector.addEventListener("change", fetchBooksInFeed);
+
+            async function fetchBooksInFeed() {
+                const feedID = feedSelector.value;
+                const response = await fetch(`updateBooks.php?feedID=${feedID}`);
+                const books = await response.json();
+
+                booksInFeedDiv.innerHTML = `<h2>Books in Feed</h2>`;
+                const ul = document.createElement("ul");
+                books.forEach((book) => {
+                    const li = document.createElement("li");
+                    li.setAttribute("data-book-id", book.bookID);
+                    li.innerHTML = `
+                        ${book.filename} (Position: ${book.position})
+                        <button class="remove-btn" onclick="removeBookFromFeed(${book.bookID})">Remove</button>
+                    `;
+                    ul.appendChild(li);
+                });
+                booksInFeedDiv.appendChild(ul);
+            }
+
+            window.addBookToFeed = async function (textID) {
+                const feedID = feedSelector.value;
+
+                const response = await fetch("updateBooks.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        action: "add",
+                        feedID,
+                        textID,
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.success) fetchBooksInFeed();
+            };
+
+            window.removeBookFromFeed = async function (bookID) {
+                const feedID = feedSelector.value;
+
+                const response = await fetch("updateBooks.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        action: "remove",
+                        feedID,
+                        bookID,
+                    }),
+                });
+
+                const result = await response.json();
+                if (result.success) fetchBooksInFeed();
+            };
+
+            fetchBooksInFeed();
+        });
+    </script>
+    
     <script>
         document.getElementById('create-feed-form').addEventListener('submit', function(event) {
             event.preventDefault();
