@@ -175,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
     </style>
 </head>
 <body>
-    <?php include 'navigation.php'; ?> 
     <h1>Manage Your Feeds</h1>
     <form id="feed-selector">
         <label for="feeds">Select a Feed:</label>
