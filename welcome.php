@@ -37,29 +37,34 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Book Chunks</title>
 </head>
 <body>
     <?php include 'navigation.php'; ?>
-    <h2>Welcome</h2>
-    Welcome Page
-    <br>
+
+    <h1>About</h1>
+    <p>
+        This site allows you to upload books in the form of .txt files. 
+        It breaks the text up into sections of 3 sentences each, and
+        allows you to scroll through the book. You can choose different
+        feeds that are loaded with different books.
+
+        Future implementation will have the ability to filter in other
+        things in between the individual book chunks.
+    </p>
+
+    <h1>Instructions</h1>
+    <p>
+        To start off, go to the "Setup Feed" page in the navigation menu.
+        Upload a text file, then create a feed. After a feed is created,
+        add books to your feed. You can choose what order the books go
+        into the feed.
+
+        At this point, modifying the feed after you start scrolling through
+        is not recommended. If you want to change things up, create a new
+        feed.
+    </p>
     
-    <a href="uploadPage.php">Upload a text file</a>
-    <br>
-    <a href="updateFeed.php">Manage your feeds</a>
-    <br>
-    <a href="updateBooks.php">Add or remove books from a feed</a>
-    <br>
-    <a href="scrollView.php">Scroll a feed</a>
-    <br>
-    <a href="devNotes.php">Website upgrading notes</a>
-    <br>
-    <br>
-    <?php if ($userLevel == 1): ?>
-        <a href="systemData.php">System Usage</a>
-        <br>
-    <?php endif; ?>
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
 </body>
 </html>

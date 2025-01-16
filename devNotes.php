@@ -79,5 +79,6 @@ if (file_exists($filePath)) {
         <?= nl2br(htmlspecialchars($fileContents)) ?>
     </div>
     <button class="refresh-button" onclick="refreshPage()">Refresh</button>
+    
 </body>
 </html>

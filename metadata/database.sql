@@ -16,42 +16,42 @@ USE bookChunk;
 
 -- the users in the system
 CREATE TABLE IF NOT EXISTS users(
-    userID int NOT NULL AUTO_INCREMENT,
-    userName char(255) NOT NULL,
-    userLevel int DEFAULT 0,
-    pass char(255) NOT NULL,
-    realFirstName char(255) NOT NULL,
-    realLastName char(255) NOT NULL,
-    email char(255) NOT NULL,
-    numChunksSeen int DEFAULT 0,
+    userID INT NOT NULL AUTO_INCREMENT,
+    userName CHAR(255) NOT NULL,
+    userLevel INT DEFAULT 0,
+    pass CHAR(255) NOT NULL,
+    realFirstName CHAR(255) NOT NULL,
+    realLastName CHAR(255) NOT NULL,
+    email CHAR(255) NOT NULL,
+    numChunksSeen INT DEFAULT 0,
     PRIMARY KEY (userID)
 );
 
 -- the individual book chunks
 CREATE TABLE IF NOT EXISTS bookChunks(
-    chunkID int NOT NULL AUTO_INCREMENT,
-    bookID int NOT NULL,
-    chunkNum int NOT NULL,
-    chunkContent longtext NOT NULL,
-    hasBeenSeen tinyint(1) NOT NULL,
+    chunkID INT NOT NULL AUTO_INCREMENT,
+    bookID INT NOT NULL,
+    chunkNum INT NOT NULL,
+    chunkContent LONGTEXT NOT NULL,
+    hasBeenSeen TINYINT(1) NOT NULL,
     PRIMARY KEY (chunkID)
 );
 
 -- different feeds that the user can choose from
 CREATE TABLE IF NOT EXISTS feeds(
-    feedID int NOT NULL AUTO_INCREMENT,
-    userID int NOT NULL,
-    feedName char(255) NOT NULL,
+    feedID INT NOT NULL AUTO_INCREMENT,
+    userID INT NOT NULL,
+    feedName CHAR(255) NOT NULL,
     feedDescription char(255),
     PRIMARY KEY (feedID)
 );
 
 -- the collected chunks for each feed for each user
 CREATE TABLE IF NOT EXISTS userFeed(
-    feedID int NOT NULL,
-    numInFeed int NOT NULL,
-    chunkID int NOT NULL,
-    userID int NOT NULL,
+    feedID INT NOT NULL,
+    numInFeed INT NOT NULL,
+    chunkID INT NOT NULL,
+    userID INT NOT NULL,
     PRIMARY KEY (feedID, numInFeed)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS userFeed(
 CREATE TABLE IF NOT EXISTS fullTexts(
     textID INT AUTO_INCREMENT,
     filename VARCHAR(255) NOT NULL,
-    owner int NOT NULL,
+    owner INT NOT NULL,
     PRIMARY KEY (textID)
 );
 
@@ -77,6 +77,13 @@ CREATE TABLE IF NOT EXISTS userFeedProgress (
     lastSeenChunkID INT NOT NULL,
     dateTimeLastSeen DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (userID, feedID)
+);
+
+CREATE TABLE IF NOT EXISTS userRecomendations (
+    id INT AUTO_INCREMENT,
+    userID INT NOT NULL,
+    recomendationText LONGTEXT NOT NULL,
+    PRIMARY KEY (id)
 );
 
 
