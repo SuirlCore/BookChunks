@@ -1,3 +1,10 @@
+top things to work on:
+-change spots in text
+-delete a book
+-recommendation from
+
+
+
 items to be fixed:
 
 users
@@ -6,7 +13,6 @@ users
 -forgot password email
 
 uploading files
--text files over 2mb in size not uploading
 -ability to upload pdf files
 
 feed management
@@ -21,4 +27,3 @@ additional pages
 -dev notes page: available to all users. shows onTheRadar.txt, and allows the user to input comments on what they like and dont like
 -add friends page?: add friends so you can track their progress against your own
 -settings page
--about page
