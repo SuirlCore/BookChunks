@@ -44,7 +44,7 @@ $conn->close();
 
     <h1>About</h1>
     <p>
-        This site allows you to upload books in the form of .txt files. 
+        This site allows you to upload books or other documents in the form of .txt files. 
         It breaks the text up into sections of 3 sentences each, and
         allows you to scroll through the book. You can choose different
         feeds that are loaded with different books.
@@ -58,17 +58,20 @@ $conn->close();
         To start off, go to the "Setup Feed" page in the navigation menu.
         Upload a text file, then create a feed. After a feed is created,
         add books to your feed. You can choose what order the books go
-        into the feed.
+        into the feed. You can then choose to start the feed halfway into 
+        the book if needed.
 
         At this point, modifying the feed after you start scrolling through
         is not recommended. If you want to change things up, create a new
         feed.
     </p>
 
-    <h2>
+    <p>
         If you are curious, the code for this webpage is at
-        <a href="https://github.com/SuirlCore/BookChunks"> My Github Page</a>
-    </h2>
+        <a href="https://github.com/SuirlCore/BookChunks"> My Github Page</a><br>
+        You can also reach me with comments or suggestions by filling out the form
+        On the Dev Notes page accessed in the menu.
+    </p>
     
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
 </body>

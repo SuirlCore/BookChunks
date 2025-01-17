@@ -120,6 +120,9 @@ ADD FOREIGN KEY (feedID) REFERENCES feeds(feedID);
 ALTER TABLE userFeedProgress
 ADD FOREIGN KEY (lastSeenChunkID) REFERENCES bookChunks(chunkID);
 
+ALTER TABLE userRecomendations
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Add Values--------------------------------------------------------------------------------
