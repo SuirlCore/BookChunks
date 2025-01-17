@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include 'pdo.php'; // Include your database connection file
+include 'scripts/pdo.php'; // Include your database connection file
 
 // Fetch books uploaded by the user
 $dbConn = new mysqli($servername, $username, $password, $dbname);
