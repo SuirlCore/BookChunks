@@ -105,6 +105,41 @@ if (file_exists($filePath)) {
         <button type="submit">Submit Recommendation</button>
     </form>
 
+    <?php
+    // Database connection
+    include 'scripts/pdo.php';
+
+    // Handle the recommendation form submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recommendationText'])) {
+        $recommendationText = trim($_POST['recommendationText']);
+        $userID = $_SESSION['user_id'];
+
+        if ($recommendationText !== '') {
+            // Connect to database
+            $mysqli = new mysqli($servername, $username, $password, $dbname);
+
+            if ($mysqli->connect_error) {
+                die("Connection failed: " . $mysqli->connect_error);
+            }
+
+            // Prepare the SQL statement to insert the recommendation
+            $stmt = $mysqli->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");
+            $stmt->bind_param("is", $userID, $recommendationText);
+            
+            if ($stmt->execute()) {
+                echo "<p>Thank you for your recommendation!</p>";
+            } else {
+                echo "<p>There was an error submitting your recommendation. Please try again.</p>";
+            }
+
+            $stmt->close();
+            $mysqli->close();
+        } else {
+            echo "<p>Please enter a recommendation.</p>";
+        }
+    }
+    ?>
+
     <h1>Dev Notes</h1>
     <p>
         Items that are being worked on, or on the radar that need to be worked on.
@@ -116,38 +151,3 @@ if (file_exists($filePath)) {
 
 </body>
 </html>
-
-<?php
-// Database connection
-include 'scripts/pdo.php';
-
-// Handle the recommendation form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recommendationText'])) {
-    $recommendationText = trim($_POST['recommendationText']);
-    $userID = $_SESSION['user_id'];
-
-    if ($recommendationText !== '') {
-        // Connect to database
-        $mysqli = new mysqli($servername, $username, $password, $dbname);
-
-        if ($mysqli->connect_error) {
-            die("Connection failed: " . $mysqli->connect_error);
-        }
-
-        // Prepare the SQL statement to insert the recommendation
-        $stmt = $mysqli->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");
-        $stmt->bind_param("is", $userID, $recommendationText);
-        
-        if ($stmt->execute()) {
-            echo "<p>Thank you for your recommendation!</p>";
-        } else {
-            echo "<p>There was an error submitting your recommendation. Please try again.</p>";
-        }
-
-        $stmt->close();
-        $mysqli->close();
-    } else {
-        echo "<p>Please enter a recommendation.</p>";
-    }
-}
-?>
