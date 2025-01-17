@@ -6,11 +6,24 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if (isset($_GET['success']) && $_GET['success'] == 1) {
-    echo "<div style='color: green; font-size: 16px; margin: 10px 0; padding: 10px; border: 1px solid green; background-color: #e8f7e8;'>Upload was successful!</div>";
+include 'pdo.php'; // Include your database connection file
+
+// Fetch books uploaded by the user
+$dbConn = new mysqli($servername, $username, $password, $dbname);
+if ($dbConn->connect_error) {
+    die("Connection failed: " . $dbConn->connect_error);
 }
 
+$userID = $_SESSION['user_id'];
+$stmt = $dbConn->prepare("SELECT id, filename FROM fullTexts WHERE owner = ?");
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$books = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+$dbConn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,9 +53,26 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         file is in the proper format.<br>
     </p>
 
-    <p>
-        <a href='welcome.php'>Go back to the main page.</a>
-    </p>
+    <h3>Your Uploaded Books</h3>
+    <table border="1">
+        <tr>
+            <th>Filename</th>
+            <th>Actions</th>
+        </tr>
+        <?php foreach ($books as $book): ?>
+            <tr>
+                <td><?= htmlspecialchars($book['filename']); ?></td>
+                <td>
+                    <form action="scripts/deleteBook.php" method="POST" style="display: inline;">
+                        <input type="hidden" name="book_id" value="<?= $book['id']; ?>">
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this book?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+  
+    </table>
+
 </body>
 </html>
 
