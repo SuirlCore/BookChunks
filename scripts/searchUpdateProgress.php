@@ -2,11 +2,6 @@
 // Database connection
 include 'pdo.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Start session and retrieve user ID
 session_start();
 if (!isset($_SESSION['user_id'])) {
