@@ -1,5 +1,6 @@
 top things to work on:
-
+combine books into "series", or "collections", name the collections
+    new database table to save books in collections
 
 items to be fixed:
 
