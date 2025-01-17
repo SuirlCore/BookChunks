@@ -64,6 +64,11 @@ $conn->close();
         is not recommended. If you want to change things up, create a new
         feed.
     </p>
+
+    <h2>
+        If you are curious, the code for this webpage is at
+        <a href="https://github.com/SuirlCore/BookChunks"> My Github Page</a>
+    </h2>
     
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
 </body>
