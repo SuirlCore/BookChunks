@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id'])) {
         $stmt->execute();
 
         // Delete from fullTexts table
-        $stmt = $dbConn->prepare("DELETE FROM fullTexts WHERE id = ?");
+        $stmt = $dbConn->prepare("DELETE FROM fullTexts WHERE textID = ?");
         $stmt->bind_param("i", $bookID);
         $stmt->execute();
 
