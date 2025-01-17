@@ -66,16 +66,20 @@ $userID = $_SESSION['user_id'];
         <!-- Results will be shown here -->
     </div>
 
-    <script>document.addEventListener('DOMContentLoaded', () => {
-    // Handle the feed selection form
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('feedForm').addEventListener('submit', function(e) {
-        e.preventDefault();  // Prevent form from submitting
+        e.preventDefault();
 
         var feedID = document.getElementById('feedID');
         if (feedID && feedID.value !== "") {
-            // Fetch books for the selected feed
             fetch(`fetchBooks.php?feedID=${feedID.value}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.books && data.books.length > 0) {
                         let booksHTML = `<form id="bookForm" method="POST">`;
@@ -95,16 +99,19 @@ $userID = $_SESSION['user_id'];
 
                         document.getElementById('results').innerHTML = booksHTML;
 
-                        // Handle book selection form
                         document.getElementById('bookForm').addEventListener('submit', function(e) {
-                            e.preventDefault();  // Prevent form from submitting
+                            e.preventDefault();
 
                             var bookID = document.getElementById('bookID');
                             var searchText = document.getElementById('search');
                             if (bookID && searchText && bookID.value !== "" && searchText.value !== "") {
-                                // Perform search using AJAX
                                 fetch(`searchChunks.php?bookID=${bookID.value}&search=${searchText.value}`)
-                                    .then(response => response.json())
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Network response was not ok');
+                                        }
+                                        return response.json();
+                                    })
                                     .then(data => {
                                         if (data.results && data.results.length > 0) {
                                             let resultHTML = `<form id="resultForm" method="POST">`;
@@ -120,9 +127,8 @@ $userID = $_SESSION['user_id'];
 
                                             document.getElementById('results').innerHTML = resultHTML;
 
-                                            // Handle selection form submission
                                             document.getElementById('resultForm').addEventListener('submit', function(e) {
-                                                e.preventDefault();  // Prevent form from submitting
+                                                e.preventDefault();
 
                                                 var chunkID = document.querySelector('input[name="chunkID"]:checked');
                                                 if (chunkID) {
@@ -133,7 +139,12 @@ $userID = $_SESSION['user_id'];
                                                         },
                                                         body: `chunkID=${chunkID.value}&bookID=${bookID.value}&feedID=${feedID.value}`
                                                     })
-                                                    .then(response => response.json())
+                                                    .then(response => {
+                                                        if (!response.ok) {
+                                                            throw new Error('Network response was not ok');
+                                                        }
+                                                        return response.json();
+                                                    })
                                                     .then(data => {
                                                         alert(data.message);
                                                     })
