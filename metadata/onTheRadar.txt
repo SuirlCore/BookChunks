@@ -1,8 +1,15 @@
 top things to work on:
-combine books into "series", or "collections", name the collections
+-ability to rename books
+-combine books into "series", or "collections", name the collections
     new database table to save books in collections
+-change chunks to be 1 sentence instead of 3. allow the user to choose how many 
+ sentences are seen at a time.
+
 
 items to be fixed:
+
+login
+-get the website to auto login if the user wants to
 
 users
 -double check password when creating user
@@ -22,4 +29,20 @@ scrollview
 
 additional pages
 -add friends page?: add friends so you can track their progress against your own
+    -percent through current book
+    -number of chunks seen in the last 7 rolling days
 -settings page
+    -text size
+    -number of sentences per chunk
+    -background color
+    -text color
+    -text size
+    -text to voice?
+-page to filter other things into the feed. ability to choose frequency of other things.
+    -statistics
+        -number of chunks seen total / last 7 days
+        -percent through current book
+        -statistics for friends
+    -flash cards
+    -cat memes
+    -ads?
