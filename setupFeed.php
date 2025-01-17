@@ -12,11 +12,11 @@
             overflow: hidden;
         }
         #top-frame {
-            height: 10%;
+            height: 20%;
             width: 100%;
         }
         #bottom-frame {
-            height: 90%;
+            height: 80%;
             width: 100%;
             border: none;
         }
