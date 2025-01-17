@@ -66,17 +66,18 @@ $userID = $_SESSION['user_id'];
         <!-- Results will be shown here -->
     </div>
 
-    <script>
-        document.getElementById('feedForm').addEventListener('submit', function(e) {
-            e.preventDefault();  // Prevent form from submitting
+    <script>document.addEventListener('DOMContentLoaded', () => {
+    // Handle the feed selection form
+    document.getElementById('feedForm').addEventListener('submit', function(e) {
+        e.preventDefault();  // Prevent form from submitting
 
-            var feedID = document.getElementById('feedID').value;
-
-            if (feedID) {
-                // Fetch books for the selected feed
-                fetch(`scripts/searchFetchBooks.php?feedID=${feedID}`)
-                    .then(response => response.json())
-                    .then(data => {
+        var feedID = document.getElementById('feedID');
+        if (feedID && feedID.value !== "") {
+            // Fetch books for the selected feed
+            fetch(`fetchBooks.php?feedID=${feedID.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.books && data.books.length > 0) {
                         let booksHTML = `<form id="bookForm" method="POST">`;
                         booksHTML += `<label for="bookID">Choose a book:</label>`;
                         booksHTML += `<select name="bookID" id="bookID" required>`;
@@ -94,53 +95,52 @@ $userID = $_SESSION['user_id'];
 
                         document.getElementById('results').innerHTML = booksHTML;
 
+                        // Handle book selection form
                         document.getElementById('bookForm').addEventListener('submit', function(e) {
                             e.preventDefault();  // Prevent form from submitting
 
-                            var bookID = document.getElementById('bookID').value;
-                            var searchText = document.getElementById('search').value;
-
-                            if (bookID && searchText) {
+                            var bookID = document.getElementById('bookID');
+                            var searchText = document.getElementById('search');
+                            if (bookID && searchText && bookID.value !== "" && searchText.value !== "") {
                                 // Perform search using AJAX
-                                fetch(`scripts/searchSearchChunks.php?bookID=${bookID}&search=${searchText}`)
+                                fetch(`searchChunks.php?bookID=${bookID.value}&search=${searchText.value}`)
                                     .then(response => response.json())
                                     .then(data => {
-                                        if (data.results.length > 0) {
+                                        if (data.results && data.results.length > 0) {
                                             let resultHTML = `<form id="resultForm" method="POST">`;
                                             data.results.forEach(result => {
                                                 resultHTML += `<div class='result-item'>`;
                                                 resultHTML += `<input type='radio' name='chunkID' value='${result.chunkID}' required> ${result.chunkContent}`;
                                                 resultHTML += `</div>`;
                                             });
-                                            resultHTML += `<input type='hidden' name='bookID' value='${bookID}'>`;
-                                            resultHTML += `<input type='hidden' name='feedID' value='${feedID}'>`;
+                                            resultHTML += `<input type='hidden' name='bookID' value='${bookID.value}'>`;
+                                            resultHTML += `<input type='hidden' name='feedID' value='${feedID.value}'>`;
                                             resultHTML += `<button type='submit'>Select</button>`;
                                             resultHTML += `</form>`;
 
                                             document.getElementById('results').innerHTML = resultHTML;
 
+                                            // Handle selection form submission
                                             document.getElementById('resultForm').addEventListener('submit', function(e) {
                                                 e.preventDefault();  // Prevent form from submitting
 
-                                                var chunkID = document.querySelector('input[name="chunkID"]:checked').value;
-                                                var bookID = document.getElementById('bookID').value;
-                                                var feedID = document.getElementById('feedID').value;
-
-                                                // Send chunkID, bookID, and feedID to update or create userFeedProgress
-                                                fetch('scripts/searchUpdateProgress.php', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `chunkID=${chunkID}&bookID=${bookID}&feedID=${feedID}`
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    alert(data.message);
-                                                })
-                                                .catch(error => {
-                                                    console.error('Error:', error);
-                                                });
+                                                var chunkID = document.querySelector('input[name="chunkID"]:checked');
+                                                if (chunkID) {
+                                                    fetch('updateProgress.php', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                                        },
+                                                        body: `chunkID=${chunkID.value}&bookID=${bookID.value}&feedID=${feedID.value}`
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        alert(data.message);
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                    });
+                                                }
                                             });
                                         } else {
                                             document.getElementById('results').innerHTML = `<p>No results found.</p>`;
@@ -151,12 +151,15 @@ $userID = $_SESSION['user_id'];
                                     });
                             }
                         });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    });
+});
+
     </script>
 </body>
 </html>
