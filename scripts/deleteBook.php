@@ -24,6 +24,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id'])) {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
+        $stmt->close();
+
+        // Check for references in userFeeds, booksInFeed, or userFeedProgress
+        $stmt = $dbConn->prepare("
+        SELECT COUNT(*) FROM (
+        -- Records in userFeed where chunkID corresponds to the bookID in bookChunks
+        SELECT uf.feedID AS sourceID, 'userFeed' AS sourceTable
+        FROM userFeed uf
+        INNER JOIN bookChunks bc ON uf.chunkID = bc.chunkID
+        WHERE bc.bookID = ?
+
+        UNION
+
+        -- Records in booksInFeed where bookID matches
+        SELECT bif.feedID AS sourceID, 'booksInFeed' AS sourceTable
+        FROM booksInFeed bif
+        WHERE bif.bookID = ?
+
+        UNION
+
+        -- Records in userFeedProgress where lastSeenChunkID corresponds to the bookID in bookChunks
+        SELECT ufp.feedID AS sourceID, 'userFeedProgress' AS sourceTable
+        FROM userFeedProgress ufp
+        INNER JOIN bookChunks bc ON ufp.lastSeenChunkID = bc.chunkID
+        WHERE bc.bookID = ?
+        ) AS referencedBooks;
+        ");
+        $stmt->bind_param("iii", $bookID, $bookID, $bookID);
+        $stmt->execute();
+        $stmt->bind_result($referenceCount);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($referenceCount > 0) {
+            $dbConn->close();
+            die("This book is currently referenced in a feed. Please remove the book from all feeds before deleting.");
+        }
+
         // Delete from bookChunks table
         $stmt = $dbConn->prepare("DELETE FROM bookChunks WHERE bookID = ?");
         $stmt->bind_param("i", $bookID);

@@ -1,6 +1,5 @@
 top things to work on:
 -change spots in text
--delete a book
 -recommendation from
 
 
