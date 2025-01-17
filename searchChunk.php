@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         var feedID = document.getElementById('feedID');
         if (feedID && feedID.value !== "") {
-            fetch(`fetchBooks.php?feedID=${feedID.value}`)
+            fetch(`scripts/searchFetchBooks.php?feedID=${feedID.value}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             var bookID = document.getElementById('bookID');
                             var searchText = document.getElementById('search');
                             if (bookID && searchText && bookID.value !== "" && searchText.value !== "") {
-                                fetch(`searchChunks.php?bookID=${bookID.value}&search=${searchText.value}`)
+                                fetch(`scripts/searchSearchChunks.php?bookID=${bookID.value}&search=${searchText.value}`)
                                     .then(response => {
                                         if (!response.ok) {
                                             throw new Error('Network response was not ok');
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                                 var chunkID = document.querySelector('input[name="chunkID"]:checked');
                                                 if (chunkID) {
-                                                    fetch('updateProgress.php', {
+                                                    fetch('scripts/searchUpdateProgress.php', {
                                                         method: 'POST',
                                                         headers: {
                                                             'Content-Type': 'application/x-www-form-urlencoded',
