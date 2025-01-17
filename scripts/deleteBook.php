@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id'])) {
     }
 
     // Verify that the book belongs to the user
-    $stmt = $dbConn->prepare("SELECT id FROM fullTexts WHERE id = ? AND owner = ?");
+    $stmt = $dbConn->prepare("SELECT textID as id FROM fullTexts WHERE textID = ? AND owner = ?");
     $stmt->bind_param("ii", $bookID, $userID);
     $stmt->execute();
     $stmt->store_result();
