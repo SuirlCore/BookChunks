@@ -43,6 +43,7 @@
                 <option value="uploadPage.php">Upload a Book</option>
                 <option value="updateFeed.php">Create or Delete a Feed</option>
                 <option value="updateBooks.php">Add or Remove Books from Feeds</option>
+                <option value="searchChunk.php">Change Start Point of Feed</option>
             </select>
             <button type="submit">Go</button>
         </form>
