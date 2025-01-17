@@ -15,7 +15,7 @@ if ($dbConn->connect_error) {
 }
 
 $userID = $_SESSION['user_id'];
-$stmt = $dbConn->prepare("SELECT id, filename FROM fullTexts WHERE owner = ?");
+$stmt = $dbConn->prepare("SELECT textID as id, filename FROM fullTexts WHERE owner = ?");
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
