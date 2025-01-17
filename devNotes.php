@@ -61,16 +61,50 @@ if (file_exists($filePath)) {
         .refresh-button:hover {
             background-color: #0056b3;
         }
-    </style>
-    <script>
-        // Reload the page when the refresh button is clicked
-        function refreshPage() {
-            window.location.reload();
+        form {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-    </script>
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button[type="submit"] {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
     <?php include 'navigation.php'; ?>
+
+    <!-- Form for user recommendations -->
+    <form id="recommendationForm" method="POST">
+        <h2>Submit Your Recommendation for website updates</h2>
+        <label for="recommendationText">Recommendation:</label>
+        <input type="text" id="recommendationText" name="recommendationText" required>
+        <button type="submit">Submit Recommendation</button>
+    </form>
+
     <h1>Dev Notes</h1>
     <p>
         Items that are being worked on, or on the radar that need to be worked on.
@@ -79,6 +113,41 @@ if (file_exists($filePath)) {
         <?= nl2br(htmlspecialchars($fileContents)) ?>
     </div>
     <button class="refresh-button" onclick="refreshPage()">Refresh</button>
-    
+
 </body>
 </html>
+
+<?php
+// Database connection
+include 'scripts/pdo.php';
+
+// Handle the recommendation form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recommendationText'])) {
+    $recommendationText = trim($_POST['recommendationText']);
+    $userID = $_SESSION['user_id'];
+
+    if ($recommendationText !== '') {
+        // Connect to database
+        $mysqli = new mysqli($servername, $username, $password, $dbname);
+
+        if ($mysqli->connect_error) {
+            die("Connection failed: " . $mysqli->connect_error);
+        }
+
+        // Prepare the SQL statement to insert the recommendation
+        $stmt = $mysqli->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");
+        $stmt->bind_param("is", $userID, $recommendationText);
+        
+        if ($stmt->execute()) {
+            echo "<p>Thank you for your recommendation!</p>";
+        } else {
+            echo "<p>There was an error submitting your recommendation. Please try again.</p>";
+        }
+
+        $stmt->close();
+        $mysqli->close();
+    } else {
+        echo "<p>Please enter a recommendation.</p>";
+    }
+}
+?>

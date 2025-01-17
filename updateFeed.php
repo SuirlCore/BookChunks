@@ -178,7 +178,7 @@ $stmt->close();
     <h1>Manage Feeds</h1>
 
     <div class="create-feed">
-        <h2>Create a New Feed</h2>
+        <h2>Create a New Feed.</h2>
         <form id="create-feed-form">
             <input type="text" id="feed-name" name="feed_name" placeholder="Feed Name" required>
             <input type="text" id="feed-description" name="feed_description" placeholder="Feed Description">

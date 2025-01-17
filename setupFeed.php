@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form with Frames</title>
+    <title>Setup Your Feed</title>
     <style>
         body, html {
             margin: 0;
@@ -12,11 +12,11 @@
             overflow: hidden;
         }
         #top-frame {
-            height: 20%;
+            height: 10%;
             width: 100%;
         }
         #bottom-frame {
-            height: 80%;
+            height: 90%;
             width: 100%;
             border: none;
         }
@@ -40,10 +40,10 @@
         <form onsubmit="navigateToPage(); return false;">
             <label for="action-select">Choose an action:</label>
             <select id="action-select">
-                <option value="uploadPage.php">Upload a Book</option>
-                <option value="updateFeed.php">Create or Delete a Feed</option>
-                <option value="updateBooks.php">Add or Remove Books from Feeds</option>
-                <option value="searchChunk.php">Change Start Point of Feed</option>
+                <option value="uploadPage.php">Step 1: Upload a Book</option>
+                <option value="updateFeed.php">Step 2: Create or Delete a Feed</option>
+                <option value="updateBooks.php">Step 3: Add or Remove Books from Feeds</option>
+                <option value="searchChunk.php">Step 4: Change Start Point of Feed</option>
             </select>
             <button type="submit">Go</button>
         </form>

@@ -33,7 +33,7 @@ $dbConn->close();
     <title>Upload Text File</title>
 </head>
 <body>
-    <h2>Upload a Text File</h2>
+    <h2>Upload a Text File to start.</h2>
     <form action="scripts/upload.php" method="POST" enctype="multipart/form-data">
         <input type="file" name="text_file" accept=".txt" required><br><br>
         <input type="submit" value="Upload and Process">

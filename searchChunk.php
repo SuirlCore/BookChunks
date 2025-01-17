@@ -36,6 +36,10 @@ $userID = $_SESSION['user_id'];
 </head>
 <body>
     <h1>Search Book Chunks</h1>
+    <p>
+        If you want to start scrolling part way through a book, search through here and choose where you want your
+        feed to start at.
+    </p>
 
     <form id="feedForm" method="POST">
         <label for="feedID">Choose a feed:</label>

@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS userRecomendations (
     id INT AUTO_INCREMENT,
     userID INT NOT NULL,
     recomendationText LONGTEXT NOT NULL,
+    dateTimeSubmitted DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 

@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
     </style>
 </head>
 <body>
-    <h1>Manage Your Feeds</h1>
+    <h1>Add or remove books from a feed.</h1>
     <form id="feed-selector">
         <label for="feeds">Select a Feed:</label>
         <select id="feeds" name="feedID">
