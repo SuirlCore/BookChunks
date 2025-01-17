@@ -1,3 +1,20 @@
+<?php
+// Database connection
+include 'scripts/pdo.php';
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Start session and retrieve user ID
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    die("User not logged in.");
+}
+$userID = $_SESSION['user_id'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,42 +34,26 @@
             border: 1px solid #ccc;
             margin-bottom: 10px;
         }
+        .form-control {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <h1>Search Book Chunks</h1>
-    <form id="searchForm" method="POST">
-        <label for="book">Choose a book:</label>
-        <select name="bookID" id="bookID" required>
-            <option value="">Select a book</option>
+
+    <form id="feedForm" method="POST">
+        <label for="feedID">Choose a feed:</label>
+        <select name="feedID" id="feedID" required>
+            <option value="">Select a feed</option>
             <?php
             // Connect to the database
-            $mysqli = new mysqli('localhost', 'username', 'password', 'your_database');
+            $mysqli = new mysqli($servername, $username, $password, $dbname);
 
             if ($mysqli->connect_error) {
                 die("Connection failed: " . $mysqli->connect_error);
             }
 
-            // Fetch books owned by the user (replace 1 with the actual userID)
-            $userID = 1;
-            $stmt = $mysqli->prepare("SELECT textID, filename FROM fullTexts WHERE owner = ?");
-            $stmt->bind_param("i", $userID);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['textID'] . "'>" . htmlspecialchars($row['filename']) . "</option>";
-            }
-
-            $stmt->close();
-            ?>
-        </select>
-        <br><br>
-        
-        <label for="feedID">Choose a feed:</label>
-        <select name="feedID" id="feedID" required>
-            <?php
-            // Fetch feeds for the user
             $stmt = $mysqli->prepare("SELECT feedID, feedName FROM feeds WHERE userID = ?");
             $stmt->bind_param("i", $userID);
             $stmt->execute();
@@ -63,77 +64,104 @@
             ?>
         </select>
         <br><br>
-
-        <label for="search">Search for text:</label>
-        <input type="text" id="search" name="search" required>
-        <br><br>
-        <button type="submit">Search</button>
+        <button type="submit">Next</button>
     </form>
 
     <div class="results" id="results">
-        <?php
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'], $_POST['bookID'], $_POST['feedID'])) {
-            $search = $_POST['search'];
-            $bookID = (int)$_POST['bookID'];
-            $feedID = (int)$_POST['feedID'];
-
-            // Search chunks for the given bookID and feedID
-            $stmt = $mysqli->prepare("SELECT chunkID, chunkContent FROM bookChunks 
-                                      WHERE bookID = ? AND chunkContent LIKE ?");
-            $likeSearch = "%" . $search . "%";
-            $stmt->bind_param("is", $bookID, $likeSearch);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                echo "<form id='chooseChunkForm' method='POST'>";
-                while ($row = $result->fetch_assoc()) {
-                    echo "<div class='result-item'>";
-                    echo "<input type='radio' name='chunkID' value='" . $row['chunkID'] . "' required> ";
-                    echo htmlspecialchars($row['chunkContent']);
-                    echo "</div>";
-                }
-                echo "<input type='hidden' name='bookID' value='" . $bookID . "'>";
-                echo "<input type='hidden' name='feedID' value='" . $feedID . "'>";
-                echo "<br><button type='submit'>Submit</button>";
-                echo "</form>";
-            } else {
-                echo "<p>No results found.</p>";
-            }
-
-            $stmt->close();
-        }
-
-        // Handle submission of chosen chunk
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['chunkID'], $_POST['feedID'])) {
-            $chunkID = (int)$_POST['chunkID'];
-            $feedID = (int)$_POST['feedID'];
-
-            // Check if a record already exists
-            $stmt = $mysqli->prepare("SELECT * FROM userFeedProgress WHERE userID = ? AND feedID = ?");
-            $stmt->bind_param("ii", $userID, $feedID);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                // Update existing record
-                $stmt = $mysqli->prepare("UPDATE userFeedProgress SET lastSeenChunkID = ? WHERE userID = ? AND feedID = ?");
-                $stmt->bind_param("iii", $chunkID, $userID, $feedID);
-                $stmt->execute();
-            } else {
-                // Insert new record
-                $stmt = $mysqli->prepare("INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) VALUES (?, ?, ?)");
-                $stmt->bind_param("iii", $userID, $feedID, $chunkID);
-                $stmt->execute();
-            }
-
-            echo "<p>Progress updated successfully.</p>";
-
-            $stmt->close();
-        }
-
-        $mysqli->close();
-        ?>
+        <!-- Results will be shown here -->
     </div>
+
+    <script>
+        document.getElementById('feedForm').addEventListener('submit', function(e) {
+            e.preventDefault();  // Prevent form from submitting
+
+            var feedID = document.getElementById('feedID').value;
+
+            if (feedID) {
+                // Fetch books for the selected feed
+                fetch(`scripts/searchFetchBooks.php?feedID=${feedID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let booksHTML = `<form id="bookForm" method="POST">`;
+                        booksHTML += `<label for="bookID">Choose a book:</label>`;
+                        booksHTML += `<select name="bookID" id="bookID" required>`;
+                        booksHTML += `<option value="">Select a book</option>`;
+                        data.books.forEach(book => {
+                            booksHTML += `<option value="${book.textID}">${book.filename}</option>`;
+                        });
+                        booksHTML += `</select>`;
+                        booksHTML += `<br><br>`;
+                        booksHTML += `<label for="search">Search:</label>`;
+                        booksHTML += `<input type="text" id="search" name="search" required>`;
+                        booksHTML += `<br><br>`;
+                        booksHTML += `<button type="submit">Search</button>`;
+                        booksHTML += `</form>`;
+
+                        document.getElementById('results').innerHTML = booksHTML;
+
+                        document.getElementById('bookForm').addEventListener('submit', function(e) {
+                            e.preventDefault();  // Prevent form from submitting
+
+                            var bookID = document.getElementById('bookID').value;
+                            var searchText = document.getElementById('search').value;
+
+                            if (bookID && searchText) {
+                                // Perform search using AJAX
+                                fetch(`scripts/searchSearchChunks.php?bookID=${bookID}&search=${searchText}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.results.length > 0) {
+                                            let resultHTML = `<form id="resultForm" method="POST">`;
+                                            data.results.forEach(result => {
+                                                resultHTML += `<div class='result-item'>`;
+                                                resultHTML += `<input type='radio' name='chunkID' value='${result.chunkID}' required> ${result.chunkContent}`;
+                                                resultHTML += `</div>`;
+                                            });
+                                            resultHTML += `<input type='hidden' name='bookID' value='${bookID}'>`;
+                                            resultHTML += `<input type='hidden' name='feedID' value='${feedID}'>`;
+                                            resultHTML += `<button type='submit'>Select</button>`;
+                                            resultHTML += `</form>`;
+
+                                            document.getElementById('results').innerHTML = resultHTML;
+
+                                            document.getElementById('resultForm').addEventListener('submit', function(e) {
+                                                e.preventDefault();  // Prevent form from submitting
+
+                                                var chunkID = document.querySelector('input[name="chunkID"]:checked').value;
+                                                var bookID = document.getElementById('bookID').value;
+                                                var feedID = document.getElementById('feedID').value;
+
+                                                // Send chunkID, bookID, and feedID to update or create userFeedProgress
+                                                fetch('scripts/searchUpdateProgress.php', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                                    },
+                                                    body: `chunkID=${chunkID}&bookID=${bookID}&feedID=${feedID}`
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    alert(data.message);
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                });
+                                            });
+                                        } else {
+                                            document.getElementById('results').innerHTML = `<p>No results found.</p>`;
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        });
+    </script>
 </body>
 </html>
