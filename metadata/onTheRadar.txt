@@ -27,6 +27,10 @@ scrollview
 -have the site auto load here
 -ability to scroll to different chunks(chapters?)
 
+systemData
+-table for user recomendations 
+-table for the last 10 sql statements sent to server
+
 additional pages
 -add friends page?: add friends so you can track their progress against your own
     -percent through current book
