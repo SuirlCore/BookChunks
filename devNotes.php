@@ -99,7 +99,11 @@ if (file_exists($filePath)) {
 
     <!-- Form for user recommendations -->
     <form id="recommendationForm" method="POST">
-        <h2>Submit Your Recommendation for website updates</h2>
+        <h2>Submit a Recommendation for website updates</h2>
+        <p>
+            Or let us know if you found a bug, or something doesnt work right. Please provide
+            as much information as possible.
+        </p>
         <label for="recommendationText">Recommendation:</label>
         <input type="text" id="recommendationText" name="recommendationText" required>
         <button type="submit">Submit Recommendation</button>
