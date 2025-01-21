@@ -43,15 +43,15 @@ $navigationDbConn->close();
 ?>
 <style>
 body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100vh; 
-        overflow: hidden;  
-        color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
-        background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    overflow: hidden;  
+    color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
+    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
 
     }
 

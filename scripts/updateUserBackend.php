@@ -53,6 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
 
     $conn->close();
 
+    $_SESSION['fontSize'] = $fontSize;
+    $_SESSION['fontColor'] = $fontColor;
+    $_SESSION['backgroundColor'] = $backgroundColor;
+
     // Redirect back to the original page
     header("Location: ../updateUser.php");
     exit();
