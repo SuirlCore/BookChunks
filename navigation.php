@@ -14,10 +14,10 @@ if (!isset($navigationDbConn)) {
 }
 
 // Fetch userLevel from the database using $navigationDbConn
-$user_id = $_SESSION['user_id'];
+$userID = $_SESSION['user_id'];
 $sql = "SELECT userLevel FROM users WHERE userID = ?";
 $stmt = $navigationDbConn->prepare($sql);
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $navResult = $stmt->get_result();
 $user = $navResult->fetch_assoc();
