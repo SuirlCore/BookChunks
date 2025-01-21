@@ -24,6 +24,9 @@ CREATE TABLE IF NOT EXISTS users(
     realLastName CHAR(255) NOT NULL,
     email CHAR(255) NOT NULL,
     numChunksSeen INT DEFAULT 0,
+    fontSize VARCHAR(10) DEFAULT '16px',
+    fontColor VARCHAR(7) DEFAULT '#000000',
+    backgroundColor VARCHAR(7) DEFAULT '#FFFFFF',
     PRIMARY KEY (userID)
 );
 

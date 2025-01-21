@@ -16,8 +16,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Handle profile update form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfile'])) {
     $userID = intval($_POST['userID']);
     $userName = $conn->real_escape_string($_POST['userName']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Secure password hashing
@@ -34,13 +34,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE userID = $userID";
 
     if ($conn->query($updateQuery) === TRUE) {
-        $message = "User updated successfully!";
+        $message = "Profile updated successfully!";
     } else {
-        $message = "Error updating user: " . $conn->error;
+        $message = "Error updating profile: " . $conn->error;
     }
 }
 
-// Fetch user details (assuming `userID` is passed as a GET parameter)
+// Handle settings update form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
+    $userID = intval($_POST['userID']);
+    $fontSize = $conn->real_escape_string($_POST['fontSize']);
+    $fontColor = $conn->real_escape_string($_POST['fontColor']);
+    $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
+
+    $settingsQuery = "UPDATE users SET 
+        fontSize = '$fontSize', 
+        fontColor = '$fontColor', 
+        backgroundColor = '$backgroundColor' 
+        WHERE userID = $userID";
+
+    if ($conn->query($settingsQuery) === TRUE) {
+        $settingsMessage = "Settings updated successfully!";
+    } else {
+        $settingsMessage = "Error updating settings: " . $conn->error;
+    }
+}
+
+// Fetch user details
 $userID = $_SESSION['user_id'];
 $userQuery = "SELECT * FROM users WHERE userID = $userID";
 $result = $conn->query($userQuery);
@@ -51,13 +71,15 @@ $user = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User</title>
+    <title>Update User and Settings</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: <?= htmlspecialchars($user['backgroundColor']); ?>;
+            color: <?= htmlspecialchars($user['fontColor']); ?>;
+            font-size: <?= htmlspecialchars($user['fontSize']); ?>;
         }
         .container {
             width: 50%;
@@ -79,7 +101,7 @@ $user = $result->fetch_assoc();
             margin-top: 10px;
             font-weight: bold;
         }
-        input[type="text"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="email"], input[type="password"], select {
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -108,12 +130,13 @@ $user = $result->fetch_assoc();
     </style>
 </head>
 <body>
+    <?php include 'navigation.php'; ?>
     <div class="container">
         <h1>Update Your Profile</h1>
         <?php if (isset($message)): ?>
             <div class="message"><?= htmlspecialchars($message); ?></div>
         <?php endif; ?>
-        <form method="POST" id="updateForm">
+        <form method="POST">
             <input type="hidden" name="userID" value="<?= htmlspecialchars($user['userID']); ?>">
             <label for="userName">Username:</label>
             <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($user['userName']); ?>" required>
@@ -130,7 +153,51 @@ $user = $result->fetch_assoc();
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" required>
             
-            <button type="submit">Update Profile</button>
+            <button type="submit" name="updateProfile">Update Profile</button>
+        </form>
+
+        <h1>Customize Your Settings</h1>
+        <?php if (isset($settingsMessage)): ?>
+            <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
+        <?php endif; ?>
+        <form method="POST">
+            <input type="hidden" name="userID" value="<?= htmlspecialchars($user['userID']); ?>">
+            
+            <label for="fontSize">Font Size:</label>
+            <select name="fontSize" id="fontSize">
+                <option value="12px" <?= $user['fontSize'] === '12px' ? 'selected' : ''; ?>>12px</option>
+                <option value="14px" <?= $user['fontSize'] === '14px' ? 'selected' : ''; ?>>14px</option>
+                <option value="16px" <?= $user['fontSize'] === '16px' ? 'selected' : ''; ?>>16px</option>
+                <option value="18px" <?= $user['fontSize'] === '18px' ? 'selected' : ''; ?>>18px</option>
+                <option value="20px" <?= $user['fontSize'] === '20px' ? 'selected' : ''; ?>>20px</option>
+            </select>
+
+            <label for="fontColor">Font Color:</label>
+            <select name="fontColor" id="fontColor">
+                <?php
+                $colors = [
+                    "#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF",
+                    "#FFFF00", "#FF00FF", "#00FFFF", "#C0C0C0", "#808080",
+                    "#800000", "#808000", "#008000", "#800080", "#008080", "#000080"
+                ];
+                foreach ($colors as $color) {
+                    $selected = $user['fontColor'] === $color ? 'selected' : '';
+                    echo "<option value='$color' $selected>$color</option>";
+                }
+                ?>
+            </select>
+
+            <label for="backgroundColor">Background Color:</label>
+            <select name="backgroundColor" id="backgroundColor">
+                <?php
+                foreach ($colors as $color) {
+                    $selected = $user['backgroundColor'] === $color ? 'selected' : '';
+                    echo "<option value='$color' $selected>$color</option>";
+                }
+                ?>
+            </select>
+            
+            <button type="submit" name="updateSettings">Update Settings</button>
         </form>
     </div>
 </body>
