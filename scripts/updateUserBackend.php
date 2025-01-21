@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $conn->close();
 
     // Redirect back to the original page
-    header("Location: ../updateUserForm.php");
+    header("Location: ../updateUser.php");
     exit();
 }
 ?>
