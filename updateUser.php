@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
 $userID = $_SESSION['user_id'];
 
 // Prepare the SQL statement
-$stmt = $conn->prepare("SELECT (userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor) FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 
 // Execute the query
