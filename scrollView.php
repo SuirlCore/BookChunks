@@ -74,7 +74,6 @@ $stmt->close();
             flex-direction: column;
             height: 100vh; 
             overflow: hidden;  
-            font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
             color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
     

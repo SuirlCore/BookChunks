@@ -121,7 +121,7 @@ $conn->close();
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
                 <?php
-                $fontSizes = ["12px", "14px", "16px", "18px", "20px"];
+                $fontSizes = ["10px", "12px", "14px", "16px", "18px", "20px", "24px", "26px", "28px", "30px"];
                 foreach ($fontSizes as $size) {
                     $selected = $fontSizeIn === $size ? 'selected' : '';
                     echo "<option value='$size' $selected>$size</option>";
