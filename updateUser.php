@@ -23,7 +23,17 @@ $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
 
+$userNameIn = $user['userName'];
+$firstNameIn = $user['realFirstName'];
+$lastNameIn = $user['realLastName'];
+$emailIn = $user['email'];
+$fontSizeIn = $user['fontSize'];
+$fontColorIn = $user['fontColor'];
+$backgroundColorIn = $user['backgroundColor'];
+
 $conn->close();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -94,26 +104,26 @@ $conn->close();
             <input type="hidden" name="userID" value="<?= htmlspecialchars($userID); ?>">
 
             <label for="userName">Username:</label>
-            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($user['userName']); ?>" required>
+            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($userNameIn); ?>" required>
 
             <label for="realFirstName">First Name:</label>
-            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($user['realFirstName']); ?>" required>
+            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($firstNameIn); ?>" required>
 
             <label for="realLastName">Last Name:</label>
-            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($user['realLastName']); ?>" required>
+            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($lastNameIn); ?>" required>
 
             <label for="pass">Password:</label>
             <input type="password" name="pass" id="pass" required>
 
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
 
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
                 <?php
                 $fontSizes = ["12px", "14px", "16px", "18px", "20px"];
                 foreach ($fontSizes as $size) {
-                    $selected = $user['fontSize'] === $size ? 'selected' : '';
+                    $selected = $fontSizeIn === $size ? 'selected' : '';
                     echo "<option value='$size' $selected>$size</option>";
                 }
                 ?>
@@ -129,7 +139,7 @@ $conn->close();
                     "#008000" => "Dark Green", "#800080" => "Purple", "#008080" => "Teal", "#000080" => "Navy"
                 ];
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['fontColor'] === $hex ? 'selected' : '';
+                    $selected = $fontColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name <div class='color-preview' style='background-color: $hex;'></div></option>";
                 }
                 ?>
@@ -139,7 +149,7 @@ $conn->close();
             <select name="backgroundColor" id="backgroundColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['backgroundColor'] === $hex ? 'selected' : '';
+                    $selected = $backgroundColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name <div class='color-preview' style='background-color: $hex;'></div></option>";
                 }
                 ?>
