@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS collections (
     collectionName CHAR(255) NOT NULL,
     userID INT NOT NULL,
     PRIMARY KEY (collectionID)
-)
+);
 
 -- the items in specific collections
 CREATE TABLE IF NOT EXISTS itemsInCollection (
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS itemsInCollection (
     itemID INT NOT NULL, -- does not have foreign key constraint, could come form multiple tables
     positionID INT NOT NULL, -- the position this item is in the collection
     PRIMARY KEY (indexID)
-)
+);
 
 -- static records that can be pulled. includes html or php that can be added to the website
 CREATE TABLE IF NOT EXISTS staticChunk (
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS staticChunk (
     staticContent LONGTEXT NOT NULL,
     staticDescription LONGTEXT NOT NULL,
     PRIMARY KEY (staticID)
-)
+);
 
 -- flash cards the user can create and add to the feed
 CREATE TABLE IF NOT EXISTS flashCards (
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS flashCards (
     cardContent CHAR(255) NOT NULL,
     cardAnswer CHAR(255) NOT NULL,
     PRIMARY KEY (cardID)
-)
+);
 
 -- friend relationships
 CREATE TABLE IF NOT EXISTS friends (
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS friends (
     userID2 INT NOT NULL,
     dateFriended DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (friendID)
-)
+);
 
 -- keeps track of chunks seen per user per week
 CREATE TABLE IF NOT EXISTS chunksSeenPerWeek (
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS chunksSeenPerWeek (
     weekEndDate DATETIME NOT NULL,
     chunksSeenInWeek INT,
     PRIMARY KEY (id)
-)
+);
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
