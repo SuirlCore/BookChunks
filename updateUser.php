@@ -152,7 +152,7 @@ $backgroundColorIn = $user['backgroundColor'];
     </style>
 </head>
 <body>
-    <?php include 'navigation.php'; ?>
+    <?php //include 'navigation.php'; ?>
     <div class="container">
         <h1>Update Your Profile</h1>
         <?php if (isset($message)): ?>
