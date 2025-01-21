@@ -5,6 +5,40 @@ top things to work on:
 -change chunks to be 1 sentence instead of 3. allow the user to choose how many 
  sentences are seen at a time.
 
+new database tables:
+collections
+    collectionID
+    collectionType.  --book, flashcard, etc
+    collectionName
+    userID
+    bookID/cardID
+    orderNum
+staticChunk  --pre loaded with html to load onto the DOM. statistics, html for flash cards
+    staticID
+    staticContent
+    staticDescription
+flashCards
+    cardID
+    userID
+    cardName
+    cardContent
+    cardAnswer
+friends
+    friendID
+    userID1
+    userID2
+    dateFriended
+chunksSeenPerWeek
+    id
+    userID
+    weekID
+    chunksSeen
+
+need a triggered procedure on mysql to run once a week to update chunksSeenPerWeek table from users/numChunksSeen - chunksSeenPerWeek(all records per user).
+OR update php logic to update bot fields at the same time
+
+
+
 
 items to be fixed:
 
