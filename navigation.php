@@ -57,7 +57,7 @@ $navigationDbConn->close();
 }
 
 .menu-button {
-    background-color: #007BFF;
+    background-color: #A9A9A9;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -67,7 +67,7 @@ $navigationDbConn->close();
 }
 
 .menu-button:hover {
-    background-color: #0056b3;
+    background-color: #A9A9A9;
 }
 
 .user-info {

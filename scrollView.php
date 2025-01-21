@@ -95,7 +95,7 @@ $stmt->close();
             bottom: 0; 
             width: 100%; 
             height: 60px; 
-            background: #007bff; 
+            background: #A9A9A9; 
         }
 
         .navigation button {
@@ -104,13 +104,13 @@ $stmt->close();
             font-size: 18px; 
             font-weight: bold; 
             border: none;
-            background: #007bff; 
+            background: #A9A9A9; 
             cursor: pointer;
             transition: background 0.2s ease-in-out; 
         }
 
         .navigation button:hover {
-            background: #0056b3; 
+            background: #A9A9A9; 
         }
 
         .navigation button:disabled { 
