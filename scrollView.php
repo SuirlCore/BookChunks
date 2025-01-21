@@ -15,6 +15,18 @@ if (!isset($_SESSION['user_id'])) {
 }
 $userID = $_SESSION['user_id'];
 
+// Fetch user preferences for text and background
+$sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$choices = $result->fetch_assoc();
+$fontSizeChoice = $choices['fontSize'];
+$fontColorChoice = $choices['fontColor'];
+$backgroundColorChoice = $choices['backgroundColor'];
+$stmt->close();
+
 // Fetch all feeds for the user
 $sql = "SELECT feedID, feedName FROM feeds WHERE userID = ?";
 $stmt = $conn->prepare($sql);
@@ -61,7 +73,11 @@ $stmt->close();
             display: flex;
             flex-direction: column;
             height: 100vh; 
-            overflow: hidden; 
+            overflow: hidden;  
+            font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
+            color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
+    
         }
 
         .chunk-container {
@@ -69,6 +85,7 @@ $stmt->close();
             padding: 20px;
             overflow-y: auto;
             background: #fff;
+            font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
             font-size: 16px;
             line-height: 1.5;
         }
