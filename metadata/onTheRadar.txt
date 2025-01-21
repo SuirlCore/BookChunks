@@ -2,7 +2,7 @@ top things to work on:
 -ability to rename books
 -combine books into "series", or "collections", name the collections
     new database table to save books in collections
-
+-add a way for the user to know a book is being uploaded
 
 need a triggered procedure on mysql to run once a week to update chunksSeenPerWeek table from users/numChunksSeen - chunksSeenPerWeek(all records per user).
 OR update php logic to update bot fields at the same time

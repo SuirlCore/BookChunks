@@ -60,12 +60,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
     }
 }
 
-// Fetch user details
+// Fetch user details using prepared statements
 $userID = $_SESSION['user_id'];
-$userQuery = "SELECT * FROM users WHERE userID = $userID";
-$result = $conn->query($userQuery);
+
+// Prepare the SQL statement
+$stmt = $conn->prepare("SELECT * FROM users WHERE userID = ?");
+$stmt->bind_param("i", $userID);
+
+// Execute the query
+$stmt->execute();
+
+// Fetch the result
+$result = $stmt->get_result();
 $user = $result->fetch_assoc();
+
+// Close the statement
+$stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
