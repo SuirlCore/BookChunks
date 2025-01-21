@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
 $userID = $_SESSION['user_id'];
 
 // Prepare the SQL statement
-$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 
 // Execute the query
@@ -78,13 +78,11 @@ $user = $result->fetch_assoc();
 $stmt->close();
 
 $userNameIn = $user['userName'];
-echo $user['pass'];
-echo $user['realFirstName'];
-echo $user['realLastName'];
-echo $user['email'];
-echo $user['fontSize'];
-echo $user['fontColor'];
-echo $user['backgroundColor'];
+$realFirstNameIn = $user['realFirstName'];
+$realLastNameIn = $user['realLastName'];
+$fontSizeIn = $user['fontSize'];
+$fontColorIn = $user['fontColor'];
+$backgroundColorIn = $user['backgroundColor'];
 
 
 ?>
@@ -100,9 +98,9 @@ echo $user['backgroundColor'];
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: <?= htmlspecialchars($user['backgroundColor']); ?>;
-            color: <?= htmlspecialchars($user['fontColor']); ?>;
-            font-size: <?= htmlspecialchars($user['fontSize']); ?>;
+            background-color: <?= htmlspecialchars($backgroundColorIn); ?>;
+            color: <?= htmlspecialchars($fontColorIn); ?>;
+            font-size: <?= htmlspecialchars($fontSizeIn); ?>;
         }
         .container {
             width: 50%;
@@ -160,7 +158,7 @@ echo $user['backgroundColor'];
             <div class="message"><?= htmlspecialchars($message); ?></div>
         <?php endif; ?>
         <form method="POST">
-            <input type="hidden" name="userID" value="<?= htmlspecialchars($user['userID']); ?>">
+            <input type="hidden" name="userID" value="<?= htmlspecialchars($userID); ?>">
             <label for="userName">Username:</label>
             <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($userNameIn); ?>" required>
             
@@ -168,13 +166,13 @@ echo $user['backgroundColor'];
             <input type="password" name="password" id="password" required>
             
             <label for="realFirstName">First Name:</label>
-            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($user['realFirstName']); ?>" required>
+            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($realFirstNameIn); ?>" required>
             
             <label for="realLastName">Last Name:</label>
-            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($user['realLastName']); ?>" required>
+            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($realLastNameIn); ?>" required>
             
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
             
             <button type="submit" name="updateProfile">Update Profile</button>
         </form>
@@ -184,7 +182,7 @@ echo $user['backgroundColor'];
             <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
         <?php endif; ?>
         <form method="POST">
-            <input type="hidden" name="userID" value="<?= htmlspecialchars($user['userID']); ?>">
+            <input type="hidden" name="userID" value="<?= $userID; ?>">
             
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
@@ -204,7 +202,7 @@ echo $user['backgroundColor'];
                     "#800000", "#808000", "#008000", "#800080", "#008080", "#000080"
                 ];
                 foreach ($colors as $color) {
-                    $selected = $user['fontColor'] === $color ? 'selected' : '';
+                    $selected = $fontColorIn === $color ? 'selected' : '';
                     echo "<option value='$color' $selected>$color</option>";
                 }
                 ?>
@@ -214,7 +212,7 @@ echo $user['backgroundColor'];
             <select name="backgroundColor" id="backgroundColor">
                 <?php
                 foreach ($colors as $color) {
-                    $selected = $user['backgroundColor'] === $color ? 'selected' : '';
+                    $selected = $backgroundColorIn === $color ? 'selected' : '';
                     echo "<option value='$color' $selected>$color</option>";
                 }
                 ?>
