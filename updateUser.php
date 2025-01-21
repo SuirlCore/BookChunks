@@ -164,7 +164,7 @@ $conn->close()
             <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form action="updateUser.php" method="POST">
             <input type="hidden" name="userID" value="<?= htmlspecialchars($userID); ?>">
             
             <h2>Profile Details</h2>
