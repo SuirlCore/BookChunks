@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
 $userID = $_SESSION['user_id'];
 
 // Prepare the SQL statement
-$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 
 // Execute the query
@@ -80,6 +80,7 @@ $stmt->close();
 $userNameIn = $user['userName'];
 $realFirstNameIn = $user['realFirstName'];
 $realLastNameIn = $user['realLastName'];
+$emailIn = $user['email'];
 $fontSizeIn = $user['fontSize'];
 $fontColorIn = $user['fontColor'];
 $backgroundColorIn = $user['backgroundColor'];
@@ -172,7 +173,7 @@ $backgroundColorIn = $user['backgroundColor'];
             <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($realLastNameIn); ?>" required>
             
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?= $emailIn; ?>" required>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
             
             <button type="submit" name="updateProfile">Update Profile</button>
         </form>
