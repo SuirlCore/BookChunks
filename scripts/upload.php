@@ -27,13 +27,33 @@ function uploadSectionToDB($dbConn, $textID, $sectionNumber, $sectionText) {
 function parseTextToSections($text) {
     $sentences = preg_split('/(?<=[.!?])\s+/', $text);
     $sections = [];
+    $currentSection = '';
+    $currentWordCount = 0;
 
-    for ($i = 0; $i < count($sentences); $i += 3) {
-        $section = implode(' ', array_slice($sentences, $i, 3));
-        $sections[] = $section;
+    foreach ($sentences as $sentence) {
+        $wordCount = str_word_count($sentence);
+
+        // Check if adding this sentence would exceed 50 words
+        if ($currentWordCount + $wordCount > 50) {
+            // Add the current section to the list and reset
+            $sections[] = trim($currentSection);
+            $currentSection = $sentence;
+            $currentWordCount = $wordCount;
+        } else {
+            // Append the sentence to the current section
+            $currentSection .= ' ' . $sentence;
+            $currentWordCount += $wordCount;
+        }
     }
+
+    // Add the last section if it contains text
+    if (!empty(trim($currentSection))) {
+        $sections[] = trim($currentSection);
+    }
+
     return $sections;
 }
+
 
 // Check if a file is uploaded
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {

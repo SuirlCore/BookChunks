@@ -34,9 +34,9 @@ if (!isset($_SESSION['user_id'])) {
 
     <p>
         The site allows you to upload books or other documents in the form of .txt files. 
-        It breaks the text up into sections of 3 sentences each, and
-        allows you to scroll through the book. You can choose different
-        feeds that are loaded with different books.
+        It breaks the text up into sections of sentences as close to 50 words each as possible, and
+        allows you to scroll through the book. You can choose different feeds that are loaded with 
+        different books. <br>
 
         Future implementation will have the ability to filter in other
         things in between the individual book chunks. As well as add friends, and look at statistics.

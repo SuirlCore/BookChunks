@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS fullTexts(
     PRIMARY KEY (textID)
 );
 
+-- the books that are added to the feed
 CREATE TABLE IF NOT EXISTS booksInFeed (
     id INT AUTO_INCREMENT,
     feedID INT NOT NULL,
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS booksInFeed (
     PRIMARY KEY (id)
 );
 
+-- how far through a feed a user is
 CREATE TABLE IF NOT EXISTS userFeedProgress (
     userID INT NOT NULL,
     feedID INT NOT NULL,
@@ -79,6 +81,7 @@ CREATE TABLE IF NOT EXISTS userFeedProgress (
     PRIMARY KEY (userID, feedID)
 );
 
+-- recommendations of bugs submitted by users
 CREATE TABLE IF NOT EXISTS userRecomendations (
     id INT AUTO_INCREMENT,
     userID INT NOT NULL,
@@ -87,6 +90,60 @@ CREATE TABLE IF NOT EXISTS userRecomendations (
     PRIMARY KEY (id)
 );
 
+-- collections that users have created
+CREATE TABLE IF NOT EXISTS collections (
+    collectionID INT AUTO_INCREMENT,
+    collectionType CHAR(16) NOT NULL,
+    collectionName CHAR(255) NOT NULL,
+    userID INT NOT NULL,
+    PRIMARY KEY (collectionID)
+)
+
+-- the items in specific collections
+CREATE TABLE IF NOT EXISTS itemsInCollection (
+    indexID INT AUTO_INCREMENT,
+    collectionID INT NOT NULL,
+    itemID INT NOT NULL, -- does not have foreign key constraint, could come form multiple tables
+    positionID INT NOT NULL, -- the position this item is in the collection
+    PRIMARY KEY (indexID)
+)
+
+-- static records that can be pulled. includes html or php that can be added to the website
+CREATE TABLE IF NOT EXISTS staticChunk (
+    staticID INT AUTO_INCREMENT,
+    staticContent LONGTEXT NOT NULL,
+    staticDescription LONGTEXT NOT NULL,
+    PRIMARY KEY (staticID)
+)
+
+-- flash cards the user can create and add to the feed
+CREATE TABLE IF NOT EXISTS flashCards (
+    cardID INT AUTO_INCREMENT,
+    userID INT NOT NULL,
+    cardName CHAR(255) NOT NULL,
+    cardContent CHAR(255) NOT NULL,
+    cardAnswer CHAR(255) NOT NULL,
+    PRIMARY KEY (cardID)
+)
+
+-- friend relationships
+CREATE TABLE IF NOT EXISTS friends (
+    friendID INT AUTO_INCREMENT,
+    userID1 INT NOT NULL,
+    userID2 INT NOT NULL,
+    dateFriended DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (friendID)
+)
+
+-- keeps track of chunks seen per user per week
+CREATE TABLE IF NOT EXISTS chunksSeenPerWeek (
+    id INT AUTO_INCREMENT,
+    userID INT NOT NULL,
+    weekStartDate DATETIME NOT NULL,
+    weekEndDate DATETIME NOT NULL,
+    chunksSeenInWeek INT,
+    PRIMARY KEY (id)
+)
 
 -- ------------------------------------------------------------------------------------------
 -- Foreign Keys------------------------------------------------------------------------------
@@ -123,8 +180,22 @@ ADD FOREIGN KEY (lastSeenChunkID) REFERENCES bookChunks(chunkID);
 ALTER TABLE userRecomendations
 ADD FOREIGN KEY (userID) REFERENCES users(userID);
 
+ALTER TABLE collections
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE itemsInCollection
+ADD FOREIGN KEY (collectionID) REFERENCES collections(collectionID);
+
+ALTER TABLE flashCards
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
+ALTER TABLE chunksSeenPerWeek
+ADD FOREIGN KEY (userID) REFERENCES users(userID);
+
 
 -- ------------------------------------------------------------------------------------------
 -- Add Values--------------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
+
+-- add static items
