@@ -24,10 +24,86 @@ $user = $navResult->fetch_assoc();
 $userLevel = $user['userLevel'] ?? 0;
 $stmt->close();
 
+
+// Fetch user preferences for text and background
+$sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
+$stmt = $navigationDBconn->prepare($sql);
+$stmt->bind_param("i", $userID);
+$stmt->execute();
+$result = $stmt->get_result();
+$choices = $result->fetch_assoc();
+$fontSizeChoice = $choices['fontSize'];
+$fontColorChoice = $choices['fontColor'];
+$backgroundColorChoice = $choices['backgroundColor'];
+$stmt->close();
+
+
 $navigationDbConn->close();
 
 ?>
-<link rel="stylesheet" href="css/navigation.css">
+<style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.menu-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.menu-button:hover {
+    background-color: #0056b3;
+}
+
+.user-info {
+    margin-left: auto; /* Pushes the user-info section to the far right */
+    font-size: 16px;
+    color: #333;
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.nav-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    width: 200px;
+    z-index: 1000;
+}
+
+.nav-menu a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.nav-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+</style>
 
 <div class="nav-container">
     <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
