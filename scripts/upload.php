@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $userID = $_SESSION['user_id'];
 
-include 'pdo.php';
+include 'scripts/pdo.php';
 
 // Function to upload a section into the database
 function uploadSectionToDB($dbConn, $textID, $sectionNumber, $sectionText) {
