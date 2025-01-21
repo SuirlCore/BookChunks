@@ -38,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfile'])) {
     } else {
         $message = "Error updating profile: " . $conn->error;
     }
+
+    $conn->close();
 }
 
 // Handle settings update form submission
@@ -58,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
     } else {
         $settingsMessage = "Error updating settings: " . $conn->error;
     }
+
+    $conn->close();
 }
 
 // Fetch user details using prepared statements
