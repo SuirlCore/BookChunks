@@ -87,7 +87,6 @@ $stmt->close();
             background: #fff;
             background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
-            font-size: 16px;
             line-height: 1.5;
         }
 
