@@ -27,7 +27,7 @@ $stmt->close();
 
 // Fetch user preferences for text and background
 $sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
-$stmt = $navigationDBconn->prepare($sql);
+$stmt = $navigationDbConn->prepare($sql);
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
