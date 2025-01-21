@@ -150,6 +150,11 @@ $stmt->close();
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;  
+            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
         }
         .feed-list, .create-feed {
             margin-top: 20px;

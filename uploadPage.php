@@ -28,6 +28,20 @@ $dbConn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
+            overflow: hidden;  
+            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+    
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Text File</title>

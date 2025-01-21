@@ -45,11 +45,17 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; 
+            overflow: hidden;  
+            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+    
         }
+
         .container {
             max-width: 600px;
             margin: 50px auto;

@@ -141,7 +141,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0; 
+            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+    
         }
         h1 {
             text-align: center;
