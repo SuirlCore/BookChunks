@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Database connection
-include 'pdo.php';
+include 'scripts/pdo.php'; // Include your database connection file
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
