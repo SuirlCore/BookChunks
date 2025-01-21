@@ -187,11 +187,11 @@ $backgroundColorIn = $user['backgroundColor'];
             
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
-                <option value="12px" <?= $user['fontSize'] === '12px' ? 'selected' : ''; ?>>12px</option>
-                <option value="14px" <?= $user['fontSize'] === '14px' ? 'selected' : ''; ?>>14px</option>
-                <option value="16px" <?= $user['fontSize'] === '16px' ? 'selected' : ''; ?>>16px</option>
-                <option value="18px" <?= $user['fontSize'] === '18px' ? 'selected' : ''; ?>>18px</option>
-                <option value="20px" <?= $user['fontSize'] === '20px' ? 'selected' : ''; ?>>20px</option>
+                <option value="12px" <?= $fontSizeIn === '12px' ? 'selected' : ''; ?>>12px</option>
+                <option value="14px" <?= $fontSizeIn === '14px' ? 'selected' : ''; ?>>14px</option>
+                <option value="16px" <?= $fontSizeIn === '16px' ? 'selected' : ''; ?>>16px</option>
+                <option value="18px" <?= $fontSizeIn === '18px' ? 'selected' : ''; ?>>18px</option>
+                <option value="20px" <?= $fontSizeIn === '20px' ? 'selected' : ''; ?>>20px</option>
             </select>
 
             <label for="fontColor">Font Color:</label>
