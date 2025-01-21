@@ -32,9 +32,9 @@ $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 $choices = $result->fetch_assoc();
-$fontSizeChoice = $choices['fontSize'];
-$fontColorChoice = $choices['fontColor'];
-$backgroundColorChoice = $choices['backgroundColor'];
+$fontSizeChoiceNav = $choices['fontSize'];
+$fontColorChoiceNav = $choices['fontColor'];
+$backgroundColorChoiceNav = $choices['backgroundColor'];
 $stmt->close();
 
 
@@ -45,14 +45,14 @@ $navigationDbConn->close();
     body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
+    background-color: <?= htmlspecialchars($backgroundColorChoiceNav); ?>; /* Dynamic background color */
 }
 
 .nav-container {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: #f8f9fa;
+    background-color: <?= htmlspecialchars($backgroundColorChoiceNav); ?>; /* Dynamic background color */
     border-bottom: 1px solid #ddd;
 }
 
