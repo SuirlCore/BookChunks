@@ -42,11 +42,6 @@ $navigationDbConn->close();
 
 ?>
 <style>
-    body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: <?= htmlspecialchars($backgroundColorChoiceNav); ?>; /* Dynamic background color */
-}
 
 .nav-container {
     display: flex;
