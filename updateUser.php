@@ -87,7 +87,7 @@ $fontSizeIn = $user['fontSize'];
 $fontColorIn = $user['fontColor'];
 $backgroundColorIn = $user['backgroundColor'];
 
-
+$conn->close()
 ?>
 
 <!DOCTYPE html>
@@ -130,7 +130,7 @@ $backgroundColorIn = $user['backgroundColor'];
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
-        }
+        } 
         button {
             margin-top: 20px;
             padding: 10px;

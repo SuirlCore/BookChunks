@@ -24,6 +24,8 @@ $user = $navResult->fetch_assoc();
 $userLevel = $user['userLevel'] ?? 0;
 $stmt->close();
 
+$navigationDbConn->close();
+
 ?>
 <link rel="stylesheet" href="css/navigation.css">
 
