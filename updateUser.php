@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
 $userID = $_SESSION['user_id'];
 
 // Prepare the SQL statement
-$stmt = $conn->prepare("SELECT * FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT (userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor) FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 
 // Execute the query
@@ -76,6 +76,18 @@ $user = $result->fetch_assoc();
 
 // Close the statement
 $stmt->close();
+
+echo $user['userID'];
+echo $user['userName'];
+echo $user['pass'];
+echo $user['realFirstName'];
+echo $user['realLastName'];
+echo $user['email'];
+echo $user['fontSize'];
+echo $user['fontColor'];
+echo $user['backgroundColor'];
+
+
 ?>
 
 <!DOCTYPE html>
