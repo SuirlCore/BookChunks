@@ -2,91 +2,28 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.html"); // Redirect to login page if not logged in
+    header("Location: login.html");
     exit();
 }
 
 // Database connection
-include 'scripts/pdo.php'; // Include your database connection file
+include 'scripts/pdo.php';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSettings'])) {
-    // Common field
-    $userID = intval($_POST['userID']);
-
-    // Profile update fields
-    $userName = $conn->real_escape_string($_POST['userName']);
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Secure password hashing
-    $realFirstName = $conn->real_escape_string($_POST['realFirstName']);
-    $realLastName = $conn->real_escape_string($_POST['realLastName']);
-    $email = $conn->real_escape_string($_POST['email']);
-
-    // Settings update fields
-    $fontSize = $conn->real_escape_string($_POST['fontSize']);
-    $fontColor = $conn->real_escape_string($_POST['fontColor']);
-    $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
-
-    // Update profile query
-    $updateProfileQuery = "UPDATE users SET 
-        userName = '$userName', 
-        pass = '$password', 
-        realFirstName = '$realFirstName', 
-        realLastName = '$realLastName', 
-        email = '$email' 
-        WHERE userID = $userID";
-
-    // Update settings query
-    $updateSettingsQuery = "UPDATE users SET 
-        fontSize = '$fontSize', 
-        fontColor = '$fontColor', 
-        backgroundColor = '$backgroundColor' 
-        WHERE userID = $userID";
-
-    // Execute queries and handle results
-    $profileResult = $conn->query($updateProfileQuery);
-    $settingsResult = $conn->query($updateSettingsQuery);
-
-    // Messages for the user
-    if ($profileResult === TRUE && $settingsResult === TRUE) {
-        $message = "Profile and settings updated successfully!";
-    } else {
-        $message = "Error updating data: " . $conn->error;
-    }
-}
-
-
-// Fetch user details using prepared statements
+// Fetch user details
 $userID = $_SESSION['user_id'];
-
-// Prepare the SQL statement
-$stmt = $conn->prepare("SELECT userID, userName, pass, realFirstName, realLastName, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
-
-// Execute the query
 $stmt->execute();
-
-// Fetch the result
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-
-// Close the statement
 $stmt->close();
 
-$userNameIn = $user['userName'];
-$realFirstNameIn = $user['realFirstName'];
-$realLastNameIn = $user['realLastName'];
-$emailIn = $user['email'];
-$fontSizeIn = $user['fontSize'];
-$fontColorIn = $user['fontColor'];
-$backgroundColorIn = $user['backgroundColor'];
-
-$conn->close()
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -94,45 +31,43 @@ $conn->close()
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update User and Settings</title>
+    <title>Update Profile</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
             padding: 0;
-            background-color: <?= htmlspecialchars($backgroundColorIn); ?>;
-            color: <?= htmlspecialchars($fontColorIn); ?>;
-            font-size: <?= htmlspecialchars($fontSizeIn); ?>;
         }
         .container {
-            width: 50%;
+            max-width: 600px;
             margin: 50px auto;
-            background: #fff;
             padding: 20px;
+            background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
-            color: #333;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
+            color: #444;
         }
         label {
-            margin-top: 10px;
             font-weight: bold;
+            margin-top: 10px;
+            display: block;
         }
         input[type="text"], input[type="email"], input[type="password"], select {
+            width: 100%;
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
-        } 
+            box-sizing: border-box;
+        }
         button {
             margin-top: 20px;
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #007BFF;
             color: #fff;
             border: none;
@@ -142,68 +77,60 @@ $conn->close()
         button:hover {
             background-color: #0056b3;
         }
-        .message {
-            margin-top: 10px;
-            text-align: center;
-            color: green;
-        }
-        .error {
-            color: red;
+        .color-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
     <?php include 'navigation.php'; ?>
     <div class="container">
-        <h1>Update Your Profile and Settings</h1>
-        <?php if (isset($message)): ?>
-            <div class="message"><?= htmlspecialchars($message); ?></div>
-        <?php endif; ?>
-
-        <?php if (isset($settingsMessage)): ?>
-            <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
-        <?php endif; ?>
-
-        <form action="updateUser.php" method="POST">
+        <h1>Update Your Profile</h1>
+        <form action="scripts/updateUserBackend.php" method="POST">
             <input type="hidden" name="userID" value="<?= htmlspecialchars($userID); ?>">
-            
-            <h2>Profile Details</h2>
+
             <label for="userName">Username:</label>
-            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($userNameIn); ?>" required>
-            
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            
+            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($user['userName']); ?>" required>
+
             <label for="realFirstName">First Name:</label>
-            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($realFirstNameIn); ?>" required>
-            
+            <input type="text" name="realFirstName" id="realFirstName" value="<?= htmlspecialchars($user['realFirstName']); ?>" required>
+
             <label for="realLastName">Last Name:</label>
-            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($realLastNameIn); ?>" required>
-            
+            <input type="text" name="realLastName" id="realLastName" value="<?= htmlspecialchars($user['realLastName']); ?>" required>
+
+            <label for="pass">Password:</label>
+            <input type="password" name="pass" id="pass" required>
+
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
-            
-            <h2>Customization Settings</h2>
+            <input type="email" name="email" id="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
-                <option value="12px" <?= $fontSizeIn === '12px' ? 'selected' : ''; ?>>12px</option>
-                <option value="14px" <?= $fontSizeIn === '14px' ? 'selected' : ''; ?>>14px</option>
-                <option value="16px" <?= $fontSizeIn === '16px' ? 'selected' : ''; ?>>16px</option>
-                <option value="18px" <?= $fontSizeIn === '18px' ? 'selected' : ''; ?>>18px</option>
-                <option value="20px" <?= $fontSizeIn === '20px' ? 'selected' : ''; ?>>20px</option>
+                <?php
+                $fontSizes = ["12px", "14px", "16px", "18px", "20px"];
+                foreach ($fontSizes as $size) {
+                    $selected = $user['fontSize'] === $size ? 'selected' : '';
+                    echo "<option value='$size' $selected>$size</option>";
+                }
+                ?>
             </select>
 
             <label for="fontColor">Font Color:</label>
             <select name="fontColor" id="fontColor">
                 <?php
                 $colors = [
-                    "#000000", "#FFFFFF", "#FF0000", "#00FF00", "#0000FF",
-                    "#FFFF00", "#FF00FF", "#00FFFF", "#C0C0C0", "#808080",
-                    "#800000", "#808000", "#008000", "#800080", "#008080", "#000080"
+                    "#000000" => "Black", "#FFFFFF" => "White", "#FF0000" => "Red", "#00FF00" => "Green", 
+                    "#0000FF" => "Blue", "#FFFF00" => "Yellow", "#FF00FF" => "Magenta", "#00FFFF" => "Cyan", 
+                    "#C0C0C0" => "Silver", "#808080" => "Gray", "#800000" => "Maroon", "#808000" => "Olive", 
+                    "#008000" => "Dark Green", "#800080" => "Purple", "#008080" => "Teal", "#000080" => "Navy"
                 ];
-                foreach ($colors as $color) {
-                    $selected = $fontColorIn === $color ? 'selected' : '';
-                    echo "<option value='$color' $selected>$color</option>";
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['fontColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name <div class='color-preview' style='background-color: $hex;'></div></option>";
                 }
                 ?>
             </select>
@@ -211,16 +138,15 @@ $conn->close()
             <label for="backgroundColor">Background Color:</label>
             <select name="backgroundColor" id="backgroundColor">
                 <?php
-                foreach ($colors as $color) {
-                    $selected = $backgroundColorIn === $color ? 'selected' : '';
-                    echo "<option value='$color' $selected>$color</option>";
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['backgroundColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name <div class='color-preview' style='background-color: $hex;'></div></option>";
                 }
                 ?>
             </select>
-            
-            <button type="submit" name="updateProfileAndSettings">Update Profile and Settings</button>
-        </form>
 
+            <button type="submit" name="updateProfileAndSettings">Update</button>
+        </form>
     </div>
 </body>
 </html>
