@@ -68,7 +68,7 @@ $navigationDbConn->close();
 .user-info {
     margin-left: auto; /* Pushes the user-info section to the far right */
     font-size: 16px;
-    color: #333;
+    color: <?= htmlspecialchars($fontColorNav); ?>;
 }
 
 .user-name {
