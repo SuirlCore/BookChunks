@@ -77,8 +77,7 @@ $user = $result->fetch_assoc();
 // Close the statement
 $stmt->close();
 
-echo $user['userID'];
-echo $user['userName'];
+$userNameIn = $user['userName'];
 echo $user['pass'];
 echo $user['realFirstName'];
 echo $user['realLastName'];
@@ -163,7 +162,7 @@ echo $user['backgroundColor'];
         <form method="POST">
             <input type="hidden" name="userID" value="<?= htmlspecialchars($user['userID']); ?>">
             <label for="userName">Username:</label>
-            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($user['userName']); ?>" required>
+            <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($userNameIn); ?>" required>
             
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required>
