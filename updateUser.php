@@ -16,16 +16,24 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle profile update form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfile'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSettings'])) {
+    // Common field
     $userID = intval($_POST['userID']);
+
+    // Profile update fields
     $userName = $conn->real_escape_string($_POST['userName']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Secure password hashing
     $realFirstName = $conn->real_escape_string($_POST['realFirstName']);
     $realLastName = $conn->real_escape_string($_POST['realLastName']);
     $email = $conn->real_escape_string($_POST['email']);
 
-    $updateQuery = "UPDATE users SET 
+    // Settings update fields
+    $fontSize = $conn->real_escape_string($_POST['fontSize']);
+    $fontColor = $conn->real_escape_string($_POST['fontColor']);
+    $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
+
+    // Update profile query
+    $updateProfileQuery = "UPDATE users SET 
         userName = '$userName', 
         pass = '$password', 
         realFirstName = '$realFirstName', 
@@ -33,34 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfile'])) {
         email = '$email' 
         WHERE userID = $userID";
 
-    if ($conn->query($updateQuery) === TRUE) {
-        $message = "Profile updated successfully!";
-    } else {
-        $message = "Error updating profile: " . $conn->error;
-    }
-
-}
-
-// Handle settings update form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateSettings'])) {
-    $userID = intval($_POST['userID']);
-    $fontSize = $conn->real_escape_string($_POST['fontSize']);
-    $fontColor = $conn->real_escape_string($_POST['fontColor']);
-    $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
-
-    $settingsQuery = "UPDATE users SET 
+    // Update settings query
+    $updateSettingsQuery = "UPDATE users SET 
         fontSize = '$fontSize', 
         fontColor = '$fontColor', 
         backgroundColor = '$backgroundColor' 
         WHERE userID = $userID";
 
-    if ($conn->query($settingsQuery) === TRUE) {
-        $settingsMessage = "Settings updated successfully!";
-    } else {
-        $settingsMessage = "Error updating settings: " . $conn->error;
-    }
+    // Execute queries and handle results
+    $profileResult = $conn->query($updateProfileQuery);
+    $settingsResult = $conn->query($updateSettingsQuery);
 
+    // Messages for the user
+    if ($profileResult === TRUE && $settingsResult === TRUE) {
+        $message = "Profile and settings updated successfully!";
+    } else {
+        $message = "Error updating data: " . $conn->error;
+    }
 }
+
 
 // Fetch user details using prepared statements
 $userID = $_SESSION['user_id'];
@@ -156,12 +155,19 @@ $conn->close()
 <body>
     <?php include 'navigation.php'; ?>
     <div class="container">
-        <h1>Update Your Profile</h1>
+        <h1>Update Your Profile and Settings</h1>
         <?php if (isset($message)): ?>
             <div class="message"><?= htmlspecialchars($message); ?></div>
         <?php endif; ?>
+
+        <?php if (isset($settingsMessage)): ?>
+            <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
+        <?php endif; ?>
+
         <form method="POST">
             <input type="hidden" name="userID" value="<?= htmlspecialchars($userID); ?>">
+            
+            <h2>Profile Details</h2>
             <label for="userName">Username:</label>
             <input type="text" name="userName" id="userName" value="<?= htmlspecialchars($userNameIn); ?>" required>
             
@@ -177,16 +183,7 @@ $conn->close()
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
             
-            <button type="submit" name="updateProfile">Update Profile</button>
-        </form>
-
-        <h1>Customize Your Settings</h1>
-        <?php if (isset($settingsMessage)): ?>
-            <div class="message"><?= htmlspecialchars($settingsMessage); ?></div>
-        <?php endif; ?>
-        <form method="POST">
-            <input type="hidden" name="userID" value="<?= $userID; ?>">
-            
+            <h2>Customization Settings</h2>
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
                 <option value="12px" <?= $fontSizeIn === '12px' ? 'selected' : ''; ?>>12px</option>
@@ -221,8 +218,9 @@ $conn->close()
                 ?>
             </select>
             
-            <button type="submit" name="updateSettings">Update Settings</button>
+            <button type="submit" name="updateProfileAndSettings">Update Profile and Settings</button>
         </form>
+
     </div>
 </body>
 </html>
