@@ -16,8 +16,6 @@ login
 -get the website to auto login if the user wants to
 
 users
--double check password when creating user
--change password
 -forgot password email
 
 uploading files
@@ -27,9 +25,7 @@ feed management
 -ensure lastSeenChunkID integrity when changing items in feeds
 
 scrollview
--ability to change colors and font size
 -have the site auto load here
--ability to scroll to different chunks(chapters?)
 
 systemData
 -table for user recomendations 
@@ -39,13 +35,6 @@ additional pages
 -add friends page?: add friends so you can track their progress against your own
     -percent through current book
     -number of chunks seen in the last 7 rolling days
--settings page
-    -text size
-    -number of sentences per chunk
-    -background color
-    -text color
-    -text size
-    -text to voice?
 -page to filter other things into the feed. ability to choose frequency of other things.
     -statistics
         -number of chunks seen total / last 7 days
