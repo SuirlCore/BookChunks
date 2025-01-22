@@ -24,9 +24,24 @@ CREATE TABLE IF NOT EXISTS users (
     realLastName CHAR(255) NOT NULL,
     email CHAR(255) NOT NULL,
     numChunksSeen INT DEFAULT 0,
+
+    maxWordsPerChunk INT DEFAULT 50,
+
+    textToVoice INT DEFAULT 0,
+
+    autoLogin INT DEFAULT 0,
+    
     fontSize VARCHAR(10) DEFAULT '16px',
     fontColor VARCHAR(7) DEFAULT '#000000',
     backgroundColor VARCHAR(7) DEFAULT '#FFFFFF',
+    
+    lineHeight VARCHAR(7) DEFAULT '1.5',
+    
+    highlightColor VARCHAR(7) DEFAULT '#F0E68C',
+    buttonColor VARCHAR(7) DEFAULT '#A9A9A9',
+    buttonHoverColor VARCHAR(7) DEFAULT '#696969',
+    buttonTextColor VARCHAR(7) DEFAULT '#FFFFFF',
+
     PRIMARY KEY (userID)
 );
 
