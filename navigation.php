@@ -74,7 +74,7 @@ body {
 }
 
 .menu-button:hover {
-    background-color: #A9A9A9;
+    background-color: 	#696969;
 }
 
 .user-info {

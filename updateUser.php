@@ -84,14 +84,14 @@ $conn->close();
         button {
             margin-top: 20px;
             padding: 10px 15px;
-            background-color: #007BFF;
+            background-color: #A9A9A9;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #696969;
         }
         .color-preview {
             display: inline-block;
