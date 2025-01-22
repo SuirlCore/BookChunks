@@ -60,7 +60,7 @@ $conn->close();
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
-            background: #fff;
+            background: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
