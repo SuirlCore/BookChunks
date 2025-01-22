@@ -33,7 +33,6 @@ $conn->close();
             overflow: hidden;  
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
-    
         }
     </style>
     <meta charset="UTF-8">
@@ -46,17 +45,23 @@ $conn->close();
         <input type="file" name="text_file" accept=".txt" required><br><br>
         <input type="submit" value="Upload and Process">
     </form>
+
+    <?php if (isset($_SESSION['upload_message'])): ?>
+        <p style="color: <?= htmlspecialchars($_SESSION['fontColor']); ?>;">
+            <?= htmlspecialchars($_SESSION['upload_message']); ?>
+        </p>
+        <?php unset($_SESSION['upload_message']); ?>
+    <?php endif; ?>
+
     <p>
         As of now we only recognise .txt files with a UTF-8 encoding.
         You can use the following website to convert a pdf or most other types of files to a text file.<br>
-
-        <a href = "https://cloudconvert.com/pdf-to-txt"> https://cloudconvert.com/pdf-to-txt</a><br>
+        <a href="https://cloudconvert.com/pdf-to-txt">https://cloudconvert.com/pdf-to-txt</a><br>
     </p>
     
     <p>
         If you are having problems uploading a whole file, the problem may be the encoding for the text
         file being uploaded.<br>
-
         Try going to <a href="https://www.freeformatter.com/convert-file-encoding.html">www.freeformatter.com</a> to ensure that your text 
         file is in the proper format.<br>
     </p>
@@ -78,10 +83,7 @@ $conn->close();
                 </td>
             </tr>
         <?php endforeach; ?>
-  
     </table>
 
 </body>
 </html>
-
-

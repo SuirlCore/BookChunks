@@ -11,7 +11,7 @@ include 'scripts/pdo.php';
 
 // Fetch user details
 $userID = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor, lineHeight, buttonColor, buttonHoverColor, buttonTextColor, highlightColor, maxWordsPerChunk, textToVoice, autoLogin FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -119,6 +119,7 @@ $conn->close();
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" value="<?= htmlspecialchars($emailIn); ?>" required>
 
+            <!-- Font Size -->
             <label for="fontSize">Font Size:</label>
             <select name="fontSize" id="fontSize">
                 <?php
@@ -130,6 +131,7 @@ $conn->close();
                 ?>
             </select>
 
+            <!-- Font Color -->
             <label for="fontColor">Font Color:</label>
             <select name="fontColor" id="fontColor">
                 <?php
@@ -146,6 +148,7 @@ $conn->close();
                 ?>
             </select>
 
+            <!-- Background Color -->
             <label for="backgroundColor">Background Color:</label>
             <select name="backgroundColor" id="backgroundColor">
                 <?php
@@ -154,6 +157,80 @@ $conn->close();
                     echo "<option value='$hex' $selected>$name <div class='color-preview' style='background-color: $hex;'></div></option>";
                 }
                 ?>
+            </select>
+
+            <!-- Line Height -->
+            <label for="lineHeight">Line Height:</label>
+            <select name="lineHeight" id="lineHeight">
+                <?php
+                $lineHeights = ["1", "1.5", "2", "2.5", "3", "3.5"];
+                foreach ($lineHeights as $height) {
+                    $selected = $user['lineHeight'] === $height ? 'selected' : '';
+                    echo "<option value='$height' $selected>$height</option>";
+                }
+                ?>
+            </select>
+
+            <!-- Button Color -->
+            <label for="buttonColor">Button Color:</label>
+            <select name="buttonColor" id="buttonColor">
+                <?php
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['buttonColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name</option>";
+                }
+                ?>
+            </select>
+
+            <!-- Button Hover Color -->
+            <label for="buttonHoverColor">Button Hover Color:</label>
+            <select name="buttonHoverColor" id="buttonHoverColor">
+                <?php
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['buttonHoverColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name</option>";
+                }
+                ?>
+            </select>
+
+            <!-- highlight Color -->
+            <label for="highlightColor">Highlight Color:</label>
+            <select name="highlightColor" id="highlightColor">
+                <?php
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['highlightColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name</option>";
+                }
+                ?>
+            </select>
+
+            <!-- Button Text Color -->
+            <label for="buttonTextColor">Button Text Color:</label>
+            <select name="buttonTextColor" id="buttonTextColor">
+                <?php
+                foreach ($colors as $hex => $name) {
+                    $selected = $user['buttonTextColor'] === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name</option>";
+                }
+                ?>
+            </select>
+
+            <!-- Max Words Per Chunk -->
+            <label for="maxWordsPerChunk">Max Words Per Chunk:</label>
+            <input type="number" name="maxWordsPerChunk" id="maxWordsPerChunk" value="<?= htmlspecialchars($user['maxWordsPerChunk']); ?>">
+
+            <!-- Text to Voice -->
+            <label for="textToVoice">Text to Voice:</label>
+            <select name="textToVoice" id="textToVoice">
+                <option value="1" <?= $user['textToVoice'] === '1' ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= $user['textToVoice'] === '0' ? 'selected' : ''; ?>>Off</option>
+            </select>
+
+            <!-- Auto Login -->
+            <label for="autoLogin">Auto Login:</label>
+            <select name="autoLogin" id="autoLogin">
+                <option value="1" <?= $user['autoLogin'] === '1' ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= $user['autoLogin'] === '0' ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <button type="submit" name="updateProfileAndSettings">Update</button>

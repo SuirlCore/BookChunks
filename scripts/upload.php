@@ -61,7 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
 
     // Ensure the file is a .txt file
     if ($file['type'] !== 'text/plain') {
-        die("Please upload a valid text file.");
+        $_SESSION['upload_message'] = "Please upload a valid text file.";
+        header("Location: ../uploadPage.php");
+        exit();
     }
 
     // Read the content of the file
@@ -82,14 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     $fileName = $file['name'];
     $stmt = $conn->prepare("INSERT INTO fullTexts (filename, owner) VALUES (?, ?)");
     if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
+        $_SESSION['upload_message'] = "Failed to prepare the database statement.";
+        header("Location: ../uploadPage.php");
+        exit();
     }
     $stmt->bind_param("si", $fileName, $userID);
     if (!$stmt->execute()) {
-        die("Execute failed: " . $stmt->error);
+        $_SESSION['upload_message'] = "Failed to execute the database statement.";
+        header("Location: ../uploadPage.php");
+        exit();
     }
     $textID = $stmt->insert_id;
     $stmt->close();
+
+    $_SESSION['upload_message'] = "Uploading sections...";
 
     // Upload each section to the database, numbered sequentially, and linked to textID
     $sectionNumber = 1;
@@ -99,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
         try {
             uploadSectionToDB($conn, $textID, $sectionNumber, $section);
         } catch (Exception $e) {
-            echo "Failed to upload section $sectionNumber: " . $e->getMessage() . "<br>";
+            $_SESSION['upload_message'] = "Failed to upload section $sectionNumber: " . $e->getMessage();
             $success = false;
             break;
         }
@@ -110,13 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     $conn->close();
 
     if ($success) {
-        // Redirect to uploadPage.php if successful
+        $_SESSION['upload_message'] = "File uploaded successfully.";
         header("Location: ../uploadPage.php");
-        exit;
+        exit();
     } else {
-        echo "An error occurred while uploading the text. Please try again.";
+        $_SESSION['upload_message'] = "An error occurred while uploading the text. Please try again.";
+        header("Location: ../uploadPage.php");
+        exit();
     }
 } else {
-    echo "No file uploaded.";
+    $_SESSION['upload_message'] = "No file uploaded.";
+    header("Location: ../uploadPage.php");
+    exit();
 }
 ?>

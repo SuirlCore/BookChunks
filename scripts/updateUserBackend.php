@@ -18,7 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $fontSize = $conn->real_escape_string($_POST['fontSize']);
     $fontColor = $conn->real_escape_string($_POST['fontColor']);
     $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
-    
+    $lineHeight = $conn->real_escape_string($_POST['lineHeight']);
+    $buttonColor = $conn->real_escape_string($_POST['buttonColor']);
+    $buttonHoverColor = $conn->real_escape_string($_POST['buttonHoverColor']);
+    $buttonTextColor = $conn->real_escape_string($_POST['buttonTextColor']);
+    $maxWordsPerChunk = intval($_POST['maxWordsPerChunk']);
+    $textToVoice = intval($_POST['textToVoice']);
+    $autoLogin = intval($_POST['autoLogin']);
+    $highlightColor = $conn->real_escape_string($_POST['hilightColor']);
+
+    // Profile update query
     $updateProfileQuery = "UPDATE users SET 
         userName = '$userName', 
         realFirstName = '$realFirstName', 
@@ -42,7 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $updateSettingsQuery = "UPDATE users SET 
         fontSize = '$fontSize', 
         fontColor = '$fontColor', 
-        backgroundColor = '$backgroundColor' 
+        backgroundColor = '$backgroundColor',
+        lineHeight = '$lineHeight',
+        buttonColor = '$buttonColor',
+        buttonHoverColor = '$buttonHoverColor',
+        buttonTextColor = '$buttonTextColor',
+        highlightColor = '$highlightColor,
+        maxWordsPerChunk = $maxWordsPerChunk,
+        textToVoice = $textToVoice,
+        autoLogin = $autoLogin
         WHERE userID = $userID";
 
     $profileResult = $conn->query($updateProfileQuery);
@@ -60,9 +77,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $_SESSION['fontColor'] = $fontColor;
     $_SESSION['backgroundColor'] = $backgroundColor;
 
+    $_SESSION['lineHeight'] = $lineHeight;
+    $_SESSION['highlightColor'] = $highlightColor;
+    $_SESSION['buttonColor'] = $buttonColor;
+    $_SESSION['buttonHoverColor'] = $buttonHoverColor;
+    $_SESSION['buttonTextColor'] = $buttonTextColor;
+    $_SESSION['maxWordsPerChunk'] = $maxWordsPerChunk;
+    $_SESSION['textToVoice'] = $textToVoice;
+    $_SESSION['autoLogin'] = $autoLogin;
+
     // Redirect back to the original page
     header("Location: ../updateUser.php");
     exit();
 }
-
 ?>

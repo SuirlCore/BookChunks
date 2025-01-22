@@ -22,7 +22,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['fontSize'] = $row['fontSize'];
             $_SESSION['fontColor'] = $row['fontColor'];
             $_SESSION['backgroundColor'] = $row['backgroundColor'];
+            $_SESSION['lineHeight'] = $row['lineHeight'];
+            $_SESSION['highlightColor'] = $row['highlightColor'];
+            $_SESSION['buttonColor'] = $row['buttonColor'];
+            $_SESSION['buttonHoverColor'] = $row['buttonHoverColor'];
+            $_SESSION['buttonTextColor'] = $row['buttonTextColor'];
+            
             $_SESSION['userLevel'] = $row['userLevel'];
+            $_SESSION['maxWordsPerChunk'] = $row['maxWordsPerChunk'];
+            $_SESSION['textToVoice'] = $row['textToVoice'];
+            $_SESSION['autoLogin'] = $row['autoLogin'];
+            
+            
             header("Location: ../welcome.php"); // Redirect to a welcome page after successful login
         } else {
             echo "Incorrect password.";
