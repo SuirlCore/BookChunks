@@ -18,13 +18,18 @@ if (!isset($_SESSION['user_id'])) {
             padding: 0;
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
-    
+        }
+        .responsive-image {
+          width: 100%; /* Fit to the width of the container */
+          height: auto; /* Maintain aspect ratio */
+          display: block; /* Remove default spacing below the image */
         }
 </style>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Chunks</title>
+    <img src="images/bookChunkBanner.png" class="responsive-image" alt="Book Chunks Banner"> 
 </head>
 <body>
     <?php include 'navigation.php'; ?>
@@ -42,6 +47,6 @@ if (!isset($_SESSION['user_id'])) {
         feed.
     </p>
     
-    <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
+    <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:100px;height:100px;">
 </body>
 </html>
