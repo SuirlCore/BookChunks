@@ -5,20 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Setup Your Feed</title>
     <style>
+         :root {
+            --font-color: <?= isset($_SESSION['fontColor']) ? htmlspecialchars($_SESSION['fontColor']) : '#000000'; ?>;
+            --background-color: <?= isset($_SESSION['backgroundColor']) ? htmlspecialchars($_SESSION['backgroundColor']) : '#FFFFFF'; ?>;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
-            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+            color: var(--font-color);
+            background-color: var(--background-color);
         }
+
         #top-frame {
             height: 20%;
             width: 100%;
-            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
-            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
-        
+            color: var(--font-color);
+            background-color: var(--background-color);
         }
+
         #bottom-frame {
             height: 80%;
             width: 100%;
