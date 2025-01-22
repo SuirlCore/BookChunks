@@ -110,7 +110,7 @@ $stmt->close();
         }
 
         .navigation button:hover {
-            background: #A9A9A9; 
+            background: #696969; 
         }
 
         .navigation button:disabled { 
