@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     userID INT NOT NULL AUTO_INCREMENT,
     userName CHAR(255) NOT NULL,
     userLevel INT DEFAULT 0,
+        --0 = normal, 1 = teacher, 2 = admin
     pass VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     realFirstName CHAR(255) NOT NULL,
     realLastName CHAR(255) NOT NULL,
