@@ -85,8 +85,9 @@ body {
 <div class="nav-container">
     <button class="menu-button" onclick="toggleMenu()">☰ Menu</button>
     <div class="user-info">
-        <h2>Book Chunks</h2>
-        Logged in as: <span class="user-name"><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?></span>
+        <h2>
+            Book Chunks - Logged in as: <span class="user-name"><?php echo htmlspecialchars($_SESSION['username'] ?? 'Guest'); ?></span>
+        </h2>
         <img src="images/bookChunkSm.png" alt="Book Chunks Logo" style="width:50px;height:50px;"> 
     </div>
     <div class="nav-menu" id="navMenu">
