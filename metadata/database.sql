@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     userID INT NOT NULL AUTO_INCREMENT,
     userName CHAR(255) NOT NULL,
     userLevel INT DEFAULT 0,
-        --0 = normal, 1 = teacher, 2 = admin
+        -- 0 = normal, 1 = teacher, 2 = admin
     pass VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     realFirstName CHAR(255) NOT NULL,
     realLastName CHAR(255) NOT NULL,
@@ -29,8 +29,12 @@ CREATE TABLE IF NOT EXISTS users (
     maxWordsPerChunk INT DEFAULT 50,
 
     textToVoice INT DEFAULT 0,
+        -- 0 requires a button press to play audio
+        -- 1 automatically plays audio when new chunk loads
 
     autoLogin INT DEFAULT 0,
+        -- 0 does nothing
+        -- 1 logs into the system automatically with cookies
     
     fontSize VARCHAR(10) DEFAULT '16px',
     fontColor VARCHAR(7) DEFAULT '#000000',
