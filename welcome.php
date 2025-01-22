@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id'])) {
         .responsive-image-container {
         display: flex;
         align-items: center;
-        background-color: lightgray; /* Color shown to the right of the image */
+        background-color: #c0d1ae; /* Color shown to the right of the image */
         max-height: 100px; /* Ensure the container doesn't exceed 100px */
         overflow: hidden; /* Prevent image overflow */
     }
@@ -39,7 +39,7 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 <body>
     <?php include 'navigation.php'; ?>
-    
+
     <div class="responsive-image-container">
         <img src="images/bookChunkBanner.png" alt="Book Chunks Banner">
     </div>
