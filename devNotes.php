@@ -133,7 +133,7 @@ if (file_exists($filePath)) {
             include 'scripts/pdo.php';
 
             // Prepare the SQL statement to insert the recommendation
-            $stmt = $mysqli->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");
+            $stmt = $conn->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");
             $stmt->bind_param("is", $userID, $recommendationText);
             
             if ($stmt->execute()) {
@@ -143,7 +143,7 @@ if (file_exists($filePath)) {
             }
 
             $stmt->close();
-            $mysqli->close();
+            $conn->close();
         } else {
             echo "<p>Please enter a recommendation.</p>";
         }
