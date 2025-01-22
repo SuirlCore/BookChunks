@@ -88,7 +88,7 @@ if (file_exists($filePath)) {
             border: 1px solid var(--font-color); /* Match input border to font color */
             border-radius: 4px;
             color: var(--font-color); /* Match input text to font color */
-            background-color: var(--background-color); /* Match input background to page background */
+            /*background-color: var(--background-color); /* Match input background to page background */
         }
 
         button[type="submit"] {
