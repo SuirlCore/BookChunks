@@ -11,10 +11,10 @@ $userID = $_SESSION['user_id'];
 include 'pdo.php';
 
 // Function to upload a section into the database
-function uploadSectionToDB($dbConn, $textID, $sectionNumber, $sectionText) {
-    $stmt = $dbConn->prepare("INSERT INTO bookChunks (bookID, chunkNum, chunkContent, hasBeenSeen) VALUES (?, ?, ?, 0)");
+function uploadSectionToDB($conn, $textID, $sectionNumber, $sectionText) {
+    $stmt = $conn->prepare("INSERT INTO bookChunks (bookID, chunkNum, chunkContent, hasBeenSeen) VALUES (?, ?, ?, 0)");
     if (!$stmt) {
-        throw new Exception("Prepare failed: " . $dbConn->error);
+        throw new Exception("Prepare failed: " . $conn->error);
     }
     $stmt->bind_param("iis", $textID, $sectionNumber, $sectionText);
     if (!$stmt->execute()) {
@@ -78,18 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     // Parse the text into sections of 3 sentences
     $sections = parseTextToSections($text);
 
-    $dbConn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check if connection was successful
-    if ($dbConn->connect_error) {
-        die("Connection failed: " . $dbConn->connect_error);
-    }
-
     // Insert the uploaded file into the texts table and get the textID
     $fileName = $file['name'];
-    $stmt = $dbConn->prepare("INSERT INTO fullTexts (filename, owner) VALUES (?, ?)");
+    $stmt = $conn->prepare("INSERT INTO fullTexts (filename, owner) VALUES (?, ?)");
     if (!$stmt) {
-        die("Prepare failed: " . $dbConn->error);
+        die("Prepare failed: " . $conn->error);
     }
     $stmt->bind_param("si", $fileName, $userID);
     if (!$stmt->execute()) {
@@ -104,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
 
     foreach ($sections as $section) {
         try {
-            uploadSectionToDB($dbConn, $textID, $sectionNumber, $section);
+            uploadSectionToDB($conn, $textID, $sectionNumber, $section);
         } catch (Exception $e) {
             echo "Failed to upload section $sectionNumber: " . $e->getMessage() . "<br>";
             $success = false;
@@ -114,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
     }
 
     // Close the database connection
-    $dbConn->close();
+    $conn->close();
 
     if ($success) {
         // Redirect to uploadPage.php if successful

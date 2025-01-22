@@ -3,42 +3,12 @@
  if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-// Connect to the database
-include_once 'scripts/pdo.php';
 
-if (!isset($navigationDbConn)) {
-    $navigationDbConn = new mysqli($servername, $username, $password, $dbname);
-    if ($navigationDbConn->connect_error) {
-        die("Connection failed: " . $navigationDbConn->connect_error);
-    }
-}
+$userLevel = $_SESSION['userLevel'] ?? 0;
 
-// Fetch userLevel from the database using $navigationDbConn
-$userID = $_SESSION['user_id'];
-$sql = "SELECT userLevel FROM users WHERE userID = ?";
-$stmt = $navigationDbConn->prepare($sql);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$navResult = $stmt->get_result();
-$user = $navResult->fetch_assoc();
-$userLevel = $user['userLevel'] ?? 0;
-$stmt->close();
-
-
-// Fetch user preferences for text and background
-$sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
-$stmt = $navigationDbConn->prepare($sql);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
-$result = $stmt->get_result();
-$choices = $result->fetch_assoc();
-$fontSizeChoiceNav = $choices['fontSize'];
-$fontColorChoiceNav = $choices['fontColor'];
-$backgroundColorChoiceNav = $choices['backgroundColor'];
-$stmt->close();
-
-
-$navigationDbConn->close();
+$fontSizeChoiceNav = $_SESSION['fontSize'];
+$fontColorChoiceNav = $_SESSION['fontColor'];
+$backgroundColorChoiceNav = $_SESSION['backgroundColor'];
 
 ?>
 <style>
@@ -50,8 +20,8 @@ body {
     flex-direction: column;
     height: 100vh; 
     overflow: hidden;  
-    color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
-    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
+    color: <?= htmlspecialchars($fontColorChoiceNav); ?>; /* Dynamic font color */
+    background-color: <?= htmlspecialchars($backgroundColorChoiceNav); ?>; /* Dynamic background color */
 
     }
 

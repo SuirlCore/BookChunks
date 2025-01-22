@@ -1,6 +1,4 @@
 <?php
-// Database connection
-include 'scripts/pdo.php';
 
 // Start session and retrieve user ID
 session_start();
@@ -50,12 +48,8 @@ $userID = $_SESSION['user_id'];
         <select name="feedID" id="feedID" required>
             <option value="">Select a feed</option>
             <?php
-            // Connect to the database
-            $mysqli = new mysqli($servername, $username, $password, $dbname);
-
-            if ($mysqli->connect_error) {
-                die("Connection failed: " . $mysqli->connect_error);
-            }
+            // Database connection
+            include 'scripts/pdo.php';
 
             $stmt = $mysqli->prepare("SELECT feedID, feedName FROM feeds WHERE userID = ?");
             $stmt->bind_param("i", $userID);

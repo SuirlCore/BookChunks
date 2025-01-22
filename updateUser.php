@@ -9,11 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 // Database connection
 include 'scripts/pdo.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Fetch user details
 $userID = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor FROM users WHERE userID = ?");

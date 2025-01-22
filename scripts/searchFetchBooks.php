@@ -2,11 +2,6 @@
 // Database connection
 include 'pdo.php';
 
-// Start session and retrieve user ID
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    die("User not logged in.");
-}
 $userID = $_SESSION['user_id'];
 
 // Connect to database

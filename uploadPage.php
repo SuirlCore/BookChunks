@@ -6,13 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include 'scripts/pdo.php'; // Include your database connection file
-
-// Fetch books uploaded by the user
-$dbConn = new mysqli($servername, $username, $password, $dbname);
-if ($dbConn->connect_error) {
-    die("Connection failed: " . $dbConn->connect_error);
-}
+include 'scripts/pdo.php';
 
 $userID = $_SESSION['user_id'];
 $stmt = $dbConn->prepare("SELECT textID as id, filename FROM fullTexts WHERE owner = ?");

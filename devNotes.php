@@ -122,8 +122,6 @@ if (file_exists($filePath)) {
     </form>
 
     <?php
-    // Database connection
-    include 'scripts/pdo.php';
 
     // Handle the recommendation form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['recommendationText'])) {
@@ -131,12 +129,8 @@ if (file_exists($filePath)) {
         $userID = $_SESSION['user_id'];
 
         if ($recommendationText !== '') {
-            // Connect to database
-            $mysqli = new mysqli($servername, $username, $password, $dbname);
-
-            if ($mysqli->connect_error) {
-                die("Connection failed: " . $mysqli->connect_error);
-            }
+            // Database connection
+            include 'scripts/pdo.php';
 
             // Prepare the SQL statement to insert the recommendation
             $stmt = $mysqli->prepare("INSERT INTO userRecomendations (userID, recomendationText) VALUES (?, ?)");

@@ -9,12 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 // Database connection
 include 'pdo.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSettings'])) {
     $userID = intval($_POST['userID']);
     $userName = $conn->real_escape_string($_POST['userName']);

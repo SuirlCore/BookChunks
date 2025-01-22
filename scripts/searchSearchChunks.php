@@ -9,13 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 $userID = $_SESSION['user_id'];
 
-// Connect to database
-$mysqli = new mysqli($servername, $username, $password, $dbname);
-
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
 if (isset($_GET['bookID']) && isset($_GET['search'])) {
     $bookID = (int)$_GET['bookID'];
     $search = '%' . $_GET['search'] . '%';
