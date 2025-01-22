@@ -8,6 +8,16 @@ need a triggered procedure on mysql to run once a week to update chunksSeenPerWe
 OR update php logic to update bot fields at the same time
 
 
+dyslexia functions:
+    change line spacing
+    highlight a line at a time
+    pick highlight color
+    change number of words per chunk
+    touch a word to add it to a vocabulary flash card to filter in later
+    text to voice (settings option to auto read, or click a button to read as needed)
+    change font
+
+
 
 
 items to be fixed:
@@ -43,3 +53,22 @@ additional pages
     -flash cards
     -cat memes
     -ads?
+    -rss feeds
+-teacher page  
+    add a teacher code so that students can add their teacher.
+    the teacher then has access to add items to students feeds
+    as well as access to the students statistics
+
+
+ways to use this site
+    classroom teacher / students
+    book reader with/without dyslexia support
+    rss feed
+    flash card memorizer
+
+hardware server needs
+    second apache server setup as backup
+    auto backup data to second server
+    database backups to external hd / cloud
+
+find source of free books in text file format to recommend to users

@@ -1,0 +1,62 @@
+Ideas to help:
+    x text and background color
+    x text size
+    change font
+      line spacing
+      highlight a line at a time
+      pick highlight color
+      change number of words per chunk
+    touch a word to add it to a vocabulary flash card to filter in later
+    text to voice (settings option to auto read, or click a button to read as needed)
+
+
+Reading with dyslexia can be challenging, but there are several strategies that can help improve comprehension and make reading more accessible. Here are some effective ways to help:
+1. Use Audiobooks
+
+    Listening to an audiobook while following along with the physical book can reinforce reading through auditory and visual processing.
+
+2. Break Down Text
+
+    Divide the reading material into smaller sections to avoid overwhelming yourself and allow for better focus.
+
+3. Highlight Key Points
+
+    Highlight important sections, key ideas, or difficult words to make it easier to return to important parts later.
+
+4. Read Aloud
+
+    Reading aloud can help slow down the process and improve focus. It engages both the auditory and visual parts of the brain.
+
+5. Use a Digital Reader
+
+    Digital tools like e-readers or apps can offer features like text-to-speech, customizable font sizes, background colors, and line spacing, making reading more comfortable.
+
+6. Focus on Vocabulary
+
+    Build a strong vocabulary through flashcards, word games, and engaging in conversations. This can improve reading comprehension.
+
+7. Practice Chunking
+
+    Instead of reading word by word, focus on groups of words (phrases or sentences), which can make understanding easier.
+
+8. Utilize Multisensory Learning
+
+    Combine visual, auditory, and kinesthetic (touch) activities for better memory retention, like writing words out while saying them.
+
+9. Take Breaks
+
+    Reading for extended periods can lead to fatigue, so it’s important to take short breaks to rest your eyes and mind.
+
+10. Use Spaced Repetition
+
+    Regularly review difficult words or concepts using spaced repetition, which helps reinforce memory over time.
+
+11. Seek Specialized Tools
+
+    Use tools specifically designed for dyslexia, such as software like Read&Write, Screencast-O-Matic, or ClaroRead that support text-to-speech, highlighting, and more.
+
+12. Join Support Groups
+
+    Joining groups or communities for individuals with dyslexia can offer encouragement, shared resources, and practical tips.
+
+Implementing these strategies can help make reading a more manageable and enjoyable experience, even with dyslexia.
