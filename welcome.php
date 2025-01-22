@@ -29,10 +29,10 @@ if (!isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Chunks</title>
-    <img src="images/bookChunkBanner.png" class="responsive-image" alt="Book Chunks Banner"> 
 </head>
 <body>
     <?php include 'navigation.php'; ?>
+    <img src="images/bookChunkBanner.png" class="responsive-image" alt="Book Chunks Banner"> 
 
     <h1>Instructions</h1>
     <p>
