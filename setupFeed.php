@@ -15,6 +15,9 @@
         #top-frame {
             height: 20%;
             width: 100%;
+            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
+            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+        
         }
         #bottom-frame {
             height: 80%;
