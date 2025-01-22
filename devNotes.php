@@ -28,71 +28,81 @@ if (file_exists($filePath)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dev Notes</title>
     <style>
+        :root {
+            --font-color: <?= isset($_SESSION['fontColor']) ? htmlspecialchars($_SESSION['fontColor']) : '#000000'; ?>;
+            --background-color: <?= isset($_SESSION['backgroundColor']) ? htmlspecialchars($_SESSION['backgroundColor']) : '#FFFFFF'; ?>;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
-            background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
+            color: var(--font-color); /* Dynamic font color */
+            background-color: var(--background-color); /* Dynamic background color */
         }
-        h1 {
-            color: #333;
+
+        h1, h2, p, label {
+            color: var(--font-color); /* Use dynamic text color */
         }
+
         .file-content {
-            border: 2px solid #007BFF;
+            border: 2px solid var(--font-color); /* Border matches the text color */
             border-radius: 5px;
             padding: 15px;
-            background-color: #fff;
+            background-color: var(--background-color); /* Dynamic background color */
             font-size: 16px;
-            line-height: 1;
-            color: #333;
+            line-height: 1.5;
+            color: var(--font-color); /* Dynamic text color */
             overflow-x: auto;
             max-width: 100%;
             white-space: pre-wrap; /* Preserve newlines and spaces */
         }
+
         .refresh-button {
             margin-top: 10px;
             padding: 10px 15px;
-            background-color: #007BFF;
-            color: #fff;
+            background-color: var(--font-color); /* Dynamic button background */
+            color: var(--background-color); /* Dynamic button text color */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
         }
+
         .refresh-button:hover {
-            background-color: #0056b3;
+            background-color: #555; /* Slightly darker color on hover */
         }
+
         form {
-            background-color: #fff;
+            background-color: var(--background-color); /* Dynamic form background */
             padding: 15px;
             border-radius: 5px;
             margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-        }
+
         input[type="text"] {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--font-color); /* Match input border to font color */
             border-radius: 4px;
+            color: var(--font-color); /* Match input text to font color */
+            background-color: var(--background-color); /* Match input background to page background */
         }
+
         button[type="submit"] {
             padding: 10px 15px;
-            background-color: #28a745;
-            color: #fff;
+            background-color: var(--font-color); /* Button matches font color */
+            color: var(--background-color); /* Button text matches background color */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
         }
+
         button[type="submit"]:hover {
-            background-color: #218838;
+            background-color: #555; /* Slightly darker color on hover */
         }
     </style>
 </head>
