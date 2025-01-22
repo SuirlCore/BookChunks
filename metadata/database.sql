@@ -14,12 +14,12 @@ USE bookChunk;
 -- bookChunk tables--------------------------------------------------------------------------
 -- ------------------------------------------------------------------------------------------
 
--- the users in the system
-CREATE TABLE IF NOT EXISTS users(
+-- Create the users table with utf8mb4 character set for the pass field
+CREATE TABLE IF NOT EXISTS users (
     userID INT NOT NULL AUTO_INCREMENT,
     userName CHAR(255) NOT NULL,
     userLevel INT DEFAULT 0,
-    pass CHAR(255) NOT NULL,
+    pass VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
     realFirstName CHAR(255) NOT NULL,
     realLastName CHAR(255) NOT NULL,
     email CHAR(255) NOT NULL,
