@@ -173,11 +173,11 @@ $stmt->close();
             loadChunk(currentIndex + 1);
         }
 
-        // Enable scroll handling
+        // Enable scroll handling for mobile devices
         window.onload = () => {
             loadChunk(currentIndex);
 
-            // Add scroll event listener
+            // Add touch and scroll event listener for mobile and desktop
             document.querySelector('.chunk-container').addEventListener('scroll', (e) => {
                 if (e.target.scrollTop === 0 && currentIndex > 0) {
                     loadChunk(currentIndex - 1);
