@@ -18,7 +18,7 @@ if ($conn->connect_error) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSettings'])) {
     $userID = intval($_POST['userID']);
     $userName = $conn->real_escape_string($_POST['userName']);
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $realFirstName = $conn->real_escape_string($_POST['realFirstName']);
     $realLastName = $conn->real_escape_string($_POST['realLastName']);
     $email = $conn->real_escape_string($_POST['email']);
