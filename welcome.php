@@ -19,11 +19,18 @@ if (!isset($_SESSION['user_id'])) {
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
         }
-        .responsive-image {
-          width: 100%; /* Fit to the width of the container */
-          height: auto; /* Maintain aspect ratio */
-          display: block; /* Remove default spacing below the image */
-        }
+        .responsive-image-container {
+        display: flex;
+        align-items: center;
+        background-color: lightgray; /* Color shown to the right of the image */
+        max-height: 100px; /* Ensure the container doesn't exceed 100px */
+        overflow: hidden; /* Prevent image overflow */
+    }
+
+    .responsive-image-container img {
+        max-height: 100px; /* Limit image height */
+        width: auto; /* Maintain aspect ratio */
+    }
 </style>
 
     <meta charset="UTF-8">
@@ -32,8 +39,10 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 <body>
     <?php include 'navigation.php'; ?>
-    <img src="images/bookChunkBanner.png" class="responsive-image" alt="Book Chunks Banner"> 
-
+    
+    <div class="responsive-image-container">
+        <img src="images/bookChunkBanner.png" alt="Book Chunks Banner">
+    </div>
     <h1>Instructions</h1>
     <p>
         To start off, go to the "Setup Feed" page in the navigation menu.
