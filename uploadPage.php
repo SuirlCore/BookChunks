@@ -9,13 +9,13 @@ if (!isset($_SESSION['user_id'])) {
 include 'scripts/pdo.php';
 
 $userID = $_SESSION['user_id'];
-$stmt = $dbConn->prepare("SELECT textID as id, filename FROM fullTexts WHERE owner = ?");
+$stmt = $conn->prepare("SELECT textID as id, filename FROM fullTexts WHERE owner = ?");
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 $books = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
-$dbConn->close();
+$conn->close();
 ?>
 
 
