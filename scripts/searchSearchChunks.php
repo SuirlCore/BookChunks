@@ -13,7 +13,7 @@ if (isset($_GET['bookID']) && isset($_GET['search'])) {
     $bookID = (int)$_GET['bookID'];
     $search = '%' . $_GET['search'] . '%';
 
-    $stmt = $mysqli->prepare("SELECT chunkID, chunkContent 
+    $stmt = $conn->prepare("SELECT chunkID, chunkContent 
                               FROM bookChunks 
                               WHERE bookID = ? AND chunkContent LIKE ?");
     $stmt->bind_param("is", $bookID, $search);
@@ -28,5 +28,5 @@ if (isset($_GET['bookID']) && isset($_GET['search'])) {
     echo json_encode(['results' => $results]);
 }
 
-$mysqli->close();
+$conn->close();
 ?>

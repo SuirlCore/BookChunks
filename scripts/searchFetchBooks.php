@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_id'])) {
+    die("User not logged in.");
+}
 
 // Database connection
 include 'pdo.php';
