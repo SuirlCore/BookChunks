@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $feedID = (int)$_POST['feedID'];
 
     // Check if a record already exists
-    $stmt = $mysqli->prepare("SELECT * FROM userFeedProgress WHERE userID = ? AND feedID = ?");
+    $stmt = $conn->prepare("SELECT * FROM userFeedProgress WHERE userID = ? AND feedID = ?");
     $stmt->bind_param("ii", $userID, $feedID);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -37,5 +37,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['message' => $message]);
 }
 
-$mysqli->close();
+$conn->close();
 ?>
