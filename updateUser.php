@@ -42,21 +42,18 @@ $conn->close();
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;   
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
-    
+            overflow-y: auto; /* Ensure vertical scrolling is enabled */
         }
-
         .container {
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
-            background: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */;
+            background: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Optional: avoid content spilling */
         }
         h1 {
             text-align: center;
