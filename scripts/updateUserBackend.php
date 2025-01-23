@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
 
     // Close the statement
     $stmt->close();
-}
+
 
 
     if ($profileResult === TRUE && $settingsResult === TRUE) {
