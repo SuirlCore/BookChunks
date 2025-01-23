@@ -51,7 +51,7 @@ $userID = $_SESSION['user_id'];
             // Database connection
             include 'scripts/pdo.php';
 
-            $stmt = $mysqli->prepare("SELECT feedID, feedName FROM feeds WHERE userID = ?");
+            $stmt = $conn->prepare("SELECT feedID, feedName FROM feeds WHERE userID = ?");
             $stmt->bind_param("i", $userID);
             $stmt->execute();
             $feedResult = $stmt->get_result();
