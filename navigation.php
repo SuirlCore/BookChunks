@@ -18,7 +18,6 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh; 
     overflow: hidden;  
     color: <?= htmlspecialchars($fontColorChoiceNav); ?>; /* Dynamic font color */
     background-color: <?= htmlspecialchars($backgroundColorChoiceNav); ?>; /* Dynamic background color */
