@@ -4,17 +4,10 @@ include 'pdo.php';
 
 $userID = $_SESSION['user_id'];
 
-// Connect to database
-$mysqli = new mysqli($servername, $username, $password, $dbname);
-
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
 if (isset($_GET['feedID'])) {
     $feedID = (int)$_GET['feedID'];
 
-    $stmt = $mysqli->prepare("SELECT ft.textID, ft.filename 
+    $stmt = $conn->prepare("SELECT ft.textID, ft.filename 
                               FROM booksInFeed bif
                               JOIN fullTexts ft ON bif.bookID = ft.textID 
                               WHERE bif.feedID = ?");
@@ -30,5 +23,5 @@ if (isset($_GET['feedID'])) {
     echo json_encode(['books' => $books]);
 }
 
-$mysqli->close();
+$conn->close();
 ?>
