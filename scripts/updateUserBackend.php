@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $textToVoice = intval($_POST['textToVoice']);
     $autoLogin = intval($_POST['autoLogin']);
     $highlightColor = $_POST['highlightColor'];
+    $highlightingToggle = $_POST['highlightingToggle'];
 
     // Prepare the update query
     $query = "UPDATE users SET 
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         buttonHoverColor = ?, 
         buttonTextColor = ?, 
         highlightColor = ?, 
+        highlightingToggle = ?,
         maxWordsPerChunk = ?, 
         textToVoice = ?, 
         autoLogin = ?";
@@ -59,12 +61,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         $buttonHoverColor,
         $buttonTextColor,
         $highlightColor,
+        $highlightingToggle,
         $maxWordsPerChunk,
         $textToVoice,
         $autoLogin
     ];
 
-    $types = "ssssssssssssiii"; // Data types for the bind_param method
+    $types = "ssssssssssssiiii"; // Data types for the bind_param method
 
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -103,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $_SESSION['backgroundColor'] = $backgroundColor;
     $_SESSION['lineHeight'] = $lineHeight;
     $_SESSION['highlightColor'] = $highlightColor;
+    $_SESSION['highlightingToggle'] = $highlightingToggle;
     $_SESSION['buttonColor'] = $buttonColor;
     $_SESSION['buttonHoverColor'] = $buttonHoverColor;
     $_SESSION['buttonTextColor'] = $buttonTextColor;

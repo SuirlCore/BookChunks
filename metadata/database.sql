@@ -43,6 +43,10 @@ CREATE TABLE IF NOT EXISTS users (
     lineHeight VARCHAR(7) DEFAULT '1.5',
     
     highlightColor VARCHAR(7) DEFAULT '#F0E68C',
+    highlightingToggle INT DEFAULT 0,
+        -- 0 does nothing
+        -- 1 turns on highlighting a line
+
     buttonColor VARCHAR(7) DEFAULT '#A9A9A9',
     buttonHoverColor VARCHAR(7) DEFAULT '#696969',
     buttonTextColor VARCHAR(7) DEFAULT '#FFFFFF',

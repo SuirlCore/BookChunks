@@ -11,7 +11,7 @@ include 'scripts/pdo.php';
 
 // Fetch user details
 $userID = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor, lineHeight, buttonColor, buttonHoverColor, buttonTextColor, highlightColor, maxWordsPerChunk, textToVoice, autoLogin FROM users WHERE userID = ?");
+$stmt = $conn->prepare("SELECT userName, realFirstName, realLastName, pass, email, fontSize, fontColor, backgroundColor, lineHeight, buttonColor, buttonHoverColor, buttonTextColor, highlightColor, highlightingToggle, maxWordsPerChunk, textToVoice, autoLogin FROM users WHERE userID = ?");
 $stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -34,6 +34,7 @@ $buttonTextColorIn = $user['buttonTextColor'];
 $maxWordsPerChunkIn = $user['maxWordsPerChunk'];
 $textToVoiceIn = $user['textToVoice'];
 $autoLoginIn = $user['autoLogin'];
+$highlightingToggleIn = $user['highlightingToggle'];
 
 $conn->close();
 
@@ -197,6 +198,17 @@ $conn->close();
                 ?>
             </select>
 
+            <!-- Button Text Color -->
+            <label for="buttonTextColor">Button Text Color:</label>
+            <select name="buttonTextColor" id="buttonTextColor">
+                <?php
+                foreach ($colors as $hex => $name) {
+                    $selected = $buttonTextColorIn === $hex ? 'selected' : '';
+                    echo "<option value='$hex' $selected>$name</option>";
+                }
+                ?>
+            </select>
+
             <!-- Highlight Color -->
             <label for="highlightColor">Highlight Color:</label>
             <select name="highlightColor" id="highlightColor">
@@ -208,15 +220,11 @@ $conn->close();
                 ?>
             </select>
 
-            <!-- Button Text Color -->
-            <label for="buttonTextColor">Button Text Color:</label>
-            <select name="buttonTextColor" id="buttonTextColor">
-                <?php
-                foreach ($colors as $hex => $name) {
-                    $selected = $buttonTextColorIn === $hex ? 'selected' : '';
-                    echo "<option value='$hex' $selected>$name</option>";
-                }
-                ?>
+            <!-- Highlighting Toggle -->
+            <label for="highlightingToggle">Toggle Highlighting:</label>
+            <select name="highlightingToggle" id="highlightingToggle">
+                <option value="1" <?= (isset($highlightingToggleIn) && $highlightingToggleIn == '1') ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= (isset($highlightingToggleIn) && $highlightingToggleIn == '0') ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <!-- Max Words Per Chunk -->

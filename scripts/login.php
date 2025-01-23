@@ -24,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['backgroundColor'] = $row['backgroundColor'];
             $_SESSION['lineHeight'] = $row['lineHeight'];
             $_SESSION['highlightColor'] = $row['highlightColor'];
+            $_SESSION['highlightingToggle'] = $row['highlightingToggle'];
             $_SESSION['buttonColor'] = $row['buttonColor'];
             $_SESSION['buttonHoverColor'] = $row['buttonHoverColor'];
             $_SESSION['buttonTextColor'] = $row['buttonTextColor'];
