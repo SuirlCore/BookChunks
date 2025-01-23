@@ -26,28 +26,20 @@
             padding: 0;
             color: var(--font-color);
             background-color: var(--background-color);
-            height: 100vh; /* Ensure the body spans the full viewport height */
-            display: flex;
-            flex-direction: column; /* Allow stacking of elements */
+            height: 100vh; 
         }
 
         #top-frame {
-            flex: 0 0 20%; /* Allow the top frame to take up 20% of the viewport height */
+            height: 20%;
             width: 100%;
             color: var(--font-color);
             background-color: var(--background-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box; /* Include padding and borders in height calculations */
         }
 
         #bottom-frame {
-            flex: 1; /* Allow the bottom frame to take up the remaining space */
+            height: 80%;
             width: 100%;
             border: none;
-            height: 100%; /* Ensure it fills the remaining space */
         }
     </style>
     <script>
