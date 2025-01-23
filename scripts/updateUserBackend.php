@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $maxWordsPerChunk = intval($_POST['maxWordsPerChunk']);
     $textToVoice = intval($_POST['textToVoice']);
     $autoLogin = intval($_POST['autoLogin']);
-    $highlightColor = $_POST['hilightColor'];
+    $highlightColor = $_POST['highlightColor'];
 
     // Prepare the update query
     $query = "UPDATE users SET 
