@@ -1,4 +1,8 @@
 top things to work on:
+-update visual settings to change text and colors based on session variables
+
+-add variable to database + pages to be able to change font
+
 -ability to rename books
 -combine books into "series", or "collections", name the collections
     new database table to save books in collections
@@ -19,7 +23,7 @@ dyslexia functions:
     change font
 
 
-
+-----------------------------------------------------------------------
 
 items to be fixed:
 
@@ -71,5 +75,3 @@ hardware server needs
     second apache server setup as backup
     auto backup data to second server
     database backups to external hd / cloud
-
-find source of free books in text file format to recommend to users

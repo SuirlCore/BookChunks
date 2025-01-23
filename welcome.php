@@ -55,6 +55,12 @@ if (!isset($_SESSION['user_id'])) {
         is not recommended. If you want to change things up, create a new
         feed.
     </p>
+
+    <p>
+        If you need to find some books to get you started, here are a couple of sites that may help:<br>
+        <a href="https://www.gutenberg.org/"> Project Gutenberg</a><br>
+        
+    </p>
     
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:100px;height:100px;">
 </body>
