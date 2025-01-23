@@ -19,7 +19,6 @@ if (!isset($_SESSION['user_id'])) {
             display: flex;
             flex-direction: column;
             height: 100vh; 
-            overflow: hidden;  
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
     
