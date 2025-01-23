@@ -22,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows > 0) {
         // Update existing record
-        $stmt = $mysqli->prepare("UPDATE userFeedProgress SET lastSeenChunkID = ? WHERE userID = ? AND feedID = ?");
+        $stmt = $conn->prepare("UPDATE userFeedProgress SET lastSeenChunkID = ? WHERE userID = ? AND feedID = ?");
         $stmt->bind_param("iii", $chunkID, $userID, $feedID);
         $stmt->execute();
         $message = "Progress updated successfully.";
     } else {
         // Insert new record
-        $stmt = $mysqli->prepare("INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) VALUES (?, ?, ?)");
         $stmt->bind_param("iii", $userID, $feedID, $chunkID);
         $stmt->execute();
         $message = "Progress created successfully.";
