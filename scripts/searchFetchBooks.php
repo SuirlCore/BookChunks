@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Database connection
 include 'pdo.php';
 
