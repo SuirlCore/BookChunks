@@ -44,8 +44,7 @@ $conn->close();
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh; 
-            overflow: hidden;  
+            height: 100vh;   
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
     
