@@ -18,6 +18,7 @@ $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
 
+/* $user variables are not global, changing to variables that track with the rest of the page */
 $userNameIn = $user['userName'];
 $firstNameIn = $user['realFirstName'];
 $lastNameIn = $user['realLastName'];
@@ -25,6 +26,14 @@ $emailIn = $user['email'];
 $fontSizeIn = $user['fontSize'];
 $fontColorIn = $user['fontColor'];
 $backgroundColorIn = $user['backgroundColor'];
+$lineHeightIn = $user['lineHeight'];
+$buttonColorIn = $user['buttonColor'];
+$buttonHoverColorIn = $user['buttonHoverColor'];
+$highlightColorIn = $user['highlightColor'];
+$buttonTextColorIn = $user['buttonTextColor'];
+$maxWordsPerChunkIn = $user['maxWordsPerChunk'];
+$textToVoiceIn = $user['textToVoice'];
+$autoLoginIn = $user['autoLogin'];
 
 $conn->close();
 
@@ -160,7 +169,7 @@ $conn->close();
                 <?php
                 $lineHeights = ["1", "1.5", "2", "2.5", "3", "3.5"];
                 foreach ($lineHeights as $height) {
-                    $selected = $user['lineHeight'] === $height ? 'selected' : '';
+                    $selected = $lineHeightIn === $height ? 'selected' : '';
                     echo "<option value='$height' $selected>$height</option>";
                 }
                 ?>
@@ -171,7 +180,7 @@ $conn->close();
             <select name="buttonColor" id="buttonColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['buttonColor'] === $hex ? 'selected' : '';
+                    $selected = $buttonColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name</option>";
                 }
                 ?>
@@ -182,7 +191,7 @@ $conn->close();
             <select name="buttonHoverColor" id="buttonHoverColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['buttonHoverColor'] === $hex ? 'selected' : '';
+                    $selected = $buttonHoverColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name</option>";
                 }
                 ?>
@@ -193,7 +202,7 @@ $conn->close();
             <select name="highlightColor" id="highlightColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['highlightColor'] === $hex ? 'selected' : '';
+                    $selected = $highlightColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name</option>";
                 }
                 ?>
@@ -204,7 +213,7 @@ $conn->close();
             <select name="buttonTextColor" id="buttonTextColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $user['buttonTextColor'] === $hex ? 'selected' : '';
+                    $selected = $buttonTextColorIn === $hex ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name</option>";
                 }
                 ?>
@@ -217,15 +226,15 @@ $conn->close();
             <!-- Text to Voice -->
             <label for="textToVoice">Text to Voice:</label>
             <select name="textToVoice" id="textToVoice">
-                <option value="1" <?= $user['textToVoice'] === '1' ? 'selected' : ''; ?>>On</option>
-                <option value="0" <?= $user['textToVoice'] === '0' ? 'selected' : ''; ?>>Off</option>
+                <option value="1" <?= $textToVoiceIn === '1' ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= $textToVoiceIn === '0' ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <!-- Auto Login -->
             <label for="autoLogin">Auto Login:</label>
             <select name="autoLogin" id="autoLogin">
-                <option value="1" <?= $user['autoLogin'] === '1' ? 'selected' : ''; ?>>On</option>
-                <option value="0" <?= $user['autoLogin'] === '0' ? 'selected' : ''; ?>>Off</option>
+                <option value="1" <?= $autoLoginIn === '1' ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= $autoLoginIn === '0' ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <button type="submit" name="updateProfileAndSettings">Update</button>
