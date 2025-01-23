@@ -197,12 +197,12 @@ $conn->close();
                 ?>
             </select>
 
-            <!-- highlight Color -->
+            <!-- Highlight Color -->
             <label for="highlightColor">Highlight Color:</label>
             <select name="highlightColor" id="highlightColor">
                 <?php
                 foreach ($colors as $hex => $name) {
-                    $selected = $highlightColorIn === $hex ? 'selected' : '';
+                    $selected = (isset($highlightColorIn) && $highlightColorIn === $hex) ? 'selected' : '';
                     echo "<option value='$hex' $selected>$name</option>";
                 }
                 ?>
@@ -226,15 +226,15 @@ $conn->close();
             <!-- Text to Voice -->
             <label for="textToVoice">Text to Voice:</label>
             <select name="textToVoice" id="textToVoice">
-                <option value="1" <?= $textToVoiceIn === '1' ? 'selected' : ''; ?>>On</option>
-                <option value="0" <?= $textToVoiceIn === '0' ? 'selected' : ''; ?>>Off</option>
+                <option value="1" <?= (isset($textToVoiceIn) && $textToVoiceIn == '1') ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= (isset($textToVoiceIn) && $textToVoiceIn == '0') ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <!-- Auto Login -->
             <label for="autoLogin">Auto Login:</label>
             <select name="autoLogin" id="autoLogin">
-                <option value="1" <?= $autoLoginIn === '1' ? 'selected' : ''; ?>>On</option>
-                <option value="0" <?= $autoLoginIn === '0' ? 'selected' : ''; ?>>Off</option>
+                <option value="1" <?= (isset($autoLoginIn) && $autoLoginIn == '1') ? 'selected' : ''; ?>>On</option>
+                <option value="0" <?= (isset($autoLoginIn) && $autoLoginIn == '0') ? 'selected' : ''; ?>>Off</option>
             </select>
 
             <button type="submit" name="updateProfileAndSettings">Update</button>
