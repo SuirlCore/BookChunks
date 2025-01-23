@@ -11,59 +11,106 @@ include 'pdo.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSettings'])) {
     $userID = intval($_POST['userID']);
-    $userName = $conn->real_escape_string($_POST['userName']);
-    $realFirstName = $conn->real_escape_string($_POST['realFirstName']);
-    $realLastName = $conn->real_escape_string($_POST['realLastName']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $fontSize = $conn->real_escape_string($_POST['fontSize']);
-    $fontColor = $conn->real_escape_string($_POST['fontColor']);
-    $backgroundColor = $conn->real_escape_string($_POST['backgroundColor']);
-    $lineHeight = $conn->real_escape_string($_POST['lineHeight']);
-    $buttonColor = $conn->real_escape_string($_POST['buttonColor']);
-    $buttonHoverColor = $conn->real_escape_string($_POST['buttonHoverColor']);
-    $buttonTextColor = $conn->real_escape_string($_POST['buttonTextColor']);
+    $userName = $_POST['userName'];
+    $realFirstName = $_POST['realFirstName'];
+    $realLastName = $_POST['realLastName'];
+    $email = $_POST['email'];
+    $fontSize = $_POST['fontSize'];
+    $fontColor = $_POST['fontColor'];
+    $backgroundColor = $_POST['backgroundColor'];
+    $lineHeight = $_POST['lineHeight'];
+    $buttonColor = $_POST['buttonColor'];
+    $buttonHoverColor = $_POST['buttonHoverColor'];
+    $buttonTextColor = $_POST['buttonTextColor'];
     $maxWordsPerChunk = intval($_POST['maxWordsPerChunk']);
     $textToVoice = intval($_POST['textToVoice']);
     $autoLogin = intval($_POST['autoLogin']);
-    $highlightColor = $conn->real_escape_string($_POST['hilightColor']);
+    $highlightColor = $_POST['hilightColor'];
 
-    // Profile update query
-    $updateProfileQuery = "UPDATE users SET 
-        userName = '$userName', 
-        realFirstName = '$realFirstName', 
-        realLastName = '$realLastName', 
-        email = '$email' 
-        WHERE userID = $userID";
+    // Prepare the update query
+    $query = "UPDATE users SET 
+        userName = ?, 
+        realFirstName = ?, 
+        realLastName = ?, 
+        email = ?, 
+        fontSize = ?, 
+        fontColor = ?, 
+        backgroundColor = ?, 
+        lineHeight = ?, 
+        buttonColor = ?, 
+        buttonHoverColor = ?, 
+        buttonTextColor = ?, 
+        highlightColor = ?, 
+        maxWordsPerChunk = ?, 
+        textToVoice = ?, 
+        autoLogin = ?";
 
-    // If a new password is provided, hash and update it
+    // If a new password is provided, include it in the query
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $updateProfileQuery = "UPDATE users SET 
-            userName = '$userName', 
-            pass = '$password', 
-            realFirstName = '$realFirstName', 
-            realLastName = '$realLastName', 
-            email = '$email' 
-            WHERE userID = $userID";
+        $query .= ", pass = ?";
     }
 
-    // Settings update query
-    $updateSettingsQuery = "UPDATE users SET 
-        fontSize = '$fontSize', 
-        fontColor = '$fontColor', 
-        backgroundColor = '$backgroundColor',
-        lineHeight = '$lineHeight',
-        buttonColor = '$buttonColor',
-        buttonHoverColor = '$buttonHoverColor',
-        buttonTextColor = '$buttonTextColor',
-        highlightColor = '$highlightColor,
-        maxWordsPerChunk = $maxWordsPerChunk,
-        textToVoice = $textToVoice,
-        autoLogin = $autoLogin
-        WHERE userID = $userID";
+    $query .= " WHERE userID = ?";
 
-    $profileResult = $conn->query($updateProfileQuery);
-    $settingsResult = $conn->query($updateSettingsQuery);
+    // Prepare the statement
+    $stmt = $conn->prepare($query);
+
+    // Bind parameters based on whether a password was provided
+    if (!empty($_POST['password'])) {
+        $stmt->bind_param(
+            "ssssssssssssiiii",
+            $userName,
+            $realFirstName,
+            $realLastName,
+            $email,
+            $fontSize,
+            $fontColor,
+            $backgroundColor,
+            $lineHeight,
+            $buttonColor,
+            $buttonHoverColor,
+            $buttonTextColor,
+            $highlightColor,
+            $maxWordsPerChunk,
+            $textToVoice,
+            $autoLogin,
+            $password,
+            $userID
+        );
+    } else {
+        $stmt->bind_param(
+            "ssssssssssssiii",
+            $userName,
+            $realFirstName,
+            $realLastName,
+            $email,
+            $fontSize,
+            $fontColor,
+            $backgroundColor,
+            $lineHeight,
+            $buttonColor,
+            $buttonHoverColor,
+            $buttonTextColor,
+            $highlightColor,
+            $maxWordsPerChunk,
+            $textToVoice,
+            $autoLogin,
+            $userID
+        );
+    }
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        echo "Profile and settings updated successfully.";
+    } else {
+        echo "Error updating profile and settings: " . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+}
+
 
     if ($profileResult === TRUE && $settingsResult === TRUE) {
         $_SESSION['message'] = "Profile and settings updated successfully!";
