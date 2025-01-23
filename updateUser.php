@@ -53,7 +53,6 @@ $conn->close();
             background: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden; /* Optional: avoid content spilling */
         }
         h1 {
             text-align: center;
