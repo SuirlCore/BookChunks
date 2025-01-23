@@ -46,59 +46,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         autoLogin = ?";
 
     // If a new password is provided, include it in the query
+    $params = [
+        $userName,
+        $realFirstName,
+        $realLastName,
+        $email,
+        $fontSize,
+        $fontColor,
+        $backgroundColor,
+        $lineHeight,
+        $buttonColor,
+        $buttonHoverColor,
+        $buttonTextColor,
+        $highlightColor,
+        $maxWordsPerChunk,
+        $textToVoice,
+        $autoLogin
+    ];
+
+    $types = "ssssssssssssiii"; // Data types for the bind_param method
+
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $query .= ", pass = ?";
+        $params[] = $password; // Add the password to the parameters
+        $types .= "s"; // Add the type for the password
     }
 
     $query .= " WHERE userID = ?";
+    $params[] = $userID; // Add the userID to the parameters
+    $types .= "i"; // Add the type for the userID
 
     // Prepare the statement
     $stmt = $conn->prepare($query);
 
-    // Bind parameters based on whether a password was provided
-    if (!empty($_POST['password'])) {
-        $stmt->bind_param(
-            "ssssssssssssiiii",
-            $userName,
-            $realFirstName,
-            $realLastName,
-            $email,
-            $fontSize,
-            $fontColor,
-            $backgroundColor,
-            $lineHeight,
-            $buttonColor,
-            $buttonHoverColor,
-            $buttonTextColor,
-            $highlightColor,
-            $maxWordsPerChunk,
-            $textToVoice,
-            $autoLogin,
-            $password,
-            $userID
-        );
-    } else {
-        $stmt->bind_param(
-            "ssssssssssssiii",
-            $userName,
-            $realFirstName,
-            $realLastName,
-            $email,
-            $fontSize,
-            $fontColor,
-            $backgroundColor,
-            $lineHeight,
-            $buttonColor,
-            $buttonHoverColor,
-            $buttonTextColor,
-            $highlightColor,
-            $maxWordsPerChunk,
-            $textToVoice,
-            $autoLogin,
-            $userID
-        );
+    if ($stmt === false) {
+        die("Error preparing the statement: " . $conn->error);
     }
+
+    // Bind parameters dynamically
+    $stmt->bind_param($types, ...$params);
 
     // Execute the statement
     if ($stmt->execute()) {
@@ -110,20 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     // Close the statement
     $stmt->close();
 
-
-
-    if ($profileResult === TRUE && $settingsResult === TRUE) {
-        $_SESSION['message'] = "Profile and settings updated successfully!";
-    } else {
-        $_SESSION['message'] = "Error updating data: " . $conn->error;
-    }
-
-    $conn->close();
-
+    // Update session variables
     $_SESSION['fontSize'] = $fontSize;
     $_SESSION['fontColor'] = $fontColor;
     $_SESSION['backgroundColor'] = $backgroundColor;
-
     $_SESSION['lineHeight'] = $lineHeight;
     $_SESSION['highlightColor'] = $highlightColor;
     $_SESSION['buttonColor'] = $buttonColor;
