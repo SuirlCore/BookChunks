@@ -145,7 +145,6 @@ $stmt->close();
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;  
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
             background-color: <?= htmlspecialchars($_SESSION['backgroundColor']); ?>; /* Dynamic background color */
         }
