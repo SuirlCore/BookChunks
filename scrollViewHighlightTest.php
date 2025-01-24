@@ -59,7 +59,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chunk Viewer</title>
+    <title>Dynamic Line Highlighting</title>
     <style>
         body {
             font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
@@ -77,7 +77,6 @@ $stmt->close();
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
             line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
         }
@@ -89,7 +88,7 @@ $stmt->close();
         .line-controls, .chunk-controls {
             display: flex;
             justify-content: space-evenly;
-            padding: 0px;
+            padding: 10px;
             background: #A9A9A9;
         }
 
@@ -125,20 +124,92 @@ $stmt->close();
     <script>
         let chunks = <?php echo json_encode($chunks); ?>;
         let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
-        let currentLineIndex = 0;
+        let currentWordIndex = 0;
 
         function loadChunk(index) {
             if (index < 0 || index >= chunks.length) return;
 
             const chunkContent = chunks[index].chunkContent;
-            const lines = chunkContent.split('\n').map(line => `<div>${line}</div>`).join('');
-            document.getElementById('chunkContent').innerHTML = lines;
+            const words = chunkContent.split(' ').map(word => `<span>${word}</span>`).join(' ');
+            document.getElementById('chunkContent').innerHTML = words;
 
             currentIndex = index;
-            currentLineIndex = 0;
-            highlightLine(currentLineIndex);
+            currentWordIndex = 0;
 
-            // Update last seen chunk in the database
+            highlightCurrentLine();
+            updateProgress(index);
+        }
+
+        function highlightCurrentLine() {
+            const chunkContainer = document.getElementById('chunkContent');
+            const words = chunkContainer.querySelectorAll('span');
+            const containerWidth = chunkContainer.clientWidth;
+            let currentLineWidth = 0;
+
+            // Reset all highlights
+            words.forEach(word => word.classList.remove('highlight'));
+
+            // Highlight words that fit in the visible line
+            let startWord = currentWordIndex;
+            let endWord = currentWordIndex;
+
+            for (let i = currentWordIndex; i < words.length; i++) {
+                const wordWidth = words[i].offsetWidth;
+                if (currentLineWidth + wordWidth > containerWidth) break;
+
+                currentLineWidth += wordWidth;
+                endWord = i;
+            }
+
+            for (let i = startWord; i <= endWord; i++) {
+                words[i].classList.add('highlight');
+            }
+        }
+
+        function nextLine() {
+            const words = document.getElementById('chunkContent').querySelectorAll('span');
+            if (currentWordIndex < words.length - 1) {
+                currentWordIndex += countWordsInLine();
+                highlightCurrentLine();
+            }
+        }
+
+        function prevLine() {
+            if (currentWordIndex > 0) {
+                currentWordIndex -= countWordsInLine(true);
+                highlightCurrentLine();
+            }
+        }
+
+        function countWordsInLine(reverse = false) {
+            const chunkContainer = document.getElementById('chunkContent');
+            const words = chunkContainer.querySelectorAll('span');
+            const containerWidth = chunkContainer.clientWidth;
+            let currentLineWidth = 0;
+            let wordCount = 0;
+
+            if (reverse) {
+                for (let i = currentWordIndex - 1; i >= 0; i--) {
+                    const wordWidth = words[i].offsetWidth;
+                    if (currentLineWidth + wordWidth > containerWidth) break;
+
+                    currentLineWidth += wordWidth;
+                    wordCount++;
+                }
+            } else {
+                for (let i = currentWordIndex; i < words.length; i++) {
+                    const wordWidth = words[i].offsetWidth;
+                    if (currentLineWidth + wordWidth > containerWidth) break;
+
+                    currentLineWidth += wordWidth;
+                    wordCount++;
+                }
+            }
+
+            return wordCount;
+        }
+
+        function updateProgress(index) {
             fetch('', {
                 method: 'POST',
                 headers: {
@@ -153,26 +224,6 @@ $stmt->close();
             });
         }
 
-        function highlightLine(lineIndex) {
-            const lines = document.querySelectorAll('#chunkContent div');
-            lines.forEach((line, i) => {
-                line.classList.toggle('highlight', i === lineIndex);
-            });
-        }
-
-        function nextLine() {
-            const lines = document.querySelectorAll('#chunkContent div');
-            if (currentLineIndex < lines.length - 1) {
-                highlightLine(++currentLineIndex);
-            }
-        }
-
-        function prevLine() {
-            if (currentLineIndex > 0) {
-                highlightLine(--currentLineIndex);
-            }
-        }
-
         function prevChunk() {
             loadChunk(currentIndex - 1);
         }
@@ -183,6 +234,10 @@ $stmt->close();
 
         window.onload = () => {
             loadChunk(currentIndex);
+
+            window.addEventListener('resize', () => {
+                highlightCurrentLine();
+            });
         };
     </script>
 </head>
@@ -217,6 +272,7 @@ $stmt->close();
     </div>
 </body>
 </html>
+
 
 <?php
 // Handle AJAX POST requests for progress updates
