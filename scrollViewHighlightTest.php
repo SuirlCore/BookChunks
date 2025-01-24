@@ -131,7 +131,7 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         }
 
         .navigation button {
-            flex: 1; 
+            flex: 1; /* This will make buttons take equal space */
             color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             font-size: 18px; 
             font-weight: bold; 
@@ -150,6 +150,7 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
             color: #aaa; 
             cursor: not-allowed; 
         }
+
 
         .word.highlight {
             background-color: <?= htmlspecialchars($_SESSION['highlightColor']); ?>;
