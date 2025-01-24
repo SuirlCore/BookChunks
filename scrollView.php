@@ -10,6 +10,32 @@ if (!isset($_SESSION['user_id'])) {
 }
 $userID = $_SESSION['user_id'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
+        global $conn;
+
+        // Prepare the SQL query to insert or update
+        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) 
+                VALUES (?, ?, ?) 
+                ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
+                
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
+        $stmt->execute();
+        $stmt->close();
+
+        // Optionally, update other fields like numChunksSeen
+        $sql = "UPDATE users SET numChunksSeen = IFNULL(numChunksSeen, 0) + 1 WHERE userID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $data['userID']);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+
 // Fetch user preferences for text and background
 $sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
 $stmt = $conn->prepare($sql);
@@ -52,6 +78,18 @@ $stmt->execute();
 $result = $stmt->get_result();
 $chunks = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Function to clean chunk content
+function cleanChunkContent($content) {
+    // Remove any line breaks (\n or \r\n) that might have been inserted from the database
+    $content = preg_replace("/\r\n|\r|\n/", " ", $content);
+    // Replace multiple spaces with a single space
+    $content = preg_replace("/\s+/", " ", $content);
+    return $content;
+}
+
+// Clean the chunk content before sending to the frontend
+$cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0]['chunkContent']);
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +97,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chunk Viewer</title>
+    <title>Dynamic Line Highlighting</title>
     <style>
         body {
             font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
@@ -69,9 +107,8 @@ $stmt->close();
             flex-direction: column;
             height: 100vh; 
             overflow: hidden;  
-            color: <?= htmlspecialchars($fontColorChoice); ?>; /* Dynamic font color */
-            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
-    
+            color: <?= htmlspecialchars($fontColorChoice); ?>;
+            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
         }
 
         .chunk-container {
@@ -79,8 +116,8 @@ $stmt->close();
             padding: 20px;
             overflow-y: auto;
             background: #fff;
-            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
-            font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
+            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
+            font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
             line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
         }
 
@@ -94,7 +131,7 @@ $stmt->close();
         }
 
         .navigation button {
-            flex: 1; 
+            flex: 1; /* This will make buttons take equal space */
             color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             font-size: 18px; 
             font-weight: bold; 
@@ -114,69 +151,190 @@ $stmt->close();
             cursor: not-allowed; 
         }
 
+
+        .word.highlight {
+            background-color: <?= htmlspecialchars($_SESSION['highlightColor']); ?>;
+        }
+
+        .line-controls {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .line-controls button {
+            font-size: 16px;
+            flex: 1;
+            margin: 0;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .chunk-controls {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .chunk-controls button {
+            font-size: 16px;
+            flex: 1;
+            margin: 0;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
     <script>
-        let chunks = <?php echo json_encode($chunks); ?>;
-        let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+    let chunks = <?php echo json_encode($chunks); ?>;
+    let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+    let highlightingToggle = <?php echo isset($_SESSION['highlightingToggle']) ? $_SESSION['highlightingToggle'] : 0; ?>;
 
-        // Added logic to enable/disable buttons
-        function loadChunk(index) {
-            if (index < 0 || index >= chunks.length) return;
 
-            document.getElementById('chunkContent').innerText = chunks[index].chunkContent;
-            currentIndex = index;
+    function loadChunk(index) {
+        if (index < 0 || index >= chunks.length) return;
 
-            // Update button states (Added)
-            document.getElementById('prevButton').disabled = index === 0; /* Added */
-            document.getElementById('nextButton').disabled = index === chunks.length - 1; /* Added */
+        // Send AJAX request to get the chunk content
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                if (data.chunkContent) {
+                    // Clean and display the chunk content
+                    const chunkContent = data.chunkContent;
+                    const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+                    const chunkElement = document.getElementById('chunkContent');
 
-            // Update last seen chunk ID in the database
-            fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updateProgress',
-                    userID: <?php echo $userID; ?>,
-                    feedID: <?php echo $feedID; ?>,
-                    lastSeenChunkID: chunks[index].chunkID
-                })
-            });
-        }
+                    chunkElement.innerHTML = words;
 
-        function loadChunk(index) {
-            if (index < 0 || index >= chunks.length) return;
+                    currentIndex = index;
+                    currentWordIndex = 0;
+                    currentLineIndex = 0;
 
-            document.getElementById('chunkContent').innerText = chunks[index].chunkContent;
-            currentIndex = index;
-
-            // Update last seen chunk ID in the database
-            fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updateProgress',
-                    userID: <?php echo $userID; ?>,
-                    feedID: <?php echo $feedID; ?>,
-                    lastSeenChunkID: chunks[index].chunkID
-                })
-            });
-        }
-
-        function prevChunk() {
-            loadChunk(currentIndex - 1);
-        }
-
-        function nextChunk() {
-            loadChunk(currentIndex + 1);
-        }
-
-        window.onload = () => {
-            loadChunk(currentIndex);
+                    highlightCurrentLine(); // Update line highlighting after loading the chunk
+                    updateProgress(index); // Update the user's last seen chunk ID in the database
+                } else {
+                    console.error('Error fetching chunk content: ', data.error);
+                }
+            } else {
+                console.error('Request failed with status: ' + xhr.status);
+            }
         };
+        xhr.send();
+    }
+
+    function highlightCurrentLine() {
+        if (highlightingToggle == 1) {
+
+            const chunkElement = document.getElementById('chunkContent');
+            const words = chunkElement.querySelectorAll('.word');
+            const lines = getLines(chunkElement);
+
+            // Reset highlights
+            words.forEach(word => word.classList.remove('highlight'));
+
+            // Get words on the current visible line
+            const visibleLine = lines[currentLineIndex];
+
+            // Highlight the words in the current visible line
+            visibleLine.forEach(wordIndex => {
+                words[wordIndex].classList.add('highlight');
+            });
+        }
+    }
+
+    function getLines(chunkElement) {
+        const lines = [];
+        const words = chunkElement.querySelectorAll('.word');
+        let currentLine = [];
+        let currentLineTop = -1;
+
+        words.forEach((word, index) => {
+            const wordTop = word.getBoundingClientRect().top;
+            
+            // Check if this word starts a new line
+            if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
+                // New line detected
+                lines.push(currentLine);
+                currentLine = [];
+            }
+
+            currentLineTop = wordTop;
+            currentLine.push(index);
+        });
+
+        // Add the last line
+        if (currentLine.length > 0) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    function prevChunk() {
+        if (currentIndex > 0) {
+            updateProgress(currentIndex - 1);  // Update progress before loading chunk
+            loadChunk(currentIndex - 1);       // Load the previous chunk
+        }
+    }
+
+    function nextChunk() {
+        if (currentIndex < chunks.length - 1) {
+            updateProgress(currentIndex + 1);  // Update progress before loading chunk
+            loadChunk(currentIndex + 1);       // Load the next chunk
+        }
+    }
+
+
+    function prevLine() {
+        if (currentLineIndex > 0) {
+            currentLineIndex--;
+            highlightCurrentLine();
+        }
+    }
+
+    function nextLine() {
+        const chunkElement = document.getElementById('chunkContent');
+        const lines = getLines(chunkElement);
+        if (currentLineIndex < lines.length - 1) {
+            currentLineIndex++;
+            highlightCurrentLine();
+        }
+    }
+
+    window.onload = () => {
+        loadChunk(currentIndex);
+
+        // Add resize event listener to adjust highlighting
+        window.addEventListener('resize', () => {
+            highlightCurrentLine();
+        });
+    };
+
+    function updateProgress(index) {
+        // Send the updated progress to the server via AJAX
+        fetch('', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'updateProgress',
+                userID: <?php echo $userID; ?>,
+                feedID: <?php echo $feedID; ?>,
+                lastSeenChunkID: chunks[index].chunkID
+            })
+        }).then(response => {
+            if (response.ok) {
+                console.log("Progress updated successfully");
+            } else {
+                console.error("Failed to update progress");
+            }
+        }).catch(error => {
+            console.error("Error updating progress:", error);
+        });
+    }
+
     </script>
 </head>
 <body>
@@ -196,46 +354,17 @@ $stmt->close();
     </div>
 
     <div class="chunk-container" id="chunkContent">Loading...</div>
-    
-    <div class="navigation">
-        <button id="prevButton" onclick="prevChunk()">Previous</button>
-        <button id="nextButton" onclick="nextChunk()">Next</button>
+
+    <?php if ($_SESSION['highlightingToggle'] == 1): ?>
+        <div class="line-controls">
+            <button onclick="prevLine()">Previous Line</button>
+            <button onclick="nextLine()">Next Line</button>
+        </div>
+    <?php endif; ?>
+
+    <div class="chunk-controls">
+        <button onclick="prevChunk()">Previous Chunk</button>
+        <button onclick="nextChunk()">Next Chunk</button>
     </div>
 </body>
 </html>
-
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
-        // Ensure the database connection is available
-        global $conn;
-
-        // Prepare the SQL query to insert or update
-        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) 
-                VALUES (?, ?, ?) 
-                ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
-                
-        $stmt = $conn->prepare($sql);
-        
-        // Bind parameters: userID, feedID, lastSeenChunkID
-        $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
-        
-        // Execute the query
-        $stmt->execute();
-        
-        // Close the statement
-        $stmt->close();
-
-        // Increment numChunksSeen in users table
-        $sql = "UPDATE users SET numChunksSeen = IFNULL(numChunksSeen, 0) + 1 WHERE userID = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $data['userID']);
-        $stmt->execute();
-        $stmt->close();
-    }
-}
-
-$conn->close();
-?>
