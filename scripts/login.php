@@ -21,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['username'] = $username;
             $_SESSION['fontSize'] = $row['fontSize'];
             $_SESSION['fontColor'] = $row['fontColor'];
+            $_SESSION['fontSelect'] = $row['fontSelect'];
             $_SESSION['backgroundColor'] = $row['backgroundColor'];
             $_SESSION['lineHeight'] = $row['lineHeight'];
             $_SESSION['highlightColor'] = $row['highlightColor'];

@@ -16,7 +16,7 @@ $userID = $_SESSION['user_id'];
     <title>Search Book Chunks</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0;
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */

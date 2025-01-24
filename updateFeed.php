@@ -142,7 +142,7 @@ $stmt->close();
     <title>Manage Feeds</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0;
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
@@ -159,8 +159,8 @@ $stmt->close();
             border: 1px solid #ddd;
         }
         .feed-item button {
-            background-color: red;
-            color: white;
+            background-color: <?= htmlspecialchars($_SESSION['buttonColor']); ?>;
+            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             border: none;
             padding: 5px 10px;
             cursor: pointer;

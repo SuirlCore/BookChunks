@@ -24,7 +24,7 @@ $conn->close();
 <head>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0;
             display: flex;

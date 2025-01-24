@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     $email = $_POST['email'];
     $fontSize = $_POST['fontSize'];
     $fontColor = $_POST['fontColor'];
+    $fontSelect = $_POST['fontSelect'];
     $backgroundColor = $_POST['backgroundColor'];
     $lineHeight = $_POST['lineHeight'];
     $buttonColor = $_POST['buttonColor'];
@@ -34,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         realFirstName = ?, 
         realLastName = ?, 
         email = ?, 
+        fontSelect = ?,
         fontSize = ?, 
         fontColor = ?, 
         backgroundColor = ?, 
@@ -53,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         $realFirstName,
         $realLastName,
         $email,
+        $fontSelect,
         $fontSize,
         $fontColor,
         $backgroundColor,
@@ -67,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
         $autoLogin
     ];
 
-    $types = "ssssssssssssiiii"; // Data types for the bind_param method
+    $types = "sssssssssssssiiii"; // Data types for the bind_param method
 
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -103,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     // Update session variables
     $_SESSION['fontSize'] = $fontSize;
     $_SESSION['fontColor'] = $fontColor;
+    $_SESSION['fontSelect'] = $fontSelect;
     $_SESSION['backgroundColor'] = $backgroundColor;
     $_SESSION['lineHeight'] = $lineHeight;
     $_SESSION['highlightColor'] = $highlightColor;

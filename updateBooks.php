@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
     <title>Manage Feeds</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0; 
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
@@ -160,14 +160,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['feedID'])) {
         }
         .move-btn, .add-btn, .remove-btn {
             cursor: pointer;
-            background-color: #007bff;
-            color: white;
+            background-color: <?= htmlspecialchars($_SESSION['buttonColor']); ?>;
+            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             border: none;
             padding: 5px 10px;
             border-radius: 3px;
         }
         .move-btn:hover, .add-btn:hover, .remove-btn:hover {
-            background-color: #0056b3;
+            background-color: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>;
         }
     </style>
 </head>

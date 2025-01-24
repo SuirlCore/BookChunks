@@ -13,7 +13,7 @@ $backgroundColorChoiceNav = $_SESSION['backgroundColor'];
 ?>
 <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
     margin: 0;
     padding: 0;
     display: flex;
@@ -32,8 +32,8 @@ body {
 }
 
 .menu-button {
-    background-color: #A9A9A9;
-    color: white;
+    background-color: <?= htmlspecialchars($_SESSION['buttonColor']); ?>;
+    color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
     border: none;
     padding: 10px 20px;
     font-size: 16px;
@@ -42,7 +42,7 @@ body {
 }
 
 .menu-button:hover {
-    background-color: 	#696969;
+    background-color: 	<?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>;
 }
 
 .user-info {

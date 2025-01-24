@@ -62,7 +62,7 @@ $stmt->close();
     <title>Chunk Viewer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0;
             display: flex;
@@ -81,7 +81,7 @@ $stmt->close();
             background: #fff;
             background-color: <?= htmlspecialchars($backgroundColorChoice); ?>; /* Dynamic background color */
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>; /* Dynamic font size */
-            line-height: 1.5;
+            line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
         }
 
         .navigation {
@@ -95,17 +95,17 @@ $stmt->close();
 
         .navigation button {
             flex: 1; 
-            color: #fff;
+            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             font-size: 18px; 
             font-weight: bold; 
             border: none;
-            background: #A9A9A9; 
+            background: <?= htmlspecialchars($_SESSION['buttonColor']); ?>; 
             cursor: pointer;
             transition: background 0.2s ease-in-out; 
         }
 
         .navigation button:hover {
-            background: #696969; 
+            background: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>; 
         }
 
         .navigation button:disabled { 

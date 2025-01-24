@@ -1,9 +1,5 @@
 top things to work on:
 
--update visual settings to change text and colors based on session variables
-
--add variable to database + pages to be able to change font
-
 -ability to rename books
 -combine books into "series", or "collections", name the collections
     new database table to save books in collections
