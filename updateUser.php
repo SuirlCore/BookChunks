@@ -142,20 +142,20 @@ $conn->close();
             <select name="fontSelect" id="fontSelect">
                 <option value="Arial, sans-serif" <?= $currentFontIn == "Arial, sans-serif" ? 'selected' : '' ?>>Arial</option>
                 <option value="Times New Roman, serif" <?= $currentFontIn == "Times New Roman, serif" ? 'selected' : '' ?>>Times New Roman</option>
-                <option value="'Courier New', monospace" <?= $currentFontIn == "'Courier New', monospace" ? 'selected' : '' ?>>Courier New</option>
-                <option value="'Georgia', serif" <?= $currentFontIn == "'Georgia', serif" ? 'selected' : '' ?>>Georgia</option>
-                <option value="'Verdana', sans-serif" <?= $currentFontIn == "'Verdana', sans-serif" ? 'selected' : '' ?>>Verdana</option>
-                <option value="'Tahoma', sans-serif" <?= $currentFontIn == "'Tahoma', sans-serif" ? 'selected' : '' ?>>Tahoma</option>
-                <option value="'Trebuchet MS', sans-serif" <?= $currentFontIn == "'Trebuchet MS', sans-serif" ? 'selected' : '' ?>>Trebuchet MS</option>
-                <option value="'Comic Sans MS', cursive" <?= $currentFontIn == "'Comic Sans MS', cursive" ? 'selected' : '' ?>>Comic Sans MS</option>
-                <option value="'Impact', sans-serif" <?= $currentFontIn == "'Impact', sans-serif" ? 'selected' : '' ?>>Impact</option>
-                <option value="'Palatino Linotype', serif" <?= $currentFontIn == "'Palatino Linotype', serif" ? 'selected' : '' ?>>Palatino Linotype</option>
-                <option value="'Lucida Sans Unicode', sans-serif" <?= $currentFontIn == "'Lucida Sans Unicode', sans-serif" ? 'selected' : '' ?>>Lucida Sans Unicode</option>
-                <option value="'Gill Sans', sans-serif" <?= $currentFontIn == "'Gill Sans', sans-serif" ? 'selected' : '' ?>>Gill Sans</option>
-                <option value="'Franklin Gothic Medium', sans-serif" <?= $currentFontIn == "'Franklin Gothic Medium', sans-serif" ? 'selected' : '' ?>>Franklin Gothic Medium</option>
-                <option value="'Garamond', serif" <?= $currentFontIn == "'Garamond', serif" ? 'selected' : '' ?>>Garamond</option>
-                <option value="'Brush Script MT', cursive" <?= $currentFontIn == "'Brush Script MT', cursive" ? 'selected' : '' ?>>Brush Script MT</option>
-                <option value="'Lucida Console', monospace" <?= $currentFontIn == "'Lucida Console', monospace" ? 'selected' : '' ?>>Lucida Console</option>
+                <option value="Courier New, monospace" <?= $currentFontIn == "Courier New, monospace" ? 'selected' : '' ?>>Courier New</option>
+                <option value="Georgia, serif" <?= $currentFontIn == "Georgia, serif" ? 'selected' : '' ?>>Georgia</option>
+                <option value="Verdana, sans-serif" <?= $currentFontIn == "Verdana, sans-serif" ? 'selected' : '' ?>>Verdana</option>
+                <option value="Tahoma, sans-serif" <?= $currentFontIn == "Tahoma, sans-serif" ? 'selected' : '' ?>>Tahoma</option>
+                <option value="Trebuchet MS, sans-serif" <?= $currentFontIn == "Trebuchet MS, sans-serif" ? 'selected' : '' ?>>Trebuchet MS</option>
+                <option value="Comic Sans MS, cursive" <?= $currentFontIn == "Comic Sans MS, cursive" ? 'selected' : '' ?>>Comic Sans MS</option>
+                <option value="Impact, sans-serif" <?= $currentFontIn == "Impact, sans-serif" ? 'selected' : '' ?>>Impact</option>
+                <option value="Palatino Linotype, serif" <?= $currentFontIn == "Palatino Linotype, serif" ? 'selected' : '' ?>>Palatino Linotype</option>
+                <option value="Lucida Sans Unicode, sans-serif" <?= $currentFontIn == "Lucida Sans Unicode, sans-serif" ? 'selected' : '' ?>>Lucida Sans Unicode</option>
+                <option value="Gill Sans, sans-serif" <?= $currentFontIn == "Gill Sans, sans-serif" ? 'selected' : '' ?>>Gill Sans</option>
+                <option value="Franklin Gothic Medium, sans-serif" <?= $currentFontIn == "Franklin Gothic Medium, sans-serif" ? 'selected' : '' ?>>Franklin Gothic Medium</option>
+                <option value="Garamond, serif" <?= $currentFontIn == "Garamond, serif" ? 'selected' : '' ?>>Garamond</option>
+                <option value="Brush Script MT, cursive" <?= $currentFontIn == "Brush Script MT, cursive" ? 'selected' : '' ?>>Brush Script MT</option>
+                <option value="Lucida Console, monospace" <?= $currentFontIn == "Lucida Console, monospace" ? 'selected' : '' ?>>Lucida Console</option>
             </select>
 
             <!-- Font Color -->
