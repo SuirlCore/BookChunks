@@ -156,124 +156,109 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         }
     </style>
     <script>
-        let chunks = <?php echo json_encode($chunks); ?>;
-        let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
-        let currentWordIndex = 0;
-        let currentLineIndex = 0;
+let chunks = <?php echo json_encode($chunks); ?>;
+let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
 
-        function loadChunk(index) {
-            if (index < 0 || index >= chunks.length) return;
+function loadChunk(index) {
+    if (index < 0 || index >= chunks.length) return;
 
-            const chunkContent = "<?php echo addslashes($cleanedContent); ?>"; // Cleaned content
-            const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-            const chunkElement = document.getElementById('chunkContent');
+    // Clean and display the chunk content
+    const chunkContent = "<?php echo addslashes($cleanedContent); ?>"; // Cleaned content
+    const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+    const chunkElement = document.getElementById('chunkContent');
 
-            chunkElement.innerHTML = words;
+    chunkElement.innerHTML = words;
 
-            currentIndex = index;
-            currentWordIndex = 0;
-            currentLineIndex = 0;
+    currentIndex = index;
+    currentWordIndex = 0;
+    currentLineIndex = 0;
 
-            highlightCurrentLine();
-            updateProgress(index);
+    highlightCurrentLine(); // Update line highlighting after loading the chunk
+    updateProgress(index); // Update the user's last seen chunk ID in the database
+}
+
+function highlightCurrentLine() {
+    const chunkElement = document.getElementById('chunkContent');
+    const words = chunkElement.querySelectorAll('.word');
+    const lines = getLines(chunkElement);
+
+    // Reset highlights
+    words.forEach(word => word.classList.remove('highlight'));
+
+    // Get words on the current visible line
+    const visibleLine = lines[currentLineIndex];
+
+    // Highlight the words in the current visible line
+    visibleLine.forEach(wordIndex => {
+        words[wordIndex].classList.add('highlight');
+    });
+}
+
+function getLines(chunkElement) {
+    const lines = [];
+    const words = chunkElement.querySelectorAll('.word');
+    let currentLine = [];
+    let currentLineTop = -1;
+
+    words.forEach((word, index) => {
+        const wordTop = word.getBoundingClientRect().top;
+        
+        // Check if this word starts a new line
+        if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
+            // New line detected
+            lines.push(currentLine);
+            currentLine = [];
         }
 
-        function highlightCurrentLine() {
-            const chunkElement = document.getElementById('chunkContent');
-            const words = chunkElement.querySelectorAll('.word');
-            const lines = getLines(chunkElement);
+        currentLineTop = wordTop;
+        currentLine.push(index);
+    });
 
-            // Reset highlights
-            words.forEach(word => word.classList.remove('highlight'));
+    // Add the last line
+    if (currentLine.length > 0) {
+        lines.push(currentLine);
+    }
 
-            // Get words on the current visible line
-            const visibleLine = lines[currentLineIndex];
+    return lines;
+}
 
-            // Highlight the words in the current visible line
-            visibleLine.forEach(wordIndex => {
-                words[wordIndex].classList.add('highlight');
-            });
-        }
+function prevChunk() {
+    if (currentIndex > 0) {
+        loadChunk(currentIndex - 1);
+    }
+}
 
-        function getLines(chunkElement) {
-            const lines = [];
-            const words = chunkElement.querySelectorAll('.word');
-            let currentLine = [];
-            let currentLineTop = -1;
+function nextChunk() {
+    if (currentIndex < chunks.length - 1) {
+        loadChunk(currentIndex + 1);
+    }
+}
 
-            words.forEach((word, index) => {
-                const wordTop = word.getBoundingClientRect().top;
-                
-                // Check if this word starts a new line
-                if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
-                    // New line detected
-                    lines.push(currentLine);
-                    currentLine = [];
-                }
+function prevLine() {
+    if (currentLineIndex > 0) {
+        currentLineIndex--;
+        highlightCurrentLine();
+    }
+}
 
-                currentLineTop = wordTop;
-                currentLine.push(index);
-            });
+function nextLine() {
+    const chunkElement = document.getElementById('chunkContent');
+    const lines = getLines(chunkElement);
+    if (currentLineIndex < lines.length - 1) {
+        currentLineIndex++;
+        highlightCurrentLine();
+    }
+}
 
-            // Add the last line
-            if (currentLine.length > 0) {
-                lines.push(currentLine);
-            }
+window.onload = () => {
+    loadChunk(currentIndex);
 
-            return lines;
-        }
+    // Add resize event listener to adjust highlighting
+    window.addEventListener('resize', () => {
+        highlightCurrentLine();
+    });
+};
 
-        function nextLine() {
-            const lines = getLines(document.getElementById('chunkContent'));
-            if (currentLineIndex < lines.length - 1) {
-                currentLineIndex++;
-                currentWordIndex = lines[currentLineIndex][0];
-                highlightCurrentLine();
-            }
-        }
-
-        function prevLine() {
-            if (currentLineIndex > 0) {
-                currentLineIndex--;
-                currentWordIndex = getLines(document.getElementById('chunkContent'))[currentLineIndex][0];
-                highlightCurrentLine();
-            }
-        }
-
-        function updateProgress(index) {
-            fetch('', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'updateProgress',
-                    userID: <?php echo $userID; ?>,
-                    feedID: <?php echo $feedID; ?>,
-                    lastSeenChunkID: chunks[index].chunkID
-                })
-            });
-        }
-
-        function prevChunk() {
-            if (currentIndex > 0) {
-                loadChunk(currentIndex - 1);
-            }
-        }
-
-        function nextChunk() {
-            if (currentIndex < chunks.length - 1) {
-                loadChunk(currentIndex + 1);
-            }
-        }
-
-        window.onload = () => {
-            loadChunk(currentIndex);
-
-            window.addEventListener('resize', () => {
-                highlightCurrentLine();
-            });
-        };
     </script>
 </head>
 <body>
