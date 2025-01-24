@@ -1,5 +1,5 @@
 <?php
-// Database connection
+// database connection
 include 'scripts/pdo.php';
 
 // Start session and retrieve user ID
@@ -52,6 +52,18 @@ $stmt->execute();
 $result = $stmt->get_result();
 $chunks = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Function to clean chunk content
+function cleanChunkContent($content) {
+    // Remove any line breaks (\n or \r\n) that might have been inserted from the database
+    $content = preg_replace("/\r\n|\r|\n/", " ", $content);
+    // Replace multiple spaces with a single space
+    $content = preg_replace("/\s+/", " ", $content);
+    return $content;
+}
+
+// Clean the chunk content before sending to the frontend
+$cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0]['chunkContent']);
 ?>
 
 <!DOCTYPE html>
@@ -67,8 +79,8 @@ $stmt->close();
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            height: 100vh; 
+            overflow: hidden;  
             color: <?= htmlspecialchars($fontColorChoice); ?>;
             background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
         }
@@ -77,62 +89,70 @@ $stmt->close();
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+            background: #fff;
+            background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
             line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
         }
 
-        .highlight {
+        .navigation {
+            display: flex; 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 60px; 
+            background: #A9A9A9; 
+        }
+
+        .navigation button {
+            flex: 1; 
+            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
+            font-size: 18px; 
+            font-weight: bold; 
+            border: none;
+            background: <?= htmlspecialchars($_SESSION['buttonColor']); ?>; 
+            cursor: pointer;
+            transition: background 0.2s ease-in-out; 
+        }
+
+        .navigation button:hover {
+            background: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>; 
+        }
+
+        .navigation button:disabled { 
+            background: #d6d6d6; 
+            color: #aaa; 
+            cursor: not-allowed; 
+        }
+
+        .word.highlight {
             background-color: <?= htmlspecialchars($_SESSION['highlightColor']); ?>;
         }
 
-        .line-controls, .chunk-controls {
+        .line-controls {
             display: flex;
-            justify-content: space-evenly;
-            padding: 10px;
-            background: #A9A9A9;
+            justify-content: center;
+            margin: 10px 0;
         }
 
-        .line-controls {
-            border-bottom: 1px solid #d3d3d3;
+        .line-controls button {
+            font-size: 16px;
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
         }
 
         .chunk-controls {
-            border-top: 1px solid #d3d3d3;
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
         }
 
-        button {
-            flex: 1;
-            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            background: <?= htmlspecialchars($_SESSION['buttonColor']); ?>;
+        .chunk-controls button {
+            font-size: 16px;
+            margin: 0 10px;
+            padding: 10px 20px;
             cursor: pointer;
-            transition: background 0.2s ease-in-out;
-        }
-
-        button:hover {
-            background: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>;
-        }
-
-        button:disabled {
-            background: #d6d6d6;
-            color: #aaa;
-            cursor: not-allowed;
-        }
-
-        .word {
-            display: inline-block;
-            padding-right: 2px; /* Ensure space between words */
-        }
-
-        .line {
-            display: block;
         }
     </style>
     <script>
@@ -144,7 +164,7 @@ $stmt->close();
         function loadChunk(index) {
             if (index < 0 || index >= chunks.length) return;
 
-            const chunkContent = chunks[index].chunkContent;
+            const chunkContent = "<?php echo addslashes($cleanedContent); ?>"; // Cleaned content
             const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
             const chunkElement = document.getElementById('chunkContent');
 
@@ -283,25 +303,3 @@ $stmt->close();
     </div>
 </body>
 </html>
-
-
-
-
-<?php
-// Handle AJAX POST requests for progress updates
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
-        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) 
-                VALUES (?, ?, ?) 
-                ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
-        $stmt->execute();
-        $stmt->close();
-    }
-}
-
-$conn->close();
-?>
