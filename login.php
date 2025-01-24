@@ -31,7 +31,7 @@ if (isset($_COOKIE['auto_login'])) {
         $_SESSION['textToVoice'] = $row['textToVoice'];
 
         // Redirect to the scrollView page after logging in
-        header("Location: ../scrollView.php"); 
+        header("Location: scrollView.php"); 
         exit();
     } 
 }
