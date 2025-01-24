@@ -182,153 +182,155 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         }
     </style>
     <script>
-let chunks = <?php echo json_encode($chunks); ?>;
-let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+    let chunks = <?php echo json_encode($chunks); ?>;
+    let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
+    let highlightingToggle = <?php echo isset($_SESSION['highlightingToggle']) ? $_SESSION['highlightingToggle'] : 0; ?>;
 
-function loadChunk(index) {
-    if (index < 0 || index >= chunks.length) return;
 
-    // Send AJAX request to get the chunk content
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            if (data.chunkContent) {
-                // Clean and display the chunk content
-                const chunkContent = data.chunkContent;
-                const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-                const chunkElement = document.getElementById('chunkContent');
+    function loadChunk(index) {
+        if (index < 0 || index >= chunks.length) return;
 
-                chunkElement.innerHTML = words;
+        // Send AJAX request to get the chunk content
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                if (data.chunkContent) {
+                    // Clean and display the chunk content
+                    const chunkContent = data.chunkContent;
+                    const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+                    const chunkElement = document.getElementById('chunkContent');
 
-                currentIndex = index;
-                currentWordIndex = 0;
-                currentLineIndex = 0;
+                    chunkElement.innerHTML = words;
 
-                highlightCurrentLine(); // Update line highlighting after loading the chunk
-                updateProgress(index); // Update the user's last seen chunk ID in the database
+                    currentIndex = index;
+                    currentWordIndex = 0;
+                    currentLineIndex = 0;
+
+                    highlightCurrentLine(); // Update line highlighting after loading the chunk
+                    updateProgress(index); // Update the user's last seen chunk ID in the database
+                } else {
+                    console.error('Error fetching chunk content: ', data.error);
+                }
             } else {
-                console.error('Error fetching chunk content: ', data.error);
+                console.error('Request failed with status: ' + xhr.status);
             }
-        } else {
-            console.error('Request failed with status: ' + xhr.status);
+        };
+        xhr.send();
+    }
+
+    function highlightCurrentLine() {
+        if (highlightingToggle == 1) {
+
+            const chunkElement = document.getElementById('chunkContent');
+            const words = chunkElement.querySelectorAll('.word');
+            const lines = getLines(chunkElement);
+
+            // Reset highlights
+            words.forEach(word => word.classList.remove('highlight'));
+
+            // Get words on the current visible line
+            const visibleLine = lines[currentLineIndex];
+
+            // Highlight the words in the current visible line
+            visibleLine.forEach(wordIndex => {
+                words[wordIndex].classList.add('highlight');
+            });
         }
-    };
-    xhr.send();
-}
+    }
 
-function highlightCurrentLine() {
-    if ($_SESSION['highlightingToggle'] == 1) {
-
-        const chunkElement = document.getElementById('chunkContent');
+    function getLines(chunkElement) {
+        const lines = [];
         const words = chunkElement.querySelectorAll('.word');
+        let currentLine = [];
+        let currentLineTop = -1;
+
+        words.forEach((word, index) => {
+            const wordTop = word.getBoundingClientRect().top;
+            
+            // Check if this word starts a new line
+            if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
+                // New line detected
+                lines.push(currentLine);
+                currentLine = [];
+            }
+
+            currentLineTop = wordTop;
+            currentLine.push(index);
+        });
+
+        // Add the last line
+        if (currentLine.length > 0) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    }
+
+    function prevChunk() {
+        if (currentIndex > 0) {
+            updateProgress(currentIndex - 1);  // Update progress before loading chunk
+            loadChunk(currentIndex - 1);       // Load the previous chunk
+        }
+    }
+
+    function nextChunk() {
+        if (currentIndex < chunks.length - 1) {
+            updateProgress(currentIndex + 1);  // Update progress before loading chunk
+            loadChunk(currentIndex + 1);       // Load the next chunk
+        }
+    }
+
+
+    function prevLine() {
+        if (currentLineIndex > 0) {
+            currentLineIndex--;
+            highlightCurrentLine();
+        }
+    }
+
+    function nextLine() {
+        const chunkElement = document.getElementById('chunkContent');
         const lines = getLines(chunkElement);
+        if (currentLineIndex < lines.length - 1) {
+            currentLineIndex++;
+            highlightCurrentLine();
+        }
+    }
 
-        // Reset highlights
-        words.forEach(word => word.classList.remove('highlight'));
+    window.onload = () => {
+        loadChunk(currentIndex);
 
-        // Get words on the current visible line
-        const visibleLine = lines[currentLineIndex];
+        // Add resize event listener to adjust highlighting
+        window.addEventListener('resize', () => {
+            highlightCurrentLine();
+        });
+    };
 
-        // Highlight the words in the current visible line
-        visibleLine.forEach(wordIndex => {
-            words[wordIndex].classList.add('highlight');
+    function updateProgress(index) {
+        // Send the updated progress to the server via AJAX
+        fetch('', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'updateProgress',
+                userID: <?php echo $userID; ?>,
+                feedID: <?php echo $feedID; ?>,
+                lastSeenChunkID: chunks[index].chunkID
+            })
+        }).then(response => {
+            if (response.ok) {
+                console.log("Progress updated successfully");
+            } else {
+                console.error("Failed to update progress");
+            }
+        }).catch(error => {
+            console.error("Error updating progress:", error);
         });
     }
-}
-
-function getLines(chunkElement) {
-    const lines = [];
-    const words = chunkElement.querySelectorAll('.word');
-    let currentLine = [];
-    let currentLineTop = -1;
-
-    words.forEach((word, index) => {
-        const wordTop = word.getBoundingClientRect().top;
-        
-        // Check if this word starts a new line
-        if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
-            // New line detected
-            lines.push(currentLine);
-            currentLine = [];
-        }
-
-        currentLineTop = wordTop;
-        currentLine.push(index);
-    });
-
-    // Add the last line
-    if (currentLine.length > 0) {
-        lines.push(currentLine);
-    }
-
-    return lines;
-}
-
-function prevChunk() {
-    if (currentIndex > 0) {
-        updateProgress(currentIndex - 1);  // Update progress before loading chunk
-        loadChunk(currentIndex - 1);       // Load the previous chunk
-    }
-}
-
-function nextChunk() {
-    if (currentIndex < chunks.length - 1) {
-        updateProgress(currentIndex + 1);  // Update progress before loading chunk
-        loadChunk(currentIndex + 1);       // Load the next chunk
-    }
-}
-
-
-function prevLine() {
-    if (currentLineIndex > 0) {
-        currentLineIndex--;
-        highlightCurrentLine();
-    }
-}
-
-function nextLine() {
-    const chunkElement = document.getElementById('chunkContent');
-    const lines = getLines(chunkElement);
-    if (currentLineIndex < lines.length - 1) {
-        currentLineIndex++;
-        highlightCurrentLine();
-    }
-}
-
-window.onload = () => {
-    loadChunk(currentIndex);
-
-    // Add resize event listener to adjust highlighting
-    window.addEventListener('resize', () => {
-        highlightCurrentLine();
-    });
-};
-
-function updateProgress(index) {
-    // Send the updated progress to the server via AJAX
-    fetch('', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            action: 'updateProgress',
-            userID: <?php echo $userID; ?>,
-            feedID: <?php echo $feedID; ?>,
-            lastSeenChunkID: chunks[index].chunkID
-        })
-    }).then(response => {
-        if (response.ok) {
-            console.log("Progress updated successfully");
-        } else {
-            console.error("Failed to update progress");
-        }
-    }).catch(error => {
-        console.error("Error updating progress:", error);
-    });
-}
 
     </script>
 </head>
