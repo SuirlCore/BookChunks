@@ -82,6 +82,10 @@ $conn->close();
                         <input type="hidden" name="book_id" value="<?= $book['id']; ?>">
                         <button type="submit" onclick="return confirm('Are you sure you want to delete this book?')">Delete</button>
                     </form>
+                    <form action="scripts/recalculateBook.php" method="POST" style="display: inline;">
+                        <input type="hidden" name="book_id" value="<?= $book['id']; ?>">
+                        <button type="submit" onclick="submit">Recalculate</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

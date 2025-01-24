@@ -34,7 +34,7 @@ function parseTextToSections($text) {
         $wordCount = str_word_count($sentence);
 
         // Check if adding this sentence would exceed 50 words
-        if ($currentWordCount + $wordCount > $_SESSION['maxWordsPerChunk']) {
+        if ($currentWordCount + $wordCount > 50) {
             // Add the current section to the list and reset
             $sections[] = trim($currentSection);
             $currentSection = $sentence;
