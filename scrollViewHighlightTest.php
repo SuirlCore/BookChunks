@@ -285,6 +285,30 @@ window.onload = () => {
     });
 };
 
+function updateProgress(index) {
+    // Send the updated progress to the server via AJAX
+    fetch('', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'updateProgress',
+            userID: <?php echo $userID; ?>,
+            feedID: <?php echo $feedID; ?>,
+            lastSeenChunkID: chunks[index].chunkID
+        })
+    }).then(response => {
+        if (response.ok) {
+            console.log("Progress updated successfully");
+        } else {
+            console.error("Failed to update progress");
+        }
+    }).catch(error => {
+        console.error("Error updating progress:", error);
+    });
+}
+
     </script>
 </head>
 <body>
