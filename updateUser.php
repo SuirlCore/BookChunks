@@ -233,7 +233,7 @@ $conn->close();
             <div class="custom-select">
                 <div class="select-selected">Select a Font &#10549;</div>
                 <div class="select-items">
-                    <div class="arial" data-value="Arial, sans-serif">Arial</div>
+                    <div class="arial" data-value="Arial, sans-serif">Arial: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
                     <div class="times" data-value="'Times New Roman', serif">Times New Roman</div>
                     <div class="courier" data-value="'Courier New', monospace">Courier New</div>
                     <div class="georgia" data-value="Georgia, serif">Georgia</div>
