@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
         -- 0 does nothing
         -- 1 logs into the system automatically with cookies
     
-    fontSelect VARCHAR(128) DEFAULT "'Arial', sans-serif",
+    fontSelect VARCHAR(128) DEFAULT 'Arial, sans-serif',
     fontSize VARCHAR(10) DEFAULT '16px',
     fontColor VARCHAR(7) DEFAULT '#000000',
     backgroundColor VARCHAR(7) DEFAULT '#FFFFFF',

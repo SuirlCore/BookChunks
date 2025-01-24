@@ -140,8 +140,8 @@ $conn->close();
             <!-- Font Select -->
             <label for="fontSelect">Select Font</label>
             <select name="fontSelect" id="fontSelect">
-                <option value="Arial, sans-serif" <?= $currentFontIn == "Arial, sans-serif" ? 'selected' : '' ?>>Arial</option>
-                <option value="Times New Roman, serif" <?= $currentFontIn == "Times New Roman, serif" ? 'selected' : '' ?>>Times New Roman</option>
+                <option value="Arial, sans-serif" <?= $currentFontIn == "Arial, sans-serif" ? 'selected' : '' ?>><span style="font-family:Arial, sans-serif">Arial</span></option>
+                <option value="Times New Roman, serif" <?= $currentFontIn == "Times New Roman, serif" ? 'selected' : '' ?>><span style="font-family:Times New Roman, serif">Times New Roman</span></option>
                 <option value="Courier New, monospace" <?= $currentFontIn == "Courier New, monospace" ? 'selected' : '' ?>>Courier New</option>
                 <option value="Georgia, serif" <?= $currentFontIn == "Georgia, serif" ? 'selected' : '' ?>>Georgia</option>
                 <option value="Verdana, sans-serif" <?= $currentFontIn == "Verdana, sans-serif" ? 'selected' : '' ?>>Verdana</option>
