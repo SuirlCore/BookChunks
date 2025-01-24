@@ -101,6 +101,46 @@ $conn->close();
             margin-left: 10px;
             border: 1px solid #ccc;
         }
+
+        .custom-select {
+            position: relative;
+            width: 300px;
+        }
+
+        .custom-select select {
+            display: none; /* Hide the default select element */
+        }
+
+        .select-selected {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 16px;
+        }
+
+        .select-items {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            z-index: 99;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .select-items div {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .select-items div:hover {
+            background-color: #ddd;
+        }
+
         .arial {
             font-family: Arial, sans-serif;
         }
@@ -205,6 +245,18 @@ $conn->close();
                 <option class="bush" value="Brush Script MT, cursive" <?= $currentFontIn == "Brush Script MT, cursive" ? 'selected' : '' ?>>Brush Script MT</option>
                 <option class="lucidaConsole" value="Lucida Console, monospace" <?= $currentFontIn == "Lucida Console, monospace" ? 'selected' : '' ?>>Lucida Console</option>
             </select>
+
+            <div class="custom-select">
+                <div class="select-selected">Select a Font</div>
+                <div class="select-items">
+                    <div class="arial" data-value="Arial, sans-serif">Arial</div>
+                    <div class="times" data-value="'Times New Roman', serif">Times New Roman</div>
+                    <div class="courier" data-value="'Courier New', monospace">Courier New</div>
+                    <div class="georgia" data-value="Georgia, serif">Georgia</div>
+                    <div class="verdana" data-value="Verdana, sans-serif">Verdana</div>
+                    <div class="tahoma" data-value="Tahoma, sans-serif">Tahoma</div>
+                </div>
+            </div>
 
             <!-- Font Color -->
             <label for="fontColor">Font Color:</label>
@@ -318,5 +370,34 @@ $conn->close();
             <button type="submit" name="updateProfileAndSettings">Update</button>
         </form>
     </div>
+
+    <script>
+    // JavaScript to handle the custom dropdown
+    document.addEventListener('DOMContentLoaded', () => {
+        const selected = document.querySelector('.select-selected');
+        const items = document.querySelector('.select-items');
+
+        selected.addEventListener('click', () => {
+            items.style.display = items.style.display === 'block' ? 'none' : 'block';
+        });
+
+        items.addEventListener('click', (e) => {
+            if (e.target && e.target.matches('div')) {
+                const font = e.target.dataset.value;
+                selected.textContent = e.target.textContent;
+                selected.style.fontFamily = font;
+                items.style.display = 'none';
+                console.log(`Selected font: ${font}`); // Use this to set the selected font value in your form
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-select')) {
+                items.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
