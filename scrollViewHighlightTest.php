@@ -188,19 +188,34 @@ let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, 
 function loadChunk(index) {
     if (index < 0 || index >= chunks.length) return;
 
-    // Clean and display the chunk content
-    const chunkContent = "<?php echo addslashes($cleanedContent); ?>"; // Cleaned content
-    const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-    const chunkElement = document.getElementById('chunkContent');
+    // Send AJAX request to get the chunk content
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            if (data.chunkContent) {
+                // Clean and display the chunk content
+                const chunkContent = data.chunkContent;
+                const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+                const chunkElement = document.getElementById('chunkContent');
 
-    chunkElement.innerHTML = words;
+                chunkElement.innerHTML = words;
 
-    currentIndex = index;
-    currentWordIndex = 0;
-    currentLineIndex = 0;
+                currentIndex = index;
+                currentWordIndex = 0;
+                currentLineIndex = 0;
 
-    highlightCurrentLine(); // Update line highlighting after loading the chunk
-    updateProgress(index); // Update the user's last seen chunk ID in the database
+                highlightCurrentLine(); // Update line highlighting after loading the chunk
+                updateProgress(index); // Update the user's last seen chunk ID in the database
+            } else {
+                console.error('Error fetching chunk content: ', data.error);
+            }
+        } else {
+            console.error('Request failed with status: ' + xhr.status);
+        }
+    };
+    xhr.send();
 }
 
 function highlightCurrentLine() {
