@@ -10,6 +10,32 @@ if (!isset($_SESSION['user_id'])) {
 }
 $userID = $_SESSION['user_id'];
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    if (isset($data['action']) && $data['action'] === 'updateProgress' && isset($data['userID'], $data['feedID'], $data['lastSeenChunkID'])) {
+        global $conn;
+
+        // Prepare the SQL query to insert or update
+        $sql = "INSERT INTO userFeedProgress (userID, feedID, lastSeenChunkID) 
+                VALUES (?, ?, ?) 
+                ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
+                
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
+        $stmt->execute();
+        $stmt->close();
+
+        // Optionally, update other fields like numChunksSeen
+        $sql = "UPDATE users SET numChunksSeen = IFNULL(numChunksSeen, 0) + 1 WHERE userID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $data['userID']);
+        $stmt->execute();
+        $stmt->close();
+    }
+}
+
+
 // Fetch user preferences for text and background
 $sql = "SELECT fontSize, fontColor, backgroundColor FROM users WHERE userID = ?";
 $stmt = $conn->prepare($sql);
