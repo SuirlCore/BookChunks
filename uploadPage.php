@@ -41,6 +41,9 @@ $conn->close();
 </head>
 <body>
     <h2>Upload a Text File to start.</h2>
+    <p>
+        This can take 30 seconds or so, be patient. When your book shows up in the table below, its finished.
+    </p>
     <form action="scripts/upload.php" method="POST" enctype="multipart/form-data">
         <input type="file" name="text_file" accept=".txt" required><br><br>
         <input type="submit" value="Upload and Process">
