@@ -256,11 +256,15 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         }
 
         function prevChunk() {
-            loadChunk(currentIndex - 1);
+            if (currentIndex > 0) {
+                loadChunk(currentIndex - 1);
+            }
         }
 
         function nextChunk() {
-            loadChunk(currentIndex + 1);
+            if (currentIndex < chunks.length - 1) {
+                loadChunk(currentIndex + 1);
+            }
         }
 
         window.onload = () => {
