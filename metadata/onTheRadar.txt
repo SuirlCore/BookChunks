@@ -1,5 +1,7 @@
 top things to work on:
 
+-fix memory usage error on scrollView.php for feeds with more than a few books (6000 pages?)
+
 -ability to rename books
 -combine books into "series", or "collections", name the collections
     new database table to save books in collections
