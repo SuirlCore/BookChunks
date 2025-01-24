@@ -25,10 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($conn->query($sql) === TRUE) {
         echo "New record created successfully.";
+
+        // Get the userID for the recently created user
+        $userID = $conn->insert_id; // Get the last inserted ID
         
         // If the user selected "auto login", set a cookie
         if ($autoLogin) {
-            setcookie('auto_login', $username, time() + (86400 * 30), "/"); // Set cookie for 30 days
+            setcookie('auto_login', $userID, time() + (86400 * 30), "/"); // Set cookie for 30 days
         }
         
         header("Location: ../login.html"); // Redirect to login page after successful registration

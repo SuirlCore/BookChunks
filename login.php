@@ -4,10 +4,10 @@ include 'scripts/pdo.php';
 session_start();
 
 if (isset($_COOKIE['auto_login'])) {
-    $username = $_COOKIE['auto_login'];
+    $userID = $_COOKIE['auto_login'];
     
     // Check if the user exists
-    $sql = "SELECT * FROM users WHERE userName='$username'";
+    $sql = "SELECT * FROM users WHERE userID='$userID'";
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0) {

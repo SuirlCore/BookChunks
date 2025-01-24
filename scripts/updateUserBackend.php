@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
 
     // Set or remove the autoLogin cookie based on the user's choice
     if ($autoLogin == '1') {
-        setcookie('auto_login', 'true', time() + 3600 * 24 * 30, "/"); // Cookie expires in 30 days
+        setcookie('auto_login', $userID, time() + 3600 * 24 * 30, "/"); // Cookie expires in 30 days
     } else {
         setcookie('auto_login', '', time() - 3600, "/"); // Expire the cookie immediately
     }
