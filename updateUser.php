@@ -227,24 +227,8 @@ $conn->close();
             
             <!-- Font Select -->
             <label for="fontSelect">Select Font</label>
-            <select name="fontSelect" id="fontSelect">
-                <option class="arial" value="Arial, sans-serif" <?= $currentFontIn == "Arial, sans-serif" ? 'selected' : '' ?>>Arial</option>
-                <option class="times" value="Times New Roman, serif" <?= $currentFontIn == "Times New Roman, serif" ? 'selected' : '' ?>>Times New Roman</option>
-                <option class="courier" value="Courier New, monospace" <?= $currentFontIn == "Courier New, monospace" ? 'selected' : '' ?>>Courier New</option>
-                <option class="georgia" value="Georgia, serif" <?= $currentFontIn == "Georgia, serif" ? 'selected' : '' ?>>Georgia</option>
-                <option class="verdana" value="Verdana, sans-serif" <?= $currentFontIn == "Verdana, sans-serif" ? 'selected' : '' ?>>Verdana</option>
-                <option class="tahoma" value="Tahoma, sans-serif" <?= $currentFontIn == "Tahoma, sans-serif" ? 'selected' : '' ?>>Tahoma</option>
-                <option class="trebuchet" value="Trebuchet MS, sans-serif" <?= $currentFontIn == "Trebuchet MS, sans-serif" ? 'selected' : '' ?>>Trebuchet MS</option>
-                <option class="comicSans" value="Comic Sans MS, cursive" <?= $currentFontIn == "Comic Sans MS, cursive" ? 'selected' : '' ?>>Comic Sans MS</option>
-                <option class="imapct" value="Impact, sans-serif" <?= $currentFontIn == "Impact, sans-serif" ? 'selected' : '' ?>>Impact</option>
-                <option class="palatino" value="Palatino Linotype, serif" <?= $currentFontIn == "Palatino Linotype, serif" ? 'selected' : '' ?>>Palatino Linotype</option>
-                <option class="lucidaSans" value="Lucida Sans Unicode, sans-serif" <?= $currentFontIn == "Lucida Sans Unicode, sans-serif" ? 'selected' : '' ?>>Lucida Sans Unicode</option>
-                <option class="gill" value="Gill Sans, sans-serif" <?= $currentFontIn == "Gill Sans, sans-serif" ? 'selected' : '' ?>>Gill Sans</option>
-                <option class="franklin" value="Franklin Gothic Medium, sans-serif" <?= $currentFontIn == "Franklin Gothic Medium, sans-serif" ? 'selected' : '' ?>>Franklin Gothic Medium</option>
-                <option class="garamond" value="Garamond, serif" <?= $currentFontIn == "Garamond, serif" ? 'selected' : '' ?>>Garamond</option>
-                <option class="bush" value="Brush Script MT, cursive" <?= $currentFontIn == "Brush Script MT, cursive" ? 'selected' : '' ?>>Brush Script MT</option>
-                <option class="lucidaConsole" value="Lucida Console, monospace" <?= $currentFontIn == "Lucida Console, monospace" ? 'selected' : '' ?>>Lucida Console</option>
-            </select>
+            Current Choice: <?= htmlspecialchars($_SESSION['fontSelect']); ?><br>
+            <input type="hidden" name="fontSelect" id="fontSelectInput" value="">
 
             <div class="custom-select">
                 <div class="select-selected">Select a Font &#10549;</div>
@@ -265,7 +249,6 @@ $conn->close();
                     <div class="garamond" data-value="Garamond, serif">Garamond</div>
                     <div class="bush" data-value="Brush Script MT, cursive">Bush Script</div>
                     <div class="lucidaConsole" data-value="Lucida Console, monospace">Lucida Console</div>
-
                 </div>
             </div>
 
@@ -387,21 +370,26 @@ $conn->close();
     document.addEventListener('DOMContentLoaded', () => {
         const selected = document.querySelector('.select-selected');
         const items = document.querySelector('.select-items');
+        const hiddenInput = document.getElementById('fontSelectInput'); // Hidden input to store selected font value
 
+        // Toggle dropdown visibility
         selected.addEventListener('click', () => {
             items.style.display = items.style.display === 'block' ? 'none' : 'block';
         });
 
+        // Handle font selection
         items.addEventListener('click', (e) => {
             if (e.target && e.target.matches('div')) {
                 const font = e.target.dataset.value;
-                selected.textContent = e.target.textContent;
-                selected.style.fontFamily = font;
-                items.style.display = 'none';
-                console.log(`Selected font: ${font}`); // Use this to set the selected font value in your form
+                selected.textContent = e.target.textContent + ' ⬇'; // Update displayed text
+                selected.style.fontFamily = font; // Update font style
+                items.style.display = 'none'; // Close the dropdown
+                hiddenInput.value = font; // Set the hidden input value
+                console.log(`Selected font: ${font}`); // Log selected font
             }
         });
 
+        // Close dropdown if clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.custom-select')) {
                 items.style.display = 'none';
@@ -409,6 +397,7 @@ $conn->close();
         });
     });
 </script>
+
 
 </body>
 </html>
