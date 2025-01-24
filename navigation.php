@@ -94,7 +94,7 @@ body {
         <a href="about.php">About</a>
         <a href="updateUser.php">User Settings</a>
         <a href="scripts/logout.php">Log Out</a>
-        <?php if ($userLevel == 1): ?>
+        <?php if ($userLevel == 2): ?>
             <a href="systemData.php">System Usage</a>
         <?php endif; ?>
     </div>
