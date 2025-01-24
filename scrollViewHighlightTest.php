@@ -219,22 +219,23 @@ function loadChunk(index) {
 }
 
 function highlightCurrentLine() {
-    if ($_SESSION['highlightingToggle'] == 0) return; // Skip highlighting if flag is 0
+    if ($_SESSION['highlightingToggle'] == 1) {
 
-    const chunkElement = document.getElementById('chunkContent');
-    const words = chunkElement.querySelectorAll('.word');
-    const lines = getLines(chunkElement);
+        const chunkElement = document.getElementById('chunkContent');
+        const words = chunkElement.querySelectorAll('.word');
+        const lines = getLines(chunkElement);
 
-    // Reset highlights
-    words.forEach(word => word.classList.remove('highlight'));
+        // Reset highlights
+        words.forEach(word => word.classList.remove('highlight'));
 
-    // Get words on the current visible line
-    const visibleLine = lines[currentLineIndex];
+        // Get words on the current visible line
+        const visibleLine = lines[currentLineIndex];
 
-    // Highlight the words in the current visible line
-    visibleLine.forEach(wordIndex => {
-        words[wordIndex].classList.add('highlight');
-    });
+        // Highlight the words in the current visible line
+        visibleLine.forEach(wordIndex => {
+            words[wordIndex].classList.add('highlight');
+        });
+    }
 }
 
 function getLines(chunkElement) {
