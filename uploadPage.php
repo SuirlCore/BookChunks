@@ -69,6 +69,10 @@ $conn->close();
     </p>
 
     <h3>Your Uploaded Books</h3>
+    <p>
+        To recalculate the book with a different number of words per chunk, click the recalculate
+        button, and it will change the max number of words per chunk based on your user settings.
+    </p>
     <table border="1">
         <tr>
             <th>Filename</th>
