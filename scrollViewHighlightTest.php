@@ -179,17 +179,19 @@ $stmt->close();
             const lines = [];
             const words = chunkElement.querySelectorAll('.word');
             let currentLine = [];
-            let currentLineWidth = 0;
-            const containerWidth = chunkElement.offsetWidth;
+            let currentLineTop = -1;
 
-            let currentLineStart = 0;
             words.forEach((word, index) => {
-                currentLineWidth += word.offsetWidth;
-                if (currentLineWidth > containerWidth) {
+                const wordTop = word.getBoundingClientRect().top;
+                
+                // Check if this word starts a new line
+                if (currentLineTop !== -1 && Math.abs(wordTop - currentLineTop) > 1) {
+                    // New line detected
                     lines.push(currentLine);
                     currentLine = [];
-                    currentLineWidth = word.offsetWidth;
                 }
+
+                currentLineTop = wordTop;
                 currentLine.push(index);
             });
 
