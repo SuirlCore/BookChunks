@@ -234,21 +234,21 @@ $conn->close();
                 <div class="select-selected">Select a Font &#10549;</div>
                 <div class="select-items">
                     <div class="arial" data-value="Arial, sans-serif">Arial: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
-                    <div class="times" data-value="'Times New Roman', serif">Times New Roman</div>
-                    <div class="courier" data-value="'Courier New', monospace">Courier New</div>
-                    <div class="georgia" data-value="Georgia, serif">Georgia</div>
-                    <div class="verdana" data-value="Verdana, sans-serif">Verdana</div>
-                    <div class="tahoma" data-value="Tahoma, sans-serif">Tahoma</div>
-                    <div class="trebuchet" data-value="Trebuchet MS, sans-serif">Trebuchet</div>
-                    <div class="comicSans" data-value="Comic Sans MS, cursive">Comic Sans</div>
-                    <div class="impact" data-value="Impact, sans-serif">Impact</div>
-                    <div class="palatino" data-value="Palatino Linotype, serif">Palatino</div>
-                    <div class="lucidaSans" data-value="Lucida Sans Unicode, sans-serif">Lucida Sans</div>
-                    <div class="gill" data-value="Gill Sans, sans-serif">Gill Sans</div>
-                    <div class="franklin" data-value="Franklin Gothic Medium, sans-serif">Franklin Gothic</div>
-                    <div class="garamond" data-value="Garamond, serif">Garamond</div>
-                    <div class="bush" data-value="Brush Script MT, cursive">Bush Script</div>
-                    <div class="lucidaConsole" data-value="Lucida Console, monospace">Lucida Console</div>
+                    <div class="times" data-value="'Times New Roman', serif">Times New Roman: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="courier" data-value="'Courier New', monospace">Courier New: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="georgia" data-value="Georgia, serif">Georgia: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="verdana" data-value="Verdana, sans-serif">Verdana: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="tahoma" data-value="Tahoma, sans-serif">Tahoma: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="trebuchet" data-value="Trebuchet MS, sans-serif">Trebuchet: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="comicSans" data-value="Comic Sans MS, cursive">Comic Sans: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="impact" data-value="Impact, sans-serif">Impact: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="palatino" data-value="Palatino Linotype, serif">Palatino: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="lucidaSans" data-value="Lucida Sans Unicode, sans-serif">Lucida Sans: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="gill" data-value="Gill Sans, sans-serif">Gill Sans: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="franklin" data-value="Franklin Gothic Medium, sans-serif">Franklin Gothic: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="garamond" data-value="Garamond, serif">Garamond: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="bush" data-value="Brush Script MT, cursive">Bush Script: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+                    <div class="lucidaConsole" data-value="Lucida Console, monospace">Lucida Console: ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
                 </div>
             </div>
 
