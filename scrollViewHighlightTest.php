@@ -86,16 +86,22 @@ $stmt->close();
             background-color: <?= htmlspecialchars($_SESSION['highlightColor']); ?>;
         }
 
-        .navigation {
+        .line-controls, .chunk-controls {
             display: flex;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
+            justify-content: space-evenly;
+            padding: 10px;
             background: #A9A9A9;
         }
 
-        .navigation button {
+        .line-controls {
+            border-bottom: 1px solid #d3d3d3;
+        }
+
+        .chunk-controls {
+            border-top: 1px solid #d3d3d3;
+        }
+
+        button {
             flex: 1;
             color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             font-size: 18px;
@@ -106,11 +112,11 @@ $stmt->close();
             transition: background 0.2s ease-in-out;
         }
 
-        .navigation button:hover {
+        button:hover {
             background: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>;
         }
 
-        .navigation button:disabled {
+        button:disabled {
             background: #d6d6d6;
             color: #aaa;
             cursor: not-allowed;
@@ -177,10 +183,6 @@ $stmt->close();
 
         window.onload = () => {
             loadChunk(currentIndex);
-
-            <?php if ($_SESSION['highlightingToggle'] == 1): ?>
-                document.getElementById('lineControls').style.display = 'flex';
-            <?php endif; ?>
         };
     </script>
 </head>
@@ -202,17 +204,17 @@ $stmt->close();
 
     <div class="chunk-container" id="chunkContent">Loading...</div>
 
-    <div class="navigation">
-        <button id="prevButton" onclick="prevChunk()">Previous Chunk</button>
-        <button id="nextButton" onclick="nextChunk()">Next Chunk</button>
-    </div>
-
     <?php if ($_SESSION['highlightingToggle'] == 1): ?>
-        <div id="lineControls" class="navigation" style="display: none;">
-            <button id="prevLineButton" onclick="prevLine()">Previous Line</button>
-            <button id="nextLineButton" onclick="nextLine()">Next Line</button>
+        <div class="line-controls">
+            <button onclick="prevLine()">Previous Line</button>
+            <button onclick="nextLine()">Next Line</button>
         </div>
     <?php endif; ?>
+
+    <div class="chunk-controls">
+        <button onclick="prevChunk()">Previous Chunk</button>
+        <button onclick="nextChunk()">Next Chunk</button>
+    </div>
 </body>
 </html>
 
@@ -227,12 +229,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ON DUPLICATE KEY UPDATE lastSeenChunkID = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iiii", $data['userID'], $data['feedID'], $data['lastSeenChunkID'], $data['lastSeenChunkID']);
-        $stmt->execute();
-        $stmt->close();
-
-        $sql = "UPDATE users SET numChunksSeen = IFNULL(numChunksSeen, 0) + 1 WHERE userID = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $data['userID']);
         $stmt->execute();
         $stmt->close();
     }
