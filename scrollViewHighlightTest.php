@@ -219,6 +219,8 @@ function loadChunk(index) {
 }
 
 function highlightCurrentLine() {
+    if ($_SESSION['highlightFlag'] == 0) return; // Skip highlighting if flag is 0
+
     const chunkElement = document.getElementById('chunkContent');
     const words = chunkElement.querySelectorAll('.word');
     const lines = getLines(chunkElement);
