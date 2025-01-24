@@ -88,13 +88,15 @@ function cleanChunkContent($content) {
     return $content;
 }
 
-//Grab the chunkContent for the chunkID
+// Grab the chunkContent for the chunkID
 $sql = "SELECT chunkContent FROM bookChunks WHERE chunkID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $lastSeenChunkID);
 $stmt->execute();
 $result = $stmt->get_result();
-$lastChunkContent = $result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch the single chunkContent as a string
+$lastChunkContent = $result->fetch_assoc()['chunkContent'];
 $stmt->close();
 
 // Clean the chunk content before sending to the frontend
