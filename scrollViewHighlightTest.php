@@ -250,15 +250,18 @@ function getLines(chunkElement) {
 
 function prevChunk() {
     if (currentIndex > 0) {
-        loadChunk(currentIndex - 1);
+        updateProgress(currentIndex - 1);  // Update progress before loading chunk
+        loadChunk(currentIndex - 1);       // Load the previous chunk
     }
 }
 
 function nextChunk() {
     if (currentIndex < chunks.length - 1) {
-        loadChunk(currentIndex + 1);
+        updateProgress(currentIndex + 1);  // Update progress before loading chunk
+        loadChunk(currentIndex + 1);       // Load the next chunk
     }
 }
+
 
 function prevLine() {
     if (currentLineIndex > 0) {
