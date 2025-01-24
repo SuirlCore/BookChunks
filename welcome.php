@@ -57,6 +57,13 @@ if (!isset($_SESSION['user_id'])) {
     </p>
 
     <p>
+        After you have your feeds setup. Head over to User Settings to change things up. Create your own
+        personal theme for the site by changing color options. You can also change settings for the font,
+        text size, and line spacing in your feed. You can turn on and off the ability to highlight one line
+        at a time in your feed if that makes it easier for you to read.
+    </p>
+
+    <p>
         If you need to find some books to get you started, here are a couple of sites that may help:<br>
         <a href="https://www.gutenberg.org/"> Project Gutenberg</a><br>
         

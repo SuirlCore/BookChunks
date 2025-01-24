@@ -97,7 +97,7 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Line Highlighting</title>
+    <title>Scroll View</title>
     <style>
         body {
             font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;

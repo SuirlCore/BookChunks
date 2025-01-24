@@ -5,8 +5,9 @@ top things to work on:
     new database table to save books in collections
 -add a way for the user to know a book is being uploaded
 
-need a triggered procedure on mysql to run once a week to update chunksSeenPerWeek table from users/numChunksSeen - chunksSeenPerWeek(all records per user).
-OR update php logic to update bot fields at the same time
+update number of chunks seen per week
+    need a triggered procedure on mysql to run once a week to update chunksSeenPerWeek table from users/numChunksSeen - chunksSeenPerWeek(all records per user).
+    OR update php logic to update bot fields at the same time?
 
 
 dyslexia functions:
@@ -20,9 +21,6 @@ dyslexia functions:
 
 items to be fixed:
 
-login
--get the website to auto login if the user wants to
-
 users
 -forgot password email
 
@@ -32,14 +30,11 @@ uploading files
 feed management
 -ensure lastSeenChunkID integrity when changing items in feeds
 
-scrollview
--have the site auto load here
-
 systemData
 -table for user recomendations 
 -table for the last 10 sql statements sent to server
 
-additional pages
+additional pages and capabilities to add later:
 -add friends page?: add friends so you can track their progress against your own
     -percent through current book
     -number of chunks seen in the last 7 rolling days
@@ -61,10 +56,10 @@ additional pages
 ways to use this site
     classroom teacher / students
     book reader with/without dyslexia support
-    rss feed
-    flash card memorizer
+    rss feed? (possble future implementation)
+    flash card memorizer (possible future implementation)
 
-hardware server needs
+hardware server needs that need to be added
     second apache server setup as backup
     auto backup data to second server
     database backups to external hd / cloud
