@@ -159,13 +159,13 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         .line-controls {
             display: flex;
             justify-content: center;
-            margin: 10px 0;
+            margin: 0;
         }
 
         .line-controls button {
             font-size: 16px;
             flex: 1;
-            margin: 0 10px;
+            margin: 0;
             padding: 10px 20px;
             cursor: pointer;
         }
@@ -173,13 +173,13 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
         .chunk-controls {
             display: flex;
             justify-content: center;
-            margin: 10px 0;
+            margin: 0;
         }
 
         .chunk-controls button {
             font-size: 16px;
             flex: 1;
-            margin: 0 10px;
+            margin: 0;
             padding: 10px 20px;
             cursor: pointer;
         }
