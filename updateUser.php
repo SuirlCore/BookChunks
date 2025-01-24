@@ -247,7 +247,7 @@ $conn->close();
             </select>
 
             <div class="custom-select">
-                <div class="select-selected">Select a Font</div>
+                <div class="select-selected">Select a Font &#10549;</div>
                 <div class="select-items">
                     <div class="arial" data-value="Arial, sans-serif">Arial</div>
                     <div class="times" data-value="'Times New Roman', serif">Times New Roman</div>
@@ -255,6 +255,17 @@ $conn->close();
                     <div class="georgia" data-value="Georgia, serif">Georgia</div>
                     <div class="verdana" data-value="Verdana, sans-serif">Verdana</div>
                     <div class="tahoma" data-value="Tahoma, sans-serif">Tahoma</div>
+                    <div class="trebuchet" data-value="Trebuchet MS, sans-serif">Trebuchet</div>
+                    <div class="comicSans" data-value="Comic Sans MS, cursive">Comic Sans</div>
+                    <div class="impact" data-value="Impact, sans-serif">Impact</div>
+                    <div class="palatino" data-value="Palatino Linotype, serif">Palatino</div>
+                    <div class="lucidaSans" data-value="Lucida Sans Unicode, sans-serif">Lucida Sans</div>
+                    <div class="gill" data-value="Gill Sans, sans-serif">Gill Sans</div>
+                    <div class="franklin" data-value="Franklin Gothic Medium, sans-serif">Franklin Gothic</div>
+                    <div class="garamond" data-value="Garamond, serif">Garamond</div>
+                    <div class="bush" data-value="Brush Script MT, cursive">Bush Script</div>
+                    <div class="lucidaConsole" data-value="Lucida Console, monospace">Lucida Console</div>
+
                 </div>
             </div>
 
