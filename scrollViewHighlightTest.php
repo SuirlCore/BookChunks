@@ -79,6 +79,9 @@ $stmt->close();
             overflow-y: auto;
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
             line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
+            white-space: pre-wrap; /* Ensures proper word wrapping */
+            word-wrap: break-word;
+            display: block;
         }
 
         .highlight {
@@ -130,7 +133,7 @@ $stmt->close();
             if (index < 0 || index >= chunks.length) return;
 
             const chunkContent = chunks[index].chunkContent;
-            const words = chunkContent.split(' ').map(word => `<span>${word}</span>`).join(' ');
+            const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
             document.getElementById('chunkContent').innerHTML = words;
 
             currentIndex = index;
@@ -142,7 +145,7 @@ $stmt->close();
 
         function highlightCurrentLine() {
             const chunkContainer = document.getElementById('chunkContent');
-            const words = chunkContainer.querySelectorAll('span');
+            const words = chunkContainer.querySelectorAll('.word');
             const containerWidth = chunkContainer.clientWidth;
             let currentLineWidth = 0;
 
@@ -161,13 +164,14 @@ $stmt->close();
                 endWord = i;
             }
 
+            // Highlight the words that are on the current line
             for (let i = startWord; i <= endWord; i++) {
                 words[i].classList.add('highlight');
             }
         }
 
         function nextLine() {
-            const words = document.getElementById('chunkContent').querySelectorAll('span');
+            const words = document.getElementById('chunkContent').querySelectorAll('.word');
             if (currentWordIndex < words.length - 1) {
                 currentWordIndex += countWordsInLine();
                 highlightCurrentLine();
@@ -183,7 +187,7 @@ $stmt->close();
 
         function countWordsInLine(reverse = false) {
             const chunkContainer = document.getElementById('chunkContent');
-            const words = chunkContainer.querySelectorAll('span');
+            const words = chunkContainer.querySelectorAll('.word');
             const containerWidth = chunkContainer.clientWidth;
             let currentLineWidth = 0;
             let wordCount = 0;
@@ -272,6 +276,7 @@ $stmt->close();
     </div>
 </body>
 </html>
+
 
 
 <?php
