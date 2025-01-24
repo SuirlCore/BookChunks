@@ -105,7 +105,7 @@ $cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($las
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh; 
+            height: 90vh; 
             overflow: hidden;  
             color: <?= htmlspecialchars($fontColorChoice); ?>;
             background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
