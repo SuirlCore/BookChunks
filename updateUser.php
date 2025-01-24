@@ -50,7 +50,7 @@ $conn->close();
     <title>Update Profile</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
             margin: 0;
             padding: 0;
             color: <?= htmlspecialchars($_SESSION['fontColor']); ?>; /* Dynamic font color */
@@ -85,14 +85,14 @@ $conn->close();
         button {
             margin-top: 20px;
             padding: 10px 15px;
-            background-color: #A9A9A9;
-            color: #fff;
+            background-color: <?= htmlspecialchars($_SESSION['buttonColor']); ?>;
+            color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #696969;
+            background-color: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>;
         }
         .color-preview {
             display: inline-block;
