@@ -89,7 +89,7 @@ $stmt->close();
         .line-controls, .chunk-controls {
             display: flex;
             justify-content: space-evenly;
-            padding: 10px;
+            padding: 0px;
             background: #A9A9A9;
         }
 
