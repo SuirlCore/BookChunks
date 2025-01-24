@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirmPassword = mysqli_real_escape_string($conn, $_POST['confirmPassword']);
     $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
     $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
+    $autoLogin = isset($_POST['autoLogin']) ? 1 : 0; // Check if "auto login" is selected
 
     // Check if passwords match
     if ($password !== $confirmPassword) {
@@ -19,11 +20,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert the user into the database
-    $sql = "INSERT INTO users (userName, pass, email, realFirstName, realLastName) 
-            VALUES ('$username', '$hashed_password', '$email', '$firstName', '$lastName')";
+    $sql = "INSERT INTO users (userName, pass, email, realFirstName, realLastName, autoLogin) 
+            VALUES ('$username', '$hashed_password', '$email', '$firstName', '$lastName', '$autoLogin')";
 
     if ($conn->query($sql) === TRUE) {
         echo "New record created successfully.";
+        
+        // If the user selected "auto login", set a cookie
+        if ($autoLogin) {
+            setcookie('auto_login', $username, time() + (86400 * 30), "/"); // Set cookie for 30 days
+        }
+        
         header("Location: ../login.html"); // Redirect to login page after successful registration
         exit();
     } else {
@@ -32,4 +39,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn->close();
 }
+
 ?>

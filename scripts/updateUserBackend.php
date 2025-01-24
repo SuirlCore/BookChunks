@@ -103,6 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['updateProfileAndSetti
     // Close the statement
     $stmt->close();
 
+    // Set or remove the autoLogin cookie based on the user's choice
+    if ($autoLogin == '1') {
+        setcookie('autoLogin', 'true', time() + 3600 * 24 * 30, "/"); // Cookie expires in 30 days
+    } else {
+        setcookie('autoLogin', '', time() - 3600, "/"); // Expire the cookie immediately
+    }
+
     // Update session variables
     $_SESSION['fontSize'] = $fontSize;
     $_SESSION['fontColor'] = $fontColor;
