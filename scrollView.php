@@ -71,7 +71,7 @@ $lastSeenChunkID = $lastSeen ? $lastSeen['lastSeenChunkID'] : null;
 $stmt->close();
 
 // Fetch all chunk IDs for the feed
-$sql = "SELECT uf.chunkID, bc.chunkContent FROM userFeed uf JOIN bookChunks bc ON uf.chunkID = bc.chunkID WHERE uf.feedID = ? AND uf.userID = ? ORDER BY uf.numInFeed";
+$sql = "SELECT uf.chunkID FROM userFeed uf JOIN bookChunks bc ON uf.chunkID = bc.chunkID WHERE uf.feedID = ? AND uf.userID = ? ORDER BY uf.numInFeed";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $feedID, $userID);
 $stmt->execute();
@@ -88,8 +88,17 @@ function cleanChunkContent($content) {
     return $content;
 }
 
+//Grab the chunkContent for the chunkID
+$sql = "SELECT chunkContent FROM bookChunks WHERE chunkID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $lastSeenChunkID);
+$stmt->execute();
+$result = $stmt->get_result();
+$lastChunkContent = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+
 // Clean the chunk content before sending to the frontend
-$cleanedContent = cleanChunkContent($chunks[$lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0]['chunkContent']);
+$cleanedContent = cleanChunkContent($lastChunkContent);
 ?>
 
 <!DOCTYPE html>
