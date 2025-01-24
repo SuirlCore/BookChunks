@@ -79,9 +79,11 @@ $stmt->close();
             overflow-y: auto;
             font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
             line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
-            white-space: pre-wrap; /* Ensures proper word wrapping */
+            white-space: pre-wrap;
             word-wrap: break-word;
             display: block;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .highlight {
@@ -123,94 +125,97 @@ $stmt->close();
             color: #aaa;
             cursor: not-allowed;
         }
+
+        .word {
+            display: inline-block;
+            padding-right: 2px; /* Ensure space between words */
+        }
+
+        .line {
+            display: block;
+        }
     </style>
     <script>
         let chunks = <?php echo json_encode($chunks); ?>;
         let currentIndex = <?php echo $lastSeenChunkID ? array_search($lastSeenChunkID, array_column($chunks, 'chunkID')) : 0; ?>;
         let currentWordIndex = 0;
+        let currentLineIndex = 0;
 
         function loadChunk(index) {
             if (index < 0 || index >= chunks.length) return;
 
             const chunkContent = chunks[index].chunkContent;
             const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-            document.getElementById('chunkContent').innerHTML = words;
+            const chunkElement = document.getElementById('chunkContent');
+
+            chunkElement.innerHTML = words;
 
             currentIndex = index;
             currentWordIndex = 0;
+            currentLineIndex = 0;
 
             highlightCurrentLine();
             updateProgress(index);
         }
 
         function highlightCurrentLine() {
-            const chunkContainer = document.getElementById('chunkContent');
-            const words = chunkContainer.querySelectorAll('.word');
-            const containerWidth = chunkContainer.clientWidth;
-            let currentLineWidth = 0;
+            const chunkElement = document.getElementById('chunkContent');
+            const words = chunkElement.querySelectorAll('.word');
+            const lines = getLines(chunkElement);
 
-            // Reset all highlights
+            // Reset highlights
             words.forEach(word => word.classList.remove('highlight'));
 
-            // Highlight words that fit in the visible line
-            let startWord = currentWordIndex;
-            let endWord = currentWordIndex;
+            // Get words on the current visible line
+            const visibleLine = lines[currentLineIndex];
 
-            for (let i = currentWordIndex; i < words.length; i++) {
-                const wordWidth = words[i].offsetWidth;
-                if (currentLineWidth + wordWidth > containerWidth) break;
+            // Highlight the words in the current visible line
+            visibleLine.forEach(wordIndex => {
+                words[wordIndex].classList.add('highlight');
+            });
+        }
 
-                currentLineWidth += wordWidth;
-                endWord = i;
+        function getLines(chunkElement) {
+            const lines = [];
+            const words = chunkElement.querySelectorAll('.word');
+            let currentLine = [];
+            let currentLineWidth = 0;
+            const containerWidth = chunkElement.offsetWidth;
+
+            let currentLineStart = 0;
+            words.forEach((word, index) => {
+                currentLineWidth += word.offsetWidth;
+                if (currentLineWidth > containerWidth) {
+                    lines.push(currentLine);
+                    currentLine = [];
+                    currentLineWidth = word.offsetWidth;
+                }
+                currentLine.push(index);
+            });
+
+            // Add the last line
+            if (currentLine.length > 0) {
+                lines.push(currentLine);
             }
 
-            // Highlight the words that are on the current line
-            for (let i = startWord; i <= endWord; i++) {
-                words[i].classList.add('highlight');
-            }
+            return lines;
         }
 
         function nextLine() {
-            const words = document.getElementById('chunkContent').querySelectorAll('.word');
-            if (currentWordIndex < words.length - 1) {
-                currentWordIndex += countWordsInLine();
+            const lines = getLines(document.getElementById('chunkContent'));
+            if (currentLineIndex < lines.length - 1) {
+                currentLineIndex++;
+                currentWordIndex = lines[currentLineIndex][0];
                 highlightCurrentLine();
             }
         }
 
         function prevLine() {
-            if (currentWordIndex > 0) {
-                currentWordIndex -= countWordsInLine(true);
+            if (currentLineIndex > 0) {
+                currentLineIndex--;
+                currentWordIndex = getLines(document.getElementById('chunkContent'))[currentLineIndex][0];
                 highlightCurrentLine();
             }
-        }
-
-        function countWordsInLine(reverse = false) {
-            const chunkContainer = document.getElementById('chunkContent');
-            const words = chunkContainer.querySelectorAll('.word');
-            const containerWidth = chunkContainer.clientWidth;
-            let currentLineWidth = 0;
-            let wordCount = 0;
-
-            if (reverse) {
-                for (let i = currentWordIndex - 1; i >= 0; i--) {
-                    const wordWidth = words[i].offsetWidth;
-                    if (currentLineWidth + wordWidth > containerWidth) break;
-
-                    currentLineWidth += wordWidth;
-                    wordCount++;
-                }
-            } else {
-                for (let i = currentWordIndex; i < words.length; i++) {
-                    const wordWidth = words[i].offsetWidth;
-                    if (currentLineWidth + wordWidth > containerWidth) break;
-
-                    currentLineWidth += wordWidth;
-                    wordCount++;
-                }
-            }
-
-            return wordCount;
         }
 
         function updateProgress(index) {
@@ -276,6 +281,7 @@ $stmt->close();
     </div>
 </body>
 </html>
+
 
 
 
