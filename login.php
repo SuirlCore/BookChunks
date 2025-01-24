@@ -15,7 +15,7 @@ if (isset($_COOKIE['auto_login'])) {
         
         // Start a session and store user info in session variables
         $_SESSION['user_id'] = $row['userID'];
-        $_SESSION['username'] = $username;
+        $_SESSION['username'] = $row['userName'];
         $_SESSION['fontSize'] = $row['fontSize'];
         $_SESSION['fontColor'] = $row['fontColor'];
         $_SESSION['fontSelect'] = $row['fontSelect'];
