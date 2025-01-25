@@ -7,11 +7,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Check if user is logged in
-if (!isset($_SESSION['userID'])) {
-    die("You must be logged in to update this setting.");
-}
-
 // Check if maxWordsPerChunk is provided
 if (!isset($_POST['maxWordsPerChunk']) || empty($_POST['maxWordsPerChunk'])) {
     die("Invalid input. Please provide a valid number.");
