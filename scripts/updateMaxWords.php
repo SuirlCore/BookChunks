@@ -13,7 +13,7 @@ if (!isset($_POST['maxWordsPerChunk']) || empty($_POST['maxWordsPerChunk'])) {
 }
 
 $maxWordsPerChunk = intval($_POST['maxWordsPerChunk']);
-$userID = intval($_SESSION['userID']);
+$userID = intval($_SESSION['user_id']);
 
 // Validate the input
 if ($maxWordsPerChunk < 1) {
