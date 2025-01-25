@@ -45,5 +45,6 @@ try {
 } finally {
     $stmt->close();
     $conn->close();
+    header("Location: ../uploadPage.php");
 }
 ?>
