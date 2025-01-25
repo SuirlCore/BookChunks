@@ -106,5 +106,7 @@ try {
 } finally {
     $stmt->close();
     $conn->close();
+    sleep(1);
+    header("Location: ../uploadPage.php");
 }
 ?>

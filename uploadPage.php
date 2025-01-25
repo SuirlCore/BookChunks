@@ -39,7 +39,7 @@ $conn->close();
     <title>Upload Text File</title>
 </head>
 <body>
-    <h2>Upload a Text File to start.</h2>
+    
     <p>
         This will break your book up into chunks with a max number of words of <?= htmlspecialchars($_SESSION['maxWordsPerChunk']); ?>
         This number can be changed in your user settings, or the form below. You may want to change this number based on your 
@@ -63,6 +63,7 @@ $conn->close();
     <br>
     <br>
 
+    <h2>Upload a Text File to start.</h2>
     <p>
         This can take 30 seconds or so, be patient. When your book shows up in the table below, its finished.
     </p>
