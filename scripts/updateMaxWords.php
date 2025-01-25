@@ -37,6 +37,7 @@ try {
         echo "Max Words Per Chunk updated successfully.";
         // Optionally update the session value
         $_SESSION['maxWordsPerChunk'] = $maxWordsPerChunk;
+        $_SESSION['upload_message'] = "Max Words Per Chunk updated successfully.";
     } else {
         throw new Exception("Failed to update the setting.");
     }

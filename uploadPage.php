@@ -39,6 +39,12 @@ $conn->close();
     <title>Upload Text File</title>
 </head>
 <body>
+    <?php if (isset($_SESSION['upload_message'])): ?>
+        <p style="color: <?= htmlspecialchars($_SESSION['fontColor']); ?>;">
+            <?= htmlspecialchars($_SESSION['upload_message']); ?>
+        </p>
+        <?php unset($_SESSION['upload_message']); ?>
+    <?php endif; ?>
     
     <p>
         This will break your book up into chunks with a max number of words of <?= htmlspecialchars($_SESSION['maxWordsPerChunk']); ?>

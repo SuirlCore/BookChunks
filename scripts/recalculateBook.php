@@ -98,7 +98,7 @@ try {
 
     // Commit transaction
     $conn->commit();
-    echo "Book chunks recalculated successfully.";
+    $_SESSION['upload_message'] = "Book recalculated successfully.";
 } catch (Exception $e) {
     // Rollback transaction in case of error
     $conn->rollback();
@@ -106,7 +106,6 @@ try {
 } finally {
     $stmt->close();
     $conn->close();
-    sleep(1);
     header("Location: ../uploadPage.php");
 }
 ?>
