@@ -1,4 +1,5 @@
 <?php
+//start session and ensure user is logged in.
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -6,25 +7,21 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$userID = $_SESSION['user_id'];
-
-include 'pdo.php';
-
-// Function to upload a section into the database
-function uploadSectionToDB($conn, $textID, $sectionNumber, $sectionText) {
-    $stmt = $conn->prepare("INSERT INTO bookChunks (bookID, chunkNum, chunkContent, hasBeenSeen) VALUES (?, ?, ?, 0)");
-    if (!$stmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
-    $stmt->bind_param("iis", $textID, $sectionNumber, $sectionText);
-    if (!$stmt->execute()) {
-        throw new Exception("Execute failed: " . $stmt->error);
-    }
-    $stmt->close();
+// Ensure maxWordsPerChunk is set
+if (!isset($_SESSION['maxWordsPerChunk'])) {
+    die('Max words per chunk is not set in the session.');
 }
 
-// Function to parse the text into sections of 3 sentences
-function parseTextToSections($text) {
+// Check if book_id is provided
+if (!isset($_POST['book_id'])) {
+    die('Book ID is not provided.');
+}
+
+$book_id = intval($_POST['book_id']);
+$maxWordsPerChunk = $_SESSION['maxWordsPerChunk'];
+
+// Function to parse text into chunks
+function parseTextToSections($text, $maxWords) {
     $sentences = preg_split('/(?<=[.!?])\s+/', $text);
     $sections = [];
     $currentSection = '';
@@ -33,20 +30,16 @@ function parseTextToSections($text) {
     foreach ($sentences as $sentence) {
         $wordCount = str_word_count($sentence);
 
-        // Check if adding this sentence would exceed 50 words
-        if ($currentWordCount + $wordCount > 50) {
-            // Add the current section to the list and reset
+        if ($currentWordCount + $wordCount > $maxWords) {
             $sections[] = trim($currentSection);
             $currentSection = $sentence;
             $currentWordCount = $wordCount;
         } else {
-            // Append the sentence to the current section
             $currentSection .= ' ' . $sentence;
             $currentWordCount += $wordCount;
         }
     }
 
-    // Add the last section if it contains text
     if (!empty(trim($currentSection))) {
         $sections[] = trim($currentSection);
     }
@@ -54,81 +47,64 @@ function parseTextToSections($text) {
     return $sections;
 }
 
+include 'pdo.php';
 
-// Check if a file is uploaded
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['text_file'])) {
-    $file = $_FILES['text_file'];
+try {
+    // Start transaction
+    $conn->begin_transaction();
 
-    // Ensure the file is a .txt file
-    if ($file['type'] !== 'text/plain') {
-        $_SESSION['upload_message'] = "Please upload a valid text file.";
-        header("Location: ../uploadPage.php");
-        exit();
+    // Check if the book is in any feed
+    $stmt = $conn->prepare("SELECT COUNT(*) AS count FROM booksInFeed WHERE bookID = ?");
+    $stmt->bind_param("i", $book_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+
+    if ($result['count'] > 0) {
+        throw new Exception("This book is currently part of a feed. Please delete the feed before recalculating the book.");
     }
 
-    // Read the content of the file
-    $text = file_get_contents($file['tmp_name']);
+    // Fetch all chunks for the given book ID
+    $stmt = $conn->prepare("SELECT chunkID, chunkContent FROM bookChunks WHERE bookID = ?");
+    $stmt->bind_param("i", $book_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $chunks = $result->fetch_all(MYSQLI_ASSOC);
 
-    // Detect file encoding
-    $encoding = mb_detect_encoding($text, "UTF-8, ISO-8859-1, ISO-8859-15", true);
-
-    // Convert to UTF-8 if necessary
-    if ($encoding !== 'UTF-8') {
-        $text = mb_convert_encoding($text, 'UTF-8', $encoding);
+    if (empty($chunks)) {
+        throw new Exception("No chunks found for the given book ID.");
     }
 
-    // Parse the text into sections of 3 sentences
-    $sections = parseTextToSections($text);
+    // Combine all chunk contents into a single variable
+    $fullText = '';
+    foreach ($chunks as $chunk) {
+        $fullText .= ' ' . $chunk['chunkContent'];
+    }
 
-    // Insert the uploaded file into the texts table and get the textID
-    $fileName = $file['name'];
-    $stmt = $conn->prepare("INSERT INTO fullTexts (filename, owner) VALUES (?, ?)");
-    if (!$stmt) {
-        $_SESSION['upload_message'] = "Failed to prepare the database statement.";
-        header("Location: ../uploadPage.php");
-        exit();
+    // Parse the combined text into new chunks
+    $newChunks = parseTextToSections($fullText, $maxWordsPerChunk);
+
+    // Delete the old chunks for the book
+    $stmt = $conn->prepare("DELETE FROM bookChunks WHERE bookID = ?");
+    $stmt->bind_param("i", $book_id);
+    $stmt->execute();
+
+    // Insert the new chunks
+    $stmt = $conn->prepare("INSERT INTO bookChunks (bookID, chunkNum, chunkContent, hasBeenSeen) VALUES (?, ?, ?, 0)");
+    foreach ($newChunks as $index => $chunkContent) {
+        $chunkNum = $index + 1;
+        $stmt->bind_param("iis", $book_id, $chunkNum, $chunkContent);
+        $stmt->execute();
     }
-    $stmt->bind_param("si", $fileName, $userID);
-    if (!$stmt->execute()) {
-        $_SESSION['upload_message'] = "Failed to execute the database statement.";
-        header("Location: ../uploadPage.php");
-        exit();
-    }
-    $textID = $stmt->insert_id;
+
+    // Commit transaction
+    $conn->commit();
+    echo "Book chunks recalculated successfully.";
+} catch (Exception $e) {
+    // Rollback transaction in case of error
+    $conn->rollback();
+    die("Error: " . $e->getMessage());
+} finally {
     $stmt->close();
-
-    $_SESSION['upload_message'] = "Uploading sections...";
-
-    // Upload each section to the database, numbered sequentially, and linked to textID
-    $sectionNumber = 1;
-    $success = true;
-
-    foreach ($sections as $section) {
-        try {
-            uploadSectionToDB($conn, $textID, $sectionNumber, $section);
-        } catch (Exception $e) {
-            $_SESSION['upload_message'] = "Failed to upload section $sectionNumber: " . $e->getMessage();
-            $success = false;
-            break;
-        }
-        $sectionNumber++;
-    }
-
-    // Close the database connection
     $conn->close();
-
-    if ($success) {
-        $_SESSION['upload_message'] = "File uploaded successfully.";
-        header("Location: ../uploadPage.php");
-        exit();
-    } else {
-        $_SESSION['upload_message'] = "An error occurred while uploading the text. Please try again.";
-        header("Location: ../uploadPage.php");
-        exit();
-    }
-} else {
-    $_SESSION['upload_message'] = "No file uploaded.";
-    header("Location: ../uploadPage.php");
-    exit();
 }
 ?>
