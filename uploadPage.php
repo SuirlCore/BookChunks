@@ -42,13 +42,13 @@ $conn->close();
     <h2>Upload a Text File to start.</h2>
     <p>
         This will break your book up into chunks with a max number of words of <?= htmlspecialchars($_SESSION['maxWordsPerChunk']); ?>
-        This number can be changed in your user settings. You may want to change this number based on your 
+        This number can be changed in your user settings, or the form below. You may want to change this number based on your 
         text size, and line spacing options so that you dont have to scroll on each chunk when you read
         the book.
     </p>
 
     <h2>Update Maximum Words Per Chunk</h2>
-    <form action="updateMaxWords.php" method="POST">
+    <form action="scripts/updateMaxWords.php" method="POST">
         <label for="maxWordsPerChunk">Max Words Per Chunk:</label>
         <input 
             type="number" 
@@ -60,6 +60,8 @@ $conn->close();
         >
         <button type="submit">Update</button>
     </form>
+    <br>
+    <br>
 
     <p>
         This can take 30 seconds or so, be patient. When your book shows up in the table below, its finished.
