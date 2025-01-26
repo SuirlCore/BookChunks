@@ -16,7 +16,7 @@ function countLinesOfCode($folder) {
     $totalLines = 0;
 
     // Allowed file extensions
-    $allowedExtensions = ['php', 'html', 'txt', 'sql', 'css', 'js'];
+    $allowedExtensions = ['php', 'html', 'txt', 'sql', 'css', 'js', 'sh'];
 
     // Open the directory
     if ($handle = opendir($folder)) {
