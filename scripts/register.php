@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             setcookie('auto_login', $userID, time() + (86400 * 30), "/"); // Set cookie for 30 days
         }
         
-        header("Location: ../login.html"); // Redirect to login page after successful registration
+        header("Location: ../login.php"); // Redirect to login page after successful registration
         exit();
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
