@@ -1,0 +1,84 @@
+body {
+    font-family: <?= htmlspecialchars($_SESSION['fontSelect']); ?>;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 90vh; 
+    overflow: hidden;  
+    color: <?= htmlspecialchars($fontColorChoice); ?>;
+    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
+}
+
+.chunk-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #fff;
+    background-color: <?= htmlspecialchars($backgroundColorChoice); ?>;
+    font-size: <?= htmlspecialchars($fontSizeChoice); ?>;
+    line-height: <?= htmlspecialchars($_SESSION['lineHeight']); ?>;
+}
+
+.navigation {
+    display: flex; 
+    position: fixed; 
+    bottom: 0; 
+    width: 100%; 
+    height: 60px; 
+    background: #A9A9A9; 
+}
+
+.navigation button {
+    flex: 1; /* This will make buttons take equal space */
+    color: <?= htmlspecialchars($_SESSION['buttonTextColor']); ?>;
+    font-size: 18px; 
+    font-weight: bold; 
+    border: none;
+    background: <?= htmlspecialchars($_SESSION['buttonColor']); ?>; 
+    cursor: pointer;
+    transition: background 0.2s ease-in-out; 
+}
+
+.navigation button:hover {
+    background: <?= htmlspecialchars($_SESSION['buttonHoverColor']); ?>; 
+}
+
+.navigation button:disabled { 
+    background: #d6d6d6; 
+    color: #aaa; 
+    cursor: not-allowed; 
+}
+
+
+.word.highlight {
+    background-color: <?= htmlspecialchars($_SESSION['highlightColor']); ?>;
+}
+
+.line-controls {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.line-controls button {
+    font-size: 16px;
+    flex: 1;
+    margin: 0;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.chunk-controls {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+.chunk-controls button {
+    font-size: 16px;
+    flex: 1;
+    margin: 0;
+    padding: 10px 20px;
+    cursor: pointer;
+}
