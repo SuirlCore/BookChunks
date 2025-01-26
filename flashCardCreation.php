@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-include 'pdo.php'; // Replace with your database connection file
+include 'scripts/pdo.php';
 $userID = $_SESSION['user_id'];
 
 // Fetch collections owned by the user
