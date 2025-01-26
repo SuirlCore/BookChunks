@@ -6,6 +6,47 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+/**
+ * Function to recursively calculate lines of code in all files within a folder and its subfolders
+ * 
+ * @param string $folder The starting folder path
+ * @return int Total number of lines of code
+ */
+function countLinesOfCode($folder) {
+    $totalLines = 0;
+
+    // Open the directory
+    if ($handle = opendir($folder)) {
+        while (false !== ($entry = readdir($handle))) {
+            // Skip current and parent directory pointers
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+
+            $path = $folder . DIRECTORY_SEPARATOR . $entry;
+
+            // If it's a directory, recurse
+            if (is_dir($path)) {
+                $totalLines += countLinesOfCode($path);
+            }
+            // If it's a file, count lines
+            elseif (is_file($path)) {
+                $lines = count(file($path)); // Count lines in the file
+                $totalLines += $lines;
+            }
+        }
+        closedir($handle);
+    }
+
+    return $totalLines;
+}
+
+// Path to the folder you want to analyze
+$targetFolder = './'; // Change this to the folder you want to analyze
+
+// Calculate total lines of code
+$totalLines = countLinesOfCode($targetFolder);
+
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +105,11 @@ if (!isset($_SESSION['user_id'])) {
 
     <p>
         I also have a Code::Stats page at: <a href="https://codestats.net/users/Suirl">Suirl</a>
+    </p>
+    
+    <p>
+        The total number of lines of code in this projecs is: <?= number_format($totalLines); ?><br>
+        This is calculated dynamically with a PHP script.
     </p>
     
     <img src="images/reliablyAptBuzzard.jpg" alt="reliably apt buzzard logo" style="width:300px;height:300px;">
