@@ -53,9 +53,6 @@ $targetFolder = './'; // Change this to the folder you want to analyze
 // Calculate total lines of code
 $totalLines = countLinesOfCode($targetFolder);
 
-// Output the result
-echo "Total lines of code: $totalLines";
-
 ?>
 
 <!DOCTYPE html>
