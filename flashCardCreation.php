@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         if ($_POST['action'] === 'create_flashcard') {
             // Add a new flashcard
-            $cardName = $_POST['flash_card_name'];
+            $cardName = $_POST['flash_name'];
             $cardContent = $_POST['card_content'];
             $cardAnswer = $_POST['card_answer'];
             $collectionID = $_POST['collection_id'];
@@ -114,8 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
         <h2>Create a Flashcard</h2>
         <div class="form-group">
-            <label for="flash_card_name">Flashcard Name:</label>
-            <input type="text" id="flash_card_name" name="flash_card_name" required>
+            <label for="flash_name">Flashcard Name:</label>
+            <input type="text" id="flash_name" name="flash_name" required>
         </div>
         <div class="form-group">
             <label for="card_content">Flashcard Content:</label>
