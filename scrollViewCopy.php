@@ -241,26 +241,25 @@ $cleanedContent = cleanChunkContent($lastChunkContent);
       }
     }
 
-    // Function to enable tooltips for dynamically created spans
     function enableTooltip() {
-      chunkContainer.addEventListener('click', async (e) => {
+    chunkContainer.addEventListener('click', async (e) => {
         if (e.target.classList.contains('word')) {
-          const wordText = e.target.textContent.trim();
-          const rect = e.target.getBoundingClientRect();
+            const wordText = e.target.textContent.trim();
+            const rect = e.target.getBoundingClientRect();
 
-          // Show tooltip with "Loading..."
-          tooltip.textContent = "Loading...";
-          tooltip.classList.add('loading');
-          tooltip.style.display = 'block';
-          tooltip.style.left = `${rect.left + window.scrollX}px`;
-          tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+            // Show tooltip with "Loading..."
+            tooltip.textContent = "Loading...";
+            tooltip.classList.add('loading');
+            tooltip.style.display = 'block';
+            tooltip.style.left = `${rect.left + window.scrollX}px`;
+            tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
 
-          // Fetch and display definition
-          const definition = await fetchDefinition(wordText);
-          tooltip.textContent = definition;
-          tooltip.classList.remove('loading');
+            // Fetch and display definition
+            const definition = await fetchDefinition(wordText);
+            tooltip.textContent = definition;
+            tooltip.classList.remove('loading');
         }
-      });
+    });
 
       // Hide the tooltip if you click outside of a word
       document.addEventListener('click', (e) => {
@@ -280,39 +279,39 @@ $cleanedContent = cleanChunkContent($lastChunkContent);
     let highlightingToggle = <?php echo isset($_SESSION['highlightingToggle']) ? $_SESSION['highlightingToggle'] : 0; ?>;
 
 
+    // Call enableTooltip after loading a chunk
     function loadChunk(index) {
-        if (index < 0 || index >= chunks.length) return;
+    if (index < 0 || index >= chunks.length) return;
 
-        // Send AJAX request to get the chunk content
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                const data = JSON.parse(xhr.responseText);
-                if (data.chunkContent) {
-                    // Clean and display the chunk content
-                    const chunkContent = data.chunkContent;
-                    const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
-                    const chunkElement = document.getElementById('chunkContent');
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'scripts/scrollViewGetChunk.php?chunkID=' + chunks[index].chunkID, true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            if (data.chunkContent) {
+                const chunkContent = data.chunkContent;
+                const words = chunkContent.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+                const chunkElement = document.getElementById('chunkContent');
+                chunkElement.innerHTML = words;
 
-                    chunkElement.innerHTML = words;
+                currentIndex = index;
+                currentWordIndex = 0;
+                currentLineIndex = 0;
 
-                    currentIndex = index;
-                    currentWordIndex = 0;
-                    currentLineIndex = 0;
+                highlightCurrentLine();
+                updateProgress(index);
 
-                    highlightCurrentLine(); // Update line highlighting after loading the chunk
-                    updateProgress(index); // Update the user's last seen chunk ID in the database
-                } else {
-                    console.error('Error fetching chunk content: ', data.error);
-                }
+                // Enable tooltips for the new words
+                enableTooltip();
             } else {
-                console.error('Request failed with status: ' + xhr.status);
+                console.error('Error fetching chunk content: ', data.error);
             }
-        };
-        xhr.send();
-    }
-
+        } else {
+            console.error('Request failed with status: ' + xhr.status);
+        }
+    };
+    xhr.send();
+}
     function highlightCurrentLine() {
         if (highlightingToggle == 1) {
 
@@ -444,6 +443,7 @@ $cleanedContent = cleanChunkContent($lastChunkContent);
     </div>
 
     <div class="chunk-container" id="chunkContent">Loading...</div>
+    <div id="tooltip" class="tooltip"></div>
 
     <?php if ($_SESSION['highlightingToggle'] == 1): ?>
         <div class="line-controls">
