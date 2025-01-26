@@ -15,6 +15,9 @@ if (!isset($_SESSION['user_id'])) {
 function countLinesOfCode($folder) {
     $totalLines = 0;
 
+    // Allowed file extensions
+    $allowedExtensions = ['php', 'html', 'txt', 'sql', 'css', 'js'];
+
     // Open the directory
     if ($handle = opendir($folder)) {
         while (false !== ($entry = readdir($handle))) {
@@ -29,10 +32,13 @@ function countLinesOfCode($folder) {
             if (is_dir($path)) {
                 $totalLines += countLinesOfCode($path);
             }
-            // If it's a file, count lines
+            // If it's a file, count lines if the extension matches
             elseif (is_file($path)) {
-                $lines = count(file($path)); // Count lines in the file
-                $totalLines += $lines;
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                if (in_array($extension, $allowedExtensions)) {
+                    $lines = count(file($path)); // Count lines in the file
+                    $totalLines += $lines;
+                }
             }
         }
         closedir($handle);
@@ -46,6 +52,9 @@ $targetFolder = './'; // Change this to the folder you want to analyze
 
 // Calculate total lines of code
 $totalLines = countLinesOfCode($targetFolder);
+
+// Output the result
+echo "Total lines of code: $totalLines";
 
 ?>
 
