@@ -270,7 +270,6 @@ $cleanedContent = cleanChunkContent($lastChunkContent);
     }
 
     // Initialize the tooltip functionality
-    enableTooltip();
     </script>
 
     <script>
@@ -392,6 +391,7 @@ $cleanedContent = cleanChunkContent($lastChunkContent);
     }
 
     window.onload = () => {
+        enableTooltip();
         loadChunk(currentIndex);
 
         // Add resize event listener to adjust highlighting
