@@ -11,7 +11,6 @@ update number of chunks seen per week
 
 
 dyslexia functions:
-    change number of words per chunk
     touch a word to add it to a vocabulary flash card to filter in later
     touch a word and it opens up a tooltip with the definition
     text to voice (settings option to auto read, or click a button to read as needed)
